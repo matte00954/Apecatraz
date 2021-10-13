@@ -3,7 +3,15 @@
 [Oo]bj/
 [Bb]uild/
 [Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
 Assets/AssetStoreTools*
+
+# Visual Studio cache directory
+.vs/
+
+# Asset meta data should only be ignored when the corresponding asset is also ignored
+!/[Aa]ssets/**/*.meta
 
 # Visual Studio cache directory
 .vs/
@@ -28,10 +36,17 @@ ExportedObj/
 # Unity3D generated meta files
 *.pidb.meta
 *.pdb.meta
+*.mdb.meta
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
 
+# Gradle cache directory
+.gradle/
+
 # Builds
 *.apk
 *.unitypackage
+
+# Crashlytics generated file
+crashlytics-build.properties
