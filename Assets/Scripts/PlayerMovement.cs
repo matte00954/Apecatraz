@@ -8,15 +8,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundMask;
 
+    [Header("Movement")]
+    [SerializeField] private float playerSpeed = 5.0f;
+    [SerializeField] private float jumpHeight = 1.0f;
+
     private CharacterController controller;
     private Vector3 playerVelocity;
 
     private bool groundedPlayer;
 
-    private float playerSpeed = 2.0f; // dont change this
-    private float jumpHeight = 1.0f; // dont change this
-    private float gravityValue = -9.81f; // dont change this
-    private float groundCheckRadius = 0.2f; // dont change this
+    private static float gravityValue = -9.81f; // dont change this -9.81f
+    private static float groundCheckRadius = 0.2f; // comparing ground check game object to floor
 
     private void Start()
     {
