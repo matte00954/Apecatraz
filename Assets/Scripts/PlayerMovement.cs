@@ -41,6 +41,9 @@ public class PlayerMovement : MonoBehaviour
         }
 
         Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        
+        playerVelocity.y += gravityValue * Time.deltaTime;
+        move +=playerVelocity;
         controller.Move(move * Time.deltaTime * playerSpeed);
 
         if (move != Vector3.zero)
@@ -48,9 +51,9 @@ public class PlayerMovement : MonoBehaviour
             gameObject.transform.forward = move;
         }
 
-        playerVelocity.y += gravityValue * Time.deltaTime;
-        controller.Move(playerVelocity * Time.deltaTime);  
-    }
+        //controller.Move(playerVelocity * Time.deltaTime);
+        //transform.Rotate(Input.GetAxis("Mouse X"),0,0);  
+        }
 
     private void Jump()
     {
