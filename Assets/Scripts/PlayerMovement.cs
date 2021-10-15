@@ -12,63 +12,58 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float playerSpeed = 5.0f;
     [SerializeField] private float jumpHeight = 1.0f;
 
+    private Camera mainCamera;
+
+    private Vector3 movement;
     private CharacterController controller;
     private Vector3 playerVelocity;
 
-    private bool groundedPlayer;
-
-    private static float gravityValue = -9.81f; // dont change this -9.81f
-    private static float groundCheckRadius = 0.2f; // comparing ground check game object to floor
+    private readonly float GravityMultiplier = 2.0f;
+    private readonly float GravityValue = -9.81f; // dont change this -9.81f
+    private readonly float GroundCheckRadius = 0.2f; // comparing ground check game object to floor
 
     private void Start()
     {
         controller = gameObject.AddComponent<CharacterController>();
+        mainCamera = Camera.main;
     }
 
     void Update()
     {
         Movement();
-        Jump();
+        //Jump();
     }
 
     private void Movement()
     {
-        groundedPlayer = controller.isGrounded;
-        
-        if (groundedPlayer && playerVelocity.y < 0)
+        if (controller.isGrounded)
         {
-            playerVelocity.y = 0f;
+            movement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+            movement = transform.TransformDirection(movement);
+            movement *= playerSpeed;
+
+            if (Input.GetKey(KeyCode.Space))
+               // movement.y = jumpHeight;
+               movement.y += Mathf.Sqrt(jumpHeight * -3.0f * GravityValue);
         }
 
-        Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        
-        playerVelocity.y += gravityValue * Time.deltaTime;
-        move +=playerVelocity;
-        controller.Move(move * Time.deltaTime * playerSpeed);
+	movement.y += GravityMultiplier * GravityValue * Time.deltaTime;
+	controller.Move(movement * Time.deltaTime);
+    
+    }
 
-        if (move != Vector3.zero)
-        {
-            gameObject.transform.forward = move;
-        }
-
-        //controller.Move(playerVelocity * Time.deltaTime);
-        //transform.Rotate(Input.GetAxis("Mouse X"),0,0);  
-        }
-
-    private void Jump()
+   /* private void Jump()
     {
         if (Input.GetButtonDown("Jump") && CheckGround()) // Changes the height position of the player..
-                {
-                    playerVelocity.y += Mathf.Sqrt(jumpHeight * -5.0f * gravityValue);
-                    // We might need gravity changes after jump
-                }       
-
-    }
+        {
+            playerVelocity.y += Mathf.Sqrt(jumpHeight * -5.0f * GravityValue);
+            // We might need gravity changes after jump
+        }       
+    }*/
 
     private bool CheckGround()
     {
         //The alternative check if player is grounded by casting CheckSphere.
-        return Physics.CheckSphere(groundCheck.position, groundCheckRadius, groundMask);
-
+        return Physics.CheckSphere(groundCheck.position, GroundCheckRadius, groundMask);
     }
 }
