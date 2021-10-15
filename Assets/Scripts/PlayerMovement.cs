@@ -44,7 +44,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (Input.GetKey(KeyCode.Space))
                // movement.y = jumpHeight;
-               movement.y += Mathf.Sqrt(jumpHeight * -3.0f * GravityValue);
+               movement.y += Mathf.Sqrt(jumpHeight * -3.0f * GravityValue * Time.deltaTime);
         }
 
 	movement.y += GravityMultiplier * GravityValue * Time.deltaTime;
