@@ -19,15 +19,16 @@ public class ThirdPersonMovement : MonoBehaviour
     private float turnSmoothVelocity;
     private Vector3 velocity;
 
-    //movement
-    private readonly float playerSpeed = 6f;
-    private readonly float jumpHeight = 4f;
+
+    //movement, these are constant
+    private float playerSpeed = 6f; //Do not change
+    private float jumpHeight = 4f; //Do not change
 
     //ground check
     private readonly float GroundCheckRadius = 0.15f; // comparing ground check game object to floor
 
     //gravity
-    private readonly float GravityValue = -9.81f; // dont change this -9.81f
+    private readonly float GravityValue = -9.81f; // do not change this -9.81f
     private readonly float GravityMultiplier = 1.2f; //multiplies gravity force
 
     private void Start()
@@ -50,7 +51,6 @@ public class ThirdPersonMovement : MonoBehaviour
         Movement();
 
         Gravity();
-
     }
 
     private void Movement()
