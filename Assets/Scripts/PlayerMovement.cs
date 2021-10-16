@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//OLD SCRIPT, DO NOT USE!!!
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Ground check")]

@@ -1,5 +1,6 @@
 using UnityEngine;
 
+//OLD SCRIPT, NOT USED!!!
 public class CameraFollow : MonoBehaviour
 {
     [Header("Camera follow")]
@@ -9,12 +10,10 @@ public class CameraFollow : MonoBehaviour
 
     [SerializeField] private float turnSpeed = 4.0f;
 
-
     [Header("Rotation")]
     [SerializeField] private float speedYaw = 2.0f;
     [SerializeField] private float speedPitch = 2.0f;
 
-  
       void LateUpdate()
       {
           offset = Quaternion.AngleAxis (Input.GetAxis("Mouse X") * turnSpeed, Vector3.up) * offset;

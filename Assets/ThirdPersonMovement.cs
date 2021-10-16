@@ -4,40 +4,63 @@ using UnityEngine;
 
 public class ThirdPersonMovement : MonoBehaviour
 {
+    [Header("Unity classes")]
     [SerializeField] private CharacterController controller;
     [SerializeField] private Transform cameraTransform;
 
-    [SerializeField] private float playerSpeed = 6f;
-    [SerializeField] private float jumpHeight = 6f;
-    [SerializeField] private float GravityMultiplier;
+    [Header("Ground check")]
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private LayerMask groundMask;
+
+    [Header("Rotation")]
     [SerializeField] private float turnSmoothTime = 0.1f;
 
+    //Changes during runtime
     private float turnSmoothVelocity;
+    private Vector3 velocity;
 
+    //movement
+    private readonly float playerSpeed = 6f;
+    private readonly float jumpHeight = 4f;
+
+    //ground check
+    private readonly float GroundCheckRadius = 0.15f; // comparing ground check game object to floor
+
+    //gravity
     private readonly float GravityValue = -9.81f; // dont change this -9.81f
-    private readonly float GroundCheckRadius = 0.2f; // comparing ground check game object to floor
+    private readonly float GravityMultiplier = 1.2f; //multiplies gravity force
 
     private void Start()
     {
-        if(cameraTransform == null)
+        Cursor.lockState = CursorLockMode.Confined; //prevents mouse from leaving screen
+
+        if (cameraTransform == null)
         {
             Debug.LogError("Camera not assigned to movement script, rotation will not work");
         }
         if (controller == null)
         {
-            Debug.LogError("Controller not assigned to movement script");
+            Debug.LogError("Controller not assigned to movement script, movement will not work");
         }
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
+    {
+        Movement();
+
+        Gravity();
+
+    }
+
+    private void Movement()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
-        if(direction.magnitude >= 0.1f)
+        if (direction.magnitude >= 0.1f)
         {
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y; //first find target angle
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime); //adjust angle for smoothing
@@ -48,24 +71,28 @@ public class ThirdPersonMovement : MonoBehaviour
 
             controller.Move(moveDirection * playerSpeed * Time.deltaTime);
         }
+    }
 
-        Vector3 gravity = new Vector3(0, GravityValue * GravityMultiplier * Time.deltaTime, 0);
+    private void Gravity()
+    {
 
-        if (controller.isGrounded)
+        if (CheckGround() && Input.GetKeyDown(KeyCode.Space)) //Jump
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                gravity.y += Mathf.Sqrt(-jumpHeight * GravityValue * Time.deltaTime);
-            }
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * GravityValue);
         }
-        controller.Move(gravity);
+
+        if (CheckGround() && velocity.y < 0)
+        {
+            velocity.y = -2f; //Default gravity force on the ground
+        }
+        else
+            velocity.y += GravityValue * GravityMultiplier * Time.deltaTime; //gravity in the air
+
+        controller.Move(velocity * Time.deltaTime); //gravity applied
+    }
+
+    private bool CheckGround()
+    {
+        return Physics.CheckSphere(groundCheck.position, GroundCheckRadius, groundMask);
     }
 }
-
-/*            if (Input.GetKey(KeyCode.Space))
-               // movement.y = jumpHeight;
-               movement.y += Mathf.Sqrt(jumpHeight * -3.0f * GravityValue);
-        }
-
-	movement.y += GravityMultiplier * GravityValue * Time.deltaTime;
-	controller.Move(movement * Time.deltaTime);*/
