@@ -19,7 +19,6 @@ public class ThirdPersonMovement : MonoBehaviour
     private float turnSmoothVelocity;
     private Vector3 velocity;
 
-
     //movement, these are constant
     private float playerSpeed = 6f; //Do not change
     private float jumpHeight = 4f; //Do not change
@@ -29,7 +28,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     //gravity
     private readonly float GravityValue = -9.81f; // do not change this -9.81f
-    private readonly float GravityMultiplier = 1.2f; //multiplies gravity force
+    private readonly float GravityMultiplier = 1.4f; //multiplies gravity force
 
     private void Start()
     {
@@ -69,7 +68,13 @@ public class ThirdPersonMovement : MonoBehaviour
 
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward; //adjust direction to camera rotation/direction
 
-            controller.Move(moveDirection * playerSpeed * Time.deltaTime);
+            ControllerMove(moveDirection * playerSpeed * Time.deltaTime);
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            //teleport here
+            //ControllerMove();
         }
     }
 
@@ -88,7 +93,13 @@ public class ThirdPersonMovement : MonoBehaviour
         else
             velocity.y += GravityValue * GravityMultiplier * Time.deltaTime; //gravity in the air
 
-        controller.Move(velocity * Time.deltaTime); //gravity applied
+        ControllerMove(velocity * Time.deltaTime);//gravity applied
+
+    }
+
+    private void ControllerMove(Vector3 movement)
+    {
+        controller.Move(movement);
     }
 
     private bool CheckGround()
