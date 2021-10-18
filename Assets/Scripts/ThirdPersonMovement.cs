@@ -97,7 +97,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     }
 
-    private void ControllerMove(Vector3 movement)
+    private void ControllerMove(Vector3 movement) //THIS IS THE ONLY controller.Move that should exist
     {
         controller.Move(movement);
     }
