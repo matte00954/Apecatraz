@@ -50,7 +50,8 @@ public class EnemyMovement : MonoBehaviour
         //        agent.SetDestination(hit.point);
         //    } 
         //}
-        if (currentState == GuardState.patrolling && agent.remainingDistance <= 1f)
+        if (currentState == GuardState.patrolling && agent.remainingDistance <= 1f
+            || currentState == GuardState.investigating && agent.remainingDistance <= 4f)
         {
             currentState = GuardState.waiting;
             waitTimer = 0f;
@@ -102,5 +103,18 @@ public class EnemyMovement : MonoBehaviour
     private void ResumePatrol()
     {
         agent.SetDestination(waypoints[currentWaypointIndex].transform.position);
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        Debug.Log("collision detected");
+        if (currentState == GuardState.patrolling || currentState == GuardState.waiting)
+        {
+            if (other.gameObject.CompareTag("LuringSource"))
+            {
+                currentState = GuardState.investigating;
+                agent.SetDestination(other.gameObject.transform.position);
+            }
+        }
     }
 }

@@ -12,8 +12,15 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundMask;
 
-    [Header("Rotation")]
-    [SerializeField] private float turnSmoothTime = 0.1f;
+    //ground check
+    private readonly float GroundCheckRadius = 0.15f; // comparing ground check game object to floor
+
+    //Rotation
+    private float turnSmoothTime = 0.1f;
+
+    //Teleport
+    private float teleportDistance;
+    private float teleportMarginMultiplier = 0.8f;
 
     //Changes during runtime
     private float turnSmoothVelocity;
@@ -22,9 +29,6 @@ public class ThirdPersonMovement : MonoBehaviour
     //movement, these are constant
     private float playerSpeed = 6f; //Do not change
     private float jumpHeight = 4f; //Do not change
-
-    //ground check
-    private readonly float GroundCheckRadius = 0.15f; // comparing ground check game object to floor
 
     //gravity
     private readonly float GravityValue = -9.81f; // do not change this -9.81f
@@ -50,6 +54,8 @@ public class ThirdPersonMovement : MonoBehaviour
         Movement();
 
         Gravity();
+
+        Teleport();
     }
 
     private void Movement()
@@ -70,11 +76,24 @@ public class ThirdPersonMovement : MonoBehaviour
 
             ControllerMove(moveDirection * playerSpeed * Time.deltaTime);
         }
+    }
 
+    private void Teleport()
+    {
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            //teleport here
-            //ControllerMove();
+            RaycastHit hit;
+
+            Debug.DrawRay(transform.position, transform.forward, Color.red, teleportDistance);
+
+            Physics.Raycast(transform.position, transform.forward, out hit, teleportDistance);
+
+            if (Physics.Raycast(transform.position, transform.forward, out hit, teleportDistance))
+            {
+                ControllerMove(transform.forward * hit.distance * teleportMarginMultiplier);
+            }
+            else
+                ControllerMove(transform.forward * teleportDistance);
         }
     }
 
@@ -94,7 +113,6 @@ public class ThirdPersonMovement : MonoBehaviour
             velocity.y += GravityValue * GravityMultiplier * Time.deltaTime; //gravity in the air
 
         ControllerMove(velocity * Time.deltaTime);//gravity applied
-
     }
 
     private void ControllerMove(Vector3 movement) //THIS IS THE ONLY controller.Move that should exist
