@@ -19,7 +19,7 @@ public class ThirdPersonMovement : MonoBehaviour
     private float turnSmoothTime = 0.1f;
 
     //Teleport
-    private float teleportDistance;
+    private float teleportDistance = 5f;
     private float teleportMarginMultiplier = 0.8f;
 
     //Changes during runtime
@@ -94,6 +94,10 @@ public class ThirdPersonMovement : MonoBehaviour
             }
             else
                 ControllerMove(transform.forward * teleportDistance);
+        }
+        else if (Input.GetKeyDown(KeyCode.T))
+        {
+
         }
     }
 
