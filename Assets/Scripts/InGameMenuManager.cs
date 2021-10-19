@@ -4,13 +4,14 @@ using UnityEngine;
 
 public class InGameMenuManager : MonoBehaviour
 {
-    public static bool GameIsPaused = false;
+    public static bool gameIsPaused = false;
 
-    public Animator animator;
+    private Animator animator;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -18,7 +19,7 @@ public class InGameMenuManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (!GameIsPaused)
+            if (!gameIsPaused)
             {
                 PauseGame();
             }
@@ -42,18 +43,19 @@ public class InGameMenuManager : MonoBehaviour
 
     public void ResumeGame()
     {
-        animator.SetTrigger("CloseInGameMenu");
+        animator.SetTrigger("Close");
 
-        //Time.timeScale = 1;
-        GameIsPaused = false;
+        Time.timeScale = 1;
+        gameIsPaused = false;
 
     }
 
     public void PauseGame()
     {
-        animator.SetTrigger("OpenInGameMenu");
+        animator.SetTrigger("Open");
 
-        //Time.timeScale = 0;
-        GameIsPaused = true;
+        Time.timeScale = 0;
+        gameIsPaused = true;
     }
+
 }
