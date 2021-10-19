@@ -30,7 +30,7 @@ public class DancingLettersUI : MonoBehaviour
             for (int j = 0; j < 4; ++j)
             {
                 var orig = verts[charInfo.vertexIndex + j];
-                verts[charInfo.vertexIndex + j] = orig + new Vector3(0, Mathf.Sin(Time.time * waveSpeed + orig.x * 0.01f) * waveSize, 0);
+                verts[charInfo.vertexIndex + j] = orig + new Vector3(0, Mathf.Sin(Time.realtimeSinceStartup * waveSpeed + orig.x * 0.01f) * waveSize, 0);
             }
         }
 
