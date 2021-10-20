@@ -5,13 +5,14 @@ using UnityEngine;
 public class InGameMenuManager : MonoBehaviour
 {
     public static bool gameIsPaused = false;
-
+    
     private Animator animator;
 
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
+
     }
 
     // Update is called once per frame
@@ -44,8 +45,8 @@ public class InGameMenuManager : MonoBehaviour
     public void ResumeGame()
     {
         animator.SetTrigger("Close");
-
-        Time.timeScale = 1;
+        
+        Time.timeScale = 1; 
         gameIsPaused = false;
 
     }
@@ -53,7 +54,7 @@ public class InGameMenuManager : MonoBehaviour
     public void PauseGame()
     {
         animator.SetTrigger("Open");
-
+        
         Time.timeScale = 0;
         gameIsPaused = true;
     }
