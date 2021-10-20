@@ -14,6 +14,11 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundMask;
 
+    //Changes during runtime
+    private float turnSmoothVelocity;
+    private bool isTeleporting;
+    private Vector3 velocity;
+
     //ground check
     private const float GroundCheckRadius = 0.15f; // comparing ground check game object to floor
 
@@ -21,14 +26,9 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float turnSmoothTime = 0.1f;
 
     //Teleport
-    private const float teleportDistanceMultiplier = 0.10f; //per frame
-    private const float teleportDistanceCheck = 1f;
+    private const float teleportDistanceMultiplier = 0.15f; //per frame
+    private const float teleportDistanceCheck = 0.5f;
     private const float teleportMarginMultiplier = 0.8f;
-
-    //Changes during runtime
-    private float turnSmoothVelocity;
-    private bool isTeleporting;
-    private Vector3 velocity;
 
     //movement, these are constant
     private const float playerSpeed = 6f; //Do not change
@@ -93,11 +93,11 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             isTeleporting = true;
 
-            Time.timeScale = 0.5f;
+            Time.timeScale = 0.35f;
 
             RaycastHit hit;
 
-            if (Physics.Raycast(transform.position, transform.forward, out hit, teleportDistanceCheck))
+            if (Physics.SphereCast(transform.position, 1f, transform.forward, out hit, teleportDistanceCheck))
             {
                 ControllerMove(transform.forward * hit.distance * teleportMarginMultiplier);
             }
