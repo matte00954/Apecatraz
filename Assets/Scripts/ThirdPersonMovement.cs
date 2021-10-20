@@ -13,26 +13,26 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private LayerMask groundMask;
 
     //ground check
-    private readonly float GroundCheckRadius = 0.15f; // comparing ground check game object to floor
+    private const float GroundCheckRadius = 0.15f; // comparing ground check game object to floor
 
     //Rotation
-    private float turnSmoothTime = 0.1f;
+    private const float turnSmoothTime = 0.1f;
 
     //Teleport
-    private float teleportDistance = 5f;
-    private float teleportMarginMultiplier = 0.8f;
+    private const float teleportDistance = 5f;
+    private const float teleportMarginMultiplier = 0.8f;
 
     //Changes during runtime
     private float turnSmoothVelocity;
     private Vector3 velocity;
 
     //movement, these are constant
-    private float playerSpeed = 6f; //Do not change
-    private float jumpHeight = 4f; //Do not change
+    private const float playerSpeed = 6f; //Do not change
+    private const float jumpHeight = 4f; //Do not change
 
     //gravity
-    private readonly float GravityValue = -9.81f; // do not change this -9.81f
-    private readonly float GravityMultiplier = 1.4f; //multiplies gravity force
+    private const float GravityValue = -9.81f; // do not change this -9.81f
+    private const float GravityMultiplier = 1.4f; //multiplies gravity force
 
     private void Start()
     {
@@ -82,11 +82,30 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
+
+
+
+
+            if (true)
+            {
+                RaycastHit hit;
+
+                Debug.DrawRay(transform.position, transform.forward, Color.red, teleportDistance); //kan behövas en spherecast istället
+
+                if (Physics.Raycast(transform.position, transform.forward, out hit, teleportDistance))
+                {
+                    ControllerMove(transform.forward * hit.distance * teleportMarginMultiplier);
+                }
+                else
+                    ControllerMove(transform.forward * teleportDistance);
+            }
+        }
+        /*
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
             RaycastHit hit;
 
-            Debug.DrawRay(transform.position, transform.forward, Color.red, teleportDistance);
-
-            Physics.Raycast(transform.position, transform.forward, out hit, teleportDistance);
+            Debug.DrawRay(transform.position, transform.forward, Color.red, teleportDistance); //kan behövas en spherecast istället
 
             if (Physics.Raycast(transform.position, transform.forward, out hit, teleportDistance))
             {
@@ -95,10 +114,29 @@ public class ThirdPersonMovement : MonoBehaviour
             else
                 ControllerMove(transform.forward * teleportDistance);
         }
-        else if (Input.GetKeyDown(KeyCode.T))
+        else if (Input.GetKeyDown(KeyCode.T))//WIP
         {
+            Time.timeScale = 0.1f;
 
-        }
+            RaycastHit hit;
+
+            Debug.DrawRay(transform.position, transform.forward, Color.blue, teleportDistance);
+
+            if (Physics.Raycast(transform.position, transform.forward, out hit, teleportDistance * 1.5f)) //magic number
+            {
+                ControllerMove(transform.forward * hit.distance * teleportMarginMultiplier);
+                RestoreTime();
+            }
+            else
+            {
+                ControllerMove(transform.forward * teleportDistance * 1.5f);
+                RestoreTime();
+            }*/
+    }
+    
+    private void RestoreTime()
+    {
+        Time.timeScale = 1;
     }
 
     private void Gravity()
