@@ -4,13 +4,12 @@ using UnityEngine.AI;
 
 public class EnemyMovement : MonoBehaviour
 {
-    [SerializeField] private Camera cam;
     [SerializeField, Tooltip("An array of waypoint objects the guard should follow in order.")]
     private GameObject[] waypoints;
     [SerializeField] private NavMeshAgent agent;
     [SerializeField, Tooltip("A stationary guard will stay and move back to one spot.")]
     private bool isStationary;
-    [SerializeField, Tooltip("Check if the this guard follows an encircling path.")]
+    [SerializeField, Tooltip("Check this if this guard follows an encircling path.")]
     private bool isCircling;
     [SerializeField, Tooltip("The amount of time the guard should wait after reaching a waypoint.")]
     private float totalWaitTime;
@@ -40,17 +39,8 @@ public class EnemyMovement : MonoBehaviour
 
     void Update()
     {
-        //if (Input.GetMouseButtonDown(0))
-        //{
-        //    Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-        //    RaycastHit hit;
-
-        //    if (Physics.Raycast(ray, out hit))
-        //    {
-        //        agent.SetDestination(hit.point);
-        //    } 
-        //}
-        if (currentState == GuardState.patrolling && agent.remainingDistance <= 1f)
+        if (currentState == GuardState.patrolling && agent.remainingDistance <= 1f
+            || currentState == GuardState.investigating && agent.remainingDistance <= 4f)
         {
             currentState = GuardState.waiting;
             waitTimer = 0f;
@@ -102,5 +92,18 @@ public class EnemyMovement : MonoBehaviour
     private void ResumePatrol()
     {
         agent.SetDestination(waypoints[currentWaypointIndex].transform.position);
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        Debug.Log("collision detected");
+        if (currentState == GuardState.patrolling || currentState == GuardState.waiting)
+        {
+            if (other.gameObject.CompareTag("LuringSource"))
+            {
+                currentState = GuardState.investigating;
+                agent.SetDestination(other.gameObject.transform.position);
+            }
+        }
     }
 }
