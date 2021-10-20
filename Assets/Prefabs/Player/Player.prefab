@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1762694613964198751}
   - component: {fileID: 1762694613964198748}
   - component: {fileID: 1762694613964198749}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1762694614227774981}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,6 +123,10 @@ PrefabInstance:
     - target: {fileID: 6665049922486588224, guid: bdf6460dc0c299244bf0f11995953a12, type: 3}
       propertyPath: m_Name
       value: GFX
+      objectReference: {fileID: 0}
+    - target: {fileID: 6665049922486588224, guid: bdf6460dc0c299244bf0f11995953a12, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6665049922486588228, guid: bdf6460dc0c299244bf0f11995953a12, type: 3}
       propertyPath: m_RootOrder
@@ -172,6 +176,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+    - target: {fileID: 6665049922581322406, guid: bdf6460dc0c299244bf0f11995953a12, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bdf6460dc0c299244bf0f11995953a12, type: 3}
 --- !u!1 &1762694614092809579 stripped
