@@ -14,6 +14,11 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundMask;
 
+    [Header("Ledge")]
+    [SerializeField] private LayerMask ledgeMask;
+    [SerializeField] private GameObject ledgeCheck;
+    private float ledgeCheckLength = 1.2f; //1.2f works well after testing
+
     //Changes during runtime
     private float turnSmoothVelocity;
     private bool isTeleporting;
@@ -61,9 +66,19 @@ public class ThirdPersonMovement : MonoBehaviour
 
         Teleport();
 
+        Ledge();
+
         if (Time.timeScale != 1 && !isTeleporting)
         {
             Time.timeScale = 1;
+        }
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            if(controller.enabled)
+                controller.enabled = false;
+            else
+                controller.enabled = true;
         }
     }
 
@@ -85,6 +100,21 @@ public class ThirdPersonMovement : MonoBehaviour
 
             ControllerMove(moveDirection * playerSpeed * Time.deltaTime);
         }
+    }
+
+    private void Ledge() //may need to expand this, no bugs yet
+    {
+        RaycastHit hit;
+
+        if (Physics.Raycast(ledgeCheck.gameObject.transform.position, Vector3.down, out hit, ledgeCheckLength))
+        {
+            velocity = new Vector3(0,0,0);
+            controller.enabled = false;
+            transform.position = hit.point;
+            controller.enabled = true;
+            Debug.Log("Ledge hit");
+        }
+        //may need another raycast to check front, works well without at the moment
     }
 
     private void Teleport()
@@ -109,7 +139,7 @@ public class ThirdPersonMovement : MonoBehaviour
             isTeleporting = false;
         }
     }
-    
+
     private void Gravity()
     {
 
@@ -138,7 +168,7 @@ public class ThirdPersonMovement : MonoBehaviour
         return Physics.CheckSphere(groundCheck.position, GroundCheckRadius, groundMask);
     }
 
-    //comment out this if climbing does not work
+    /* OLD CLIMB FUNCTIONS
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Climb"))
@@ -148,7 +178,6 @@ public class ThirdPersonMovement : MonoBehaviour
         }
     }
 
-    //comment out this if climbing does not work
     private void Climb(ClimbTransforms climbTransforms)
     {
         if (climbTransforms.climbList.Count == 0)
@@ -183,6 +212,5 @@ public class ThirdPersonMovement : MonoBehaviour
         controller.enabled = false;
         transform.position = closestPosition;
         controller.enabled = true;
-    }
-
+        */
 }
