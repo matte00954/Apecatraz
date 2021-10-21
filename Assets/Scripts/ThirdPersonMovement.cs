@@ -125,7 +125,7 @@ public class ThirdPersonMovement : MonoBehaviour
         else
             velocity.y += GravityValue * GravityMultiplier * Time.deltaTime; //gravity in the air
 
-        ControllerMove(velocity * Time.deltaTime);//gravity applied
+        ControllerMove(velocity * Time.deltaTime); //gravity applied
     }
 
     private void ControllerMove(Vector3 movement) //THIS IS THE ONLY controller.Move that should exist
@@ -137,37 +137,52 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         return Physics.CheckSphere(groundCheck.position, GroundCheckRadius, groundMask);
     }
-}
 
-/*
-if (Input.GetKeyDown(KeyCode.LeftShift))
-{
-    RaycastHit hit;
-
-    Debug.DrawRay(transform.position, transform.forward, Color.red, teleportDistance); //kan behövas en spherecast istället
-
-    if (Physics.Raycast(transform.position, transform.forward, out hit, teleportDistance))
+    //comment out this if climbing does not work
+    private void OnTriggerEnter(Collider other)
     {
-        ControllerMove(transform.forward * hit.distance * teleportMarginMultiplier);
+        if (other.gameObject.CompareTag("Climb"))
+        {
+            Debug.Log("Climb trigger hit");
+            Climb(other.gameObject.GetComponentInChildren<ClimbTransforms>());
+        }
     }
-    else
-        ControllerMove(transform.forward * teleportDistance);
-}
-else if (Input.GetKeyDown(KeyCode.T))//WIP
-{
-    Time.timeScale = 0.1f;
 
-    RaycastHit hit;
-
-    Debug.DrawRay(transform.position, transform.forward, Color.blue, teleportDistance);
-
-    if (Physics.Raycast(transform.position, transform.forward, out hit, teleportDistance * 1.5f)) //magic number
+    //comment out this if climbing does not work
+    private void Climb(ClimbTransforms climbTransforms)
     {
-        ControllerMove(transform.forward * hit.distance * teleportMarginMultiplier);
-        RestoreTime();
+        if (climbTransforms.climbList.Count == 0)
+        {
+            Debug.LogError("climbTransforms list is 0, should be atleast 1");
+            return;
+        }
+
+        Vector3 closestPosition = transform.position;
+
+        Vector3 currentPosition = transform.position;
+
+        float minDistance = 0;
+
+        for (int i = 0; i < climbTransforms.climbList.Count; i++)
+        {
+            if (i == 0)
+            {
+                minDistance = Vector3.Distance(currentPosition, climbTransforms.GetClimbPositionInList(i).position);
+                closestPosition = climbTransforms.GetClimbPositionInList(i).position;
+                Debug.Log("Första siffran är: " + minDistance);
+            }
+
+            if (minDistance > Vector3.Distance(currentPosition, climbTransforms.GetClimbPositionInList(i).position))
+            {
+                minDistance = Vector3.Distance(currentPosition, climbTransforms.GetClimbPositionInList(i).position);
+                closestPosition = climbTransforms.GetClimbPositionInList(i).position;
+                Debug.Log(i + " siffran är: " + minDistance);
+            }
+        }
+        velocity.y = 0;
+        controller.enabled = false;
+        transform.position = closestPosition;
+        controller.enabled = true;
     }
-    else
-    {
-        ControllerMove(transform.forward * teleportDistance * 1.5f);
-        RestoreTime();
-    }*/
+
+}
