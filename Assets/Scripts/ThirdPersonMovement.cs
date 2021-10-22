@@ -7,6 +7,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     [Header("Controller")]
     [SerializeField] private CharacterController controller;
+    private Animator animator;
 
     [Header("Ground check")]
     [SerializeField] private Transform groundCheck;
@@ -21,6 +22,8 @@ public class ThirdPersonMovement : MonoBehaviour
     private float turnSmoothVelocity;
     private bool isTeleporting;
     private Vector3 velocity;
+    bool justLanded = false;
+    bool isRunning = false;
 
     //ground check
     private const float GroundCheckRadius = 0.15f; // comparing ground check game object to floor
@@ -44,6 +47,8 @@ public class ThirdPersonMovement : MonoBehaviour
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Confined; //prevents mouse from leaving screen
+
+        animator = GetComponentInChildren<Animator>();
 
         if (mainCameraTransform == null)
         {
@@ -71,13 +76,6 @@ public class ThirdPersonMovement : MonoBehaviour
             Time.timeScale = 1;
         }
 
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            if(controller.enabled)
-                controller.enabled = false;
-            else
-                controller.enabled = true;
-        }
     }
 
     private void Movement()
@@ -95,6 +93,23 @@ public class ThirdPersonMovement : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, angle, 0f); //adjusted angle used here for rotation
 
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward; //adjust direction to camera rotation/direction
+
+            if (CheckGround() && !isRunning && moveDirection.y == 0 && moveDirection.x != 0 ||
+                moveDirection.z != 0 && moveDirection.y == 0 && CheckGround() && !isRunning)
+            {
+                animator.SetFloat("runY", 1); //SHOULD BE BETWEEN 0-1
+                Debug.Log("Movement");
+                justLanded = false;
+                isRunning = true;
+            }
+            else
+                isRunning = false;
+
+            if (moveDirection.x == 0 && moveDirection.y == 0 && moveDirection.z == 0)
+            {
+                Debug.Log("Idle");
+                animator.SetTrigger("Default");
+            }
 
             ControllerMove(moveDirection * PlayerSpeed * Time.deltaTime);
         }
@@ -119,9 +134,11 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftShift))
         {
+            animator.SetTrigger("Teleport");
+
             isTeleporting = true;
 
-            Time.timeScale = 0.35f;
+            Time.timeScale = 0.4f;
 
             RaycastHit hit;
 
@@ -143,15 +160,29 @@ public class ThirdPersonMovement : MonoBehaviour
 
         if (CheckGround() && Input.GetKeyDown(KeyCode.Space)) //Jump
         {
+            animator.SetTrigger("Jump");
+            isRunning = false;
             velocity.y = Mathf.Sqrt(JumpHeight * -2f * GravityValue);
         }
+
+        //animator.SetTrigger("Land");
+
+        //animator.SetTrigger("InAir");
 
         if (CheckGround() && velocity.y < 0)
         {
             velocity.y = -2f; //Default gravity force on the ground
+
+            if (!justLanded)
+            {
+                animator.SetTrigger("Land");
+                justLanded = true;
+            }
         }
         else
+        {
             velocity.y += GravityValue * GravityMultiplier * Time.deltaTime; //gravity in the air
+        }
 
         ControllerMove(velocity * Time.deltaTime); //gravity applied
     }
