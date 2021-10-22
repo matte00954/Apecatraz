@@ -20,6 +20,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     //Changes during runtime
     private float turnSmoothVelocity;
+    private bool inAir;
     private bool isTeleporting;
     private Vector3 velocity;
     bool justLanded = false;
@@ -97,8 +98,8 @@ public class ThirdPersonMovement : MonoBehaviour
             if (CheckGround() && !isRunning && moveDirection.y == 0 && moveDirection.x != 0 ||
                 moveDirection.z != 0 && moveDirection.y == 0 && CheckGround() && !isRunning)
             {
-                animator.SetFloat("runY", 1); //SHOULD BE BETWEEN 0-1
-                Debug.Log("Movement");
+                animator.SetFloat("runY", velocity.magnitude/ 2); //SHOULD BE BETWEEN 0-1
+                //Debug.Log("Movement");
                 justLanded = false;
                 isRunning = true;
             }
@@ -107,12 +108,14 @@ public class ThirdPersonMovement : MonoBehaviour
 
             if (moveDirection.x == 0 && moveDirection.y == 0 && moveDirection.z == 0)
             {
+                animator.SetFloat("runY", velocity.magnitude / 2); //SHOULD BE BETWEEN 0-1
                 Debug.Log("Idle");
-                animator.SetTrigger("Default");
+                //animator.SetTrigger("Default");
             }
 
             ControllerMove(moveDirection * PlayerSpeed * Time.deltaTime);
         }
+        animator.SetFloat("runY", direction.magnitude); //Joches grej
     }
 
     private void Ledge() //may need to expand this, no bugs yet
