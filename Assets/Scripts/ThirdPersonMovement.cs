@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ThirdPersonMovement : MonoBehaviour
@@ -28,16 +26,16 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float GroundCheckRadius = 0.15f; // comparing ground check game object to floor
 
     //Rotation
-    private const float turnSmoothTime = 0.1f;
+    private const float TurnSmoothTime = 0.1f;
 
     //Teleport
-    private const float teleportDistanceMultiplier = 0.15f; //per frame
-    private const float teleportDistanceCheck = 0.5f;
-    private const float teleportMarginMultiplier = 0.8f;
+    private const float TeleportDistanceMultiplier = 0.15f; //per frame
+    private const float TeleportDistanceCheck = 0.5f;
+    private const float TeleportMarginMultiplier = 0.8f;
 
     //movement, these are constant
-    private const float playerSpeed = 6f; //Do not change
-    private const float jumpHeight = 4f; //Do not change
+    private const float PlayerSpeed = 6f; //Do not change
+    private const float JumpHeight = 4f; //Do not change
 
     //gravity
     private const float GravityValue = -9.81f; // do not change this -9.81f
@@ -92,13 +90,13 @@ public class ThirdPersonMovement : MonoBehaviour
         if (direction.magnitude >= 0.1f)
         {
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + mainCameraTransform.eulerAngles.y; //first find target angle
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime); //adjust angle for smoothing
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TurnSmoothTime); //adjust angle for smoothing
 
             transform.rotation = Quaternion.Euler(0f, angle, 0f); //adjusted angle used here for rotation
 
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward; //adjust direction to camera rotation/direction
 
-            ControllerMove(moveDirection * playerSpeed * Time.deltaTime);
+            ControllerMove(moveDirection * PlayerSpeed * Time.deltaTime);
         }
     }
 
@@ -127,12 +125,12 @@ public class ThirdPersonMovement : MonoBehaviour
 
             RaycastHit hit;
 
-            if (Physics.SphereCast(transform.position, 1f, transform.forward, out hit, teleportDistanceCheck))
+            if (Physics.SphereCast(transform.position, 1f, transform.forward, out hit, TeleportDistanceCheck))
             {
-                ControllerMove(transform.forward * hit.distance * teleportMarginMultiplier);
+                ControllerMove(transform.forward * hit.distance * TeleportMarginMultiplier);
             }
             else
-                ControllerMove(transform.forward * teleportDistanceMultiplier);
+                ControllerMove(transform.forward * TeleportDistanceMultiplier);
         }
         else
         {
@@ -145,7 +143,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
         if (CheckGround() && Input.GetKeyDown(KeyCode.Space)) //Jump
         {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * GravityValue);
+            velocity.y = Mathf.Sqrt(JumpHeight * -2f * GravityValue);
         }
 
         if (CheckGround() && velocity.y < 0)
