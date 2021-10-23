@@ -20,11 +20,9 @@ public class ThirdPersonMovement : MonoBehaviour
 
     //Changes during runtime
     private float turnSmoothVelocity;
-    private bool inAir;
-    private bool isTeleporting;
+    private bool inAir = false;
+    private bool isTeleporting = false;
     private Vector3 velocity;
-    bool justLanded = false;
-    bool isRunning = false;
 
     //ground check
     private const float GroundCheckRadius = 0.15f; // comparing ground check game object to floor
@@ -95,24 +93,6 @@ public class ThirdPersonMovement : MonoBehaviour
 
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward; //adjust direction to camera rotation/direction
 
-            if (CheckGround() && !isRunning && moveDirection.y == 0 && moveDirection.x != 0 ||
-                moveDirection.z != 0 && moveDirection.y == 0 && CheckGround() && !isRunning)
-            {
-                animator.SetFloat("runY", velocity.magnitude/ 2); //SHOULD BE BETWEEN 0-1
-                //Debug.Log("Movement");
-                justLanded = false;
-                isRunning = true;
-            }
-            else
-                isRunning = false;
-
-            if (moveDirection.x == 0 && moveDirection.y == 0 && moveDirection.z == 0)
-            {
-                animator.SetFloat("runY", velocity.magnitude / 2); //SHOULD BE BETWEEN 0-1
-                Debug.Log("Idle");
-                //animator.SetTrigger("Default");
-            }
-
             ControllerMove(moveDirection * PlayerSpeed * Time.deltaTime);
         }
         animator.SetFloat("runY", direction.magnitude); //Joches grej
@@ -164,27 +144,29 @@ public class ThirdPersonMovement : MonoBehaviour
         if (CheckGround() && Input.GetKeyDown(KeyCode.Space)) //Jump
         {
             animator.SetTrigger("Jump");
-            isRunning = false;
+            inAir = true;
             velocity.y = Mathf.Sqrt(JumpHeight * -2f * GravityValue);
         }
-
-        //animator.SetTrigger("Land");
-
-        //animator.SetTrigger("InAir");
 
         if (CheckGround() && velocity.y < 0)
         {
             velocity.y = -2f; //Default gravity force on the ground
 
-            if (!justLanded)
+            if (inAir)
             {
                 animator.SetTrigger("Land");
-                justLanded = true;
+                inAir = false;
             }
         }
         else
         {
             velocity.y += GravityValue * GravityMultiplier * Time.deltaTime; //gravity in the air
+
+            if(inAir)
+                animator.SetTrigger("InAir");
+
+            if (!inAir)
+                inAir = true;
         }
 
         ControllerMove(velocity * Time.deltaTime); //gravity applied
