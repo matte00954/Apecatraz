@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ThirdPersonMovement : MonoBehaviour
@@ -9,6 +7,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     [Header("Controller")]
     [SerializeField] private CharacterController controller;
+    private Animator animator;
 
     [Header("Ground check")]
     [SerializeField] private Transform groundCheck;
@@ -21,23 +20,24 @@ public class ThirdPersonMovement : MonoBehaviour
 
     //Changes during runtime
     private float turnSmoothVelocity;
-    private bool isTeleporting;
+    private bool inAir = false;
+    private bool isTeleporting = false;
     private Vector3 velocity;
 
     //ground check
     private const float GroundCheckRadius = 0.15f; // comparing ground check game object to floor
 
     //Rotation
-    private const float turnSmoothTime = 0.1f;
+    private const float TurnSmoothTime = 0.1f;
 
     //Teleport
-    private const float teleportDistanceMultiplier = 0.15f; //per frame
-    private const float teleportDistanceCheck = 0.5f;
-    private const float teleportMarginMultiplier = 0.8f;
+    private const float TeleportDistanceMultiplier = 0.15f; //per frame
+    private const float TeleportDistanceCheck = 0.5f;
+    private const float TeleportMarginMultiplier = 0.8f;
 
     //movement, these are constant
-    private const float playerSpeed = 6f; //Do not change
-    private const float jumpHeight = 4f; //Do not change
+    private const float PlayerSpeed = 6f; //Do not change
+    private const float JumpHeight = 4f; //Do not change
 
     //gravity
     private const float GravityValue = -9.81f; // do not change this -9.81f
@@ -46,6 +46,8 @@ public class ThirdPersonMovement : MonoBehaviour
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Confined; //prevents mouse from leaving screen
+
+        animator = GetComponentInChildren<Animator>();
 
         if (mainCameraTransform == null)
         {
@@ -73,13 +75,6 @@ public class ThirdPersonMovement : MonoBehaviour
             Time.timeScale = 1;
         }
 
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            if(controller.enabled)
-                controller.enabled = false;
-            else
-                controller.enabled = true;
-        }
     }
 
     private void Movement()
@@ -92,14 +87,15 @@ public class ThirdPersonMovement : MonoBehaviour
         if (direction.magnitude >= 0.1f)
         {
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + mainCameraTransform.eulerAngles.y; //first find target angle
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime); //adjust angle for smoothing
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TurnSmoothTime); //adjust angle for smoothing
 
             transform.rotation = Quaternion.Euler(0f, angle, 0f); //adjusted angle used here for rotation
 
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward; //adjust direction to camera rotation/direction
 
-            ControllerMove(moveDirection * playerSpeed * Time.deltaTime);
+            ControllerMove(moveDirection * PlayerSpeed * Time.deltaTime);
         }
+        animator.SetFloat("runY", direction.magnitude); //Joches grej
     }
 
     private void Ledge() //may need to expand this, no bugs yet
@@ -121,18 +117,20 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftShift))
         {
+            animator.SetTrigger("Teleport");
+
             isTeleporting = true;
 
-            Time.timeScale = 0.35f;
+            Time.timeScale = 0.4f;
 
             RaycastHit hit;
 
-            if (Physics.SphereCast(transform.position, 1f, transform.forward, out hit, teleportDistanceCheck))
+            if (Physics.SphereCast(transform.position, 1f, transform.forward, out hit, TeleportDistanceCheck))
             {
-                ControllerMove(transform.forward * hit.distance * teleportMarginMultiplier);
+                ControllerMove(transform.forward * hit.distance * TeleportMarginMultiplier);
             }
             else
-                ControllerMove(transform.forward * teleportDistanceMultiplier);
+                ControllerMove(transform.forward * TeleportDistanceMultiplier);
         }
         else
         {
@@ -145,15 +143,31 @@ public class ThirdPersonMovement : MonoBehaviour
 
         if (CheckGround() && Input.GetKeyDown(KeyCode.Space)) //Jump
         {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * GravityValue);
+            animator.SetTrigger("Jump");
+            inAir = true;
+            velocity.y = Mathf.Sqrt(JumpHeight * -2f * GravityValue);
         }
 
         if (CheckGround() && velocity.y < 0)
         {
             velocity.y = -2f; //Default gravity force on the ground
+
+            if (inAir)
+            {
+                animator.SetTrigger("Land");
+                inAir = false;
+            }
         }
         else
+        {
             velocity.y += GravityValue * GravityMultiplier * Time.deltaTime; //gravity in the air
+
+            if(inAir)
+                animator.SetTrigger("InAir");
+
+            if (!inAir)
+                inAir = true;
+        }
 
         ControllerMove(velocity * Time.deltaTime); //gravity applied
     }
