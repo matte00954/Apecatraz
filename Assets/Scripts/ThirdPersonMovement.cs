@@ -16,7 +16,7 @@ public class ThirdPersonMovement : MonoBehaviour
     [Header("Ledge")]
     [SerializeField] private LayerMask ledgeMask;
     [SerializeField] private GameObject ledgeCheck;
-    private float ledgeCheckLength = 1.2f; //1.2f works well after testing
+    private float ledgeCheckLength = 1.35f; 
 
     //Changes during runtime
     private float turnSmoothVelocity;
@@ -74,7 +74,6 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             Time.timeScale = 1;
         }
-
     }
 
     private void Movement()
