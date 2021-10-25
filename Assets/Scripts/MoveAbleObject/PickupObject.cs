@@ -5,6 +5,7 @@ using UnityEngine;
 public class PickupObject : MonoBehaviour {
 	private GameObject mainCamera;
     private GameObject player;
+	CharacterController characterController;
 	bool carrying;
 	GameObject carriedObject;
 	public float distance;
@@ -12,6 +13,7 @@ public class PickupObject : MonoBehaviour {
 	void Start () {
 		mainCamera = GameObject.FindWithTag("MainCamera");
         player = GameObject.FindWithTag("Player");
+		characterController = player.GetComponent<CharacterController>();
 	}
 	
 	void Update () {
@@ -25,20 +27,21 @@ public class PickupObject : MonoBehaviour {
 
 
 	void carry(GameObject o) {
+		RaycastHit hit;
+		Physics.SphereCast(o.transform.position, o.GetComponent<BoxCollider>().bounds.size.y / 2, transform.forward,out hit);
+		Debug.Log(hit);
 		o.transform.position = Vector3.Lerp (o.transform.position, player.transform.position + player.transform.forward * distance, Time.deltaTime * smooth);
-        //o.transform.position = Vector3.Lerp (o.transform.position, mainCamera.transform.position + mainCamera.transform.forward * distance, Time.deltaTime * smooth);
 		o.transform.rotation = Quaternion.identity;
 	}
 
 	void pickup() {
 		if(Input.GetKeyDown (KeyCode.E)) {
-			int x = Screen.width / 2;
-			int y = Screen.height / 2;
-
-			Ray ray = mainCamera.GetComponent<Camera>().ScreenPointToRay(new Vector3(x,y));
+			Vector3 startPositionForRay = player.transform.position + characterController.center;
 			RaycastHit hit;
-			if(Physics.Raycast(ray, out hit)) {
+			if(Physics.SphereCast(startPositionForRay, characterController.height / 2, player.transform.forward, out hit, distance ))
+			{
 				GameObject p = hit.collider.gameObject;
+				Debug.Log(p);
 				if(p.CompareTag("moveable")) {
 					carrying = true;
 					carriedObject = p;
