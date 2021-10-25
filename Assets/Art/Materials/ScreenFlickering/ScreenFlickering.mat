@@ -40,6 +40,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - Transparancy: 0.3
     - _AddPrecomputedVelocity: 0
     - _AlphaCutoffEnable: 0
     - _AlphaDstBlend: 10
@@ -89,7 +90,9 @@ Material:
     - _ZTestTransparent: 4
     - _ZWrite: 0
     m_Colors:
-    - _Color: {r: 0.26844978, g: 0.24056596, b: 1, a: 0}
+    - BaseColor: {r: 0.03529412, g: 0, b: 0.96078426, a: 0.49019608}
+    - FlickerColor: {r: 0.03529412, g: 0.5882353, b: 0.9607844, a: 1}
+    - _Color: {r: 0.002731743, g: 0, b: 0.913099, a: 0}
     - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
