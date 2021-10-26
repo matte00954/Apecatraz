@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PickupObject : MonoBehaviour {
+	
 	private GameObject mainCamera;
     private GameObject player;
 	CharacterController characterController;

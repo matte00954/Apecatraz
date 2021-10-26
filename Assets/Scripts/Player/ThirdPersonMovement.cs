@@ -18,6 +18,10 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private GameObject ledgeCheck;
     private float ledgeCheckLength = 1.35f; 
 
+    [Header("Energy")]
+    [SerializeField] private Energy energy;
+    private float teleportEnergyCost = 1f;
+
     //Changes during runtime
     private float turnSmoothVelocity;
     private bool inAir = false;
@@ -114,8 +118,10 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Teleport()
     {
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && energy.CheckEnergy(teleportEnergyCost))
         {
+            energy.SpendEnergy(1f);
+
             animator.SetTrigger("Teleport");
 
             isTeleporting = true;
@@ -211,14 +217,14 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 minDistance = Vector3.Distance(currentPosition, climbTransforms.GetClimbPositionInList(i).position);
                 closestPosition = climbTransforms.GetClimbPositionInList(i).position;
-                Debug.Log("Första siffran är: " + minDistance);
+                Debug.Log("Fï¿½rsta siffran ï¿½r: " + minDistance);
             }
 
             if (minDistance > Vector3.Distance(currentPosition, climbTransforms.GetClimbPositionInList(i).position))
             {
                 minDistance = Vector3.Distance(currentPosition, climbTransforms.GetClimbPositionInList(i).position);
                 closestPosition = climbTransforms.GetClimbPositionInList(i).position;
-                Debug.Log(i + " siffran är: " + minDistance);
+                Debug.Log(i + " siffran ï¿½r: " + minDistance);
             }
         }
         velocity.y = 0;
