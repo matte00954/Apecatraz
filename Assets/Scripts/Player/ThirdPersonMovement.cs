@@ -1,3 +1,4 @@
+//Author: Mattias Larsson
 using UnityEngine;
 
 public class ThirdPersonMovement : MonoBehaviour
@@ -107,7 +108,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
         if (Physics.Raycast(ledgeCheck.gameObject.transform.position, Vector3.down, out hit, ledgeCheckLength))
         {
-            velocity = new Vector3(0,0,0);
+            velocity = new Vector3(0,0,0); //removes all velocity during climb
             controller.enabled = false;
             transform.position = hit.point;
             controller.enabled = true;
