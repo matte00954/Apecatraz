@@ -1,3 +1,4 @@
+//Author: William Örnquist
 using UnityEngine;
 
 public class SoundLure : MonoBehaviour
