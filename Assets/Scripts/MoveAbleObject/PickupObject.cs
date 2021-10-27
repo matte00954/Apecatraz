@@ -17,17 +17,20 @@ public class PickupObject : MonoBehaviour {
 		characterController = player.GetComponent<CharacterController>();
 	}
 	
-	void Update () {
-		if(carrying) {
-			carry(carriedObject);
-			checkDrop();
-		} else {
+	void Update ()
+    {
+		if(carrying)
+        {
+			Carry(carriedObject);
+			CheckDrop();
+		} else
+        {
 			pickup();
 		}
 	}
 
 
-	void carry(GameObject o) {
+	void Carry(GameObject o) {
 		RaycastHit hit;
 		Physics.SphereCast(o.transform.position, o.GetComponent<BoxCollider>().bounds.size.y / 2, transform.forward,out hit);
 		Debug.Log(hit);
@@ -52,7 +55,7 @@ public class PickupObject : MonoBehaviour {
 		}
 	}
 
-	void checkDrop() {
+	void CheckDrop() {
 		if(Input.GetKeyDown (KeyCode.E)) {
 			dropObject();
 		}
