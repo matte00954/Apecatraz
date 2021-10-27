@@ -3213,7 +3213,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 5
-  m_FollowOffset: {x: 0, y: 3.5, z: -10}
+  m_FollowOffset: {x: 0, y: 2, z: -6}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -3585,7 +3585,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 5
-  m_FollowOffset: {x: 0, y: 3.5, z: -10}
+  m_FollowOffset: {x: 0, y: 2, z: -6}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -15134,12 +15134,12 @@ MonoBehaviour:
   m_AvoidObstacles: 1
   m_DistanceLimit: 0
   m_MinimumOcclusionTime: 0
-  m_CameraRadius: 0.1
+  m_CameraRadius: 0
   m_Strategy: 0
   m_MaximumEffort: 4
-  m_SmoothingTime: 0.1
-  m_Damping: 0.1
-  m_DampingWhenOccluded: 0.1
+  m_SmoothingTime: 0
+  m_Damping: 0
+  m_DampingWhenOccluded: 0
   m_OptimalTargetDistance: 0
 --- !u!114 &508775427
 MonoBehaviour:
@@ -15171,7 +15171,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 0.82529646, y: 1}
+    m_SensorSize: {x: 0.572332, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -15218,7 +15218,7 @@ MonoBehaviour:
     m_DecelTime: 0.1
     m_InputAxisName: Mouse X
     m_InputAxisValue: 0
-    m_InvertInput: 1
+    m_InvertInput: 0
     m_MinValue: -180
     m_MaxValue: 180
     m_Wrap: 1
@@ -15241,12 +15241,12 @@ MonoBehaviour:
   m_BindingMode: 5
   m_SplineCurvature: 0.5
   m_Orbits:
-  - m_Height: 6
-    m_Radius: 10
-  - m_Height: 3.5
-    m_Radius: 10
+  - m_Height: 3
+    m_Radius: 6
   - m_Height: 2
-    m_Radius: 10
+    m_Radius: 6
+  - m_Height: 1
+    m_Radius: 6
   m_LegacyHeadingBias: 3.4028235e+38
   m_Rigs:
   - {fileID: 2063421315}
@@ -15260,7 +15260,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 508775425}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -28.235474, y: 4.35, z: 31.928963}
+  m_LocalPosition: {x: -30.885284, y: 2.85, z: 34.925377}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2063421316}
@@ -15701,7 +15701,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 0.82529646, y: 1}
+    m_SensorSize: {x: 0.572332, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -15724,7 +15724,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 522061920}
-  m_LocalRotation: {x: 0.12424944, y: -0.35492215, z: 0.047655072, w: 0.92537636}
+  m_LocalRotation: {x: 0.116168, y: -0.35144332, z: 0.04399729, w: 0.9279315}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -28361,6 +28361,18 @@ PrefabInstance:
       propertyPath: mainCameraTransform
       value: 
       objectReference: {fileID: 1000259811}
+    - target: {fileID: 1762694613964198749, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
+      propertyPath: materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1762694613964198749, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
+      propertyPath: materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b0e7e4d57becded4f9ec24fbbb2fde5a, type: 2}
+    - target: {fileID: 1762694613964198749, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
+      propertyPath: materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 5cb8495102a353d4588fdcfd6e775574, type: 2}
     - target: {fileID: 1762694613964198751, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
       propertyPath: m_RootOrder
       value: 8
@@ -29354,7 +29366,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 0.82529646, y: 1}
+    m_SensorSize: {x: 0.572332, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -29377,7 +29389,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 981340593}
-  m_LocalRotation: {x: 0.14101668, y: -0.35399926, z: 0.05408604, w: 0.92297}
+  m_LocalRotation: {x: 0.13298291, y: -0.3505873, z: 0.05036574, w: 0.92567134}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -30128,31 +30140,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8116902948021883489, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -29.617584
+      value: -30.885284
       objectReference: {fileID: 0}
     - target: {fileID: 8116902948021883489, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.619671
+      value: 2.85
       objectReference: {fileID: 0}
     - target: {fileID: 8116902948021883489, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 33.59116
+      value: 34.925377
       objectReference: {fileID: 0}
     - target: {fileID: 8116902948021883489, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.92296994
+      value: 0.92567134
       objectReference: {fileID: 0}
     - target: {fileID: 8116902948021883489, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.1410167
+      value: 0.13298292
       objectReference: {fileID: 0}
     - target: {fileID: 8116902948021883489, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.3539993
+      value: -0.35058734
       objectReference: {fileID: 0}
     - target: {fileID: 8116902948021883489, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.054086037
+      value: 0.050365746
       objectReference: {fileID: 0}
     - target: {fileID: 8116902948021883489, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -37500,7 +37512,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 5
-  m_FollowOffset: {x: 0, y: 3.5, z: -10}
+  m_FollowOffset: {x: 0, y: 2, z: -6}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -60870,7 +60882,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 0.82529646, y: 1}
+    m_SensorSize: {x: 0.572332, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -60893,7 +60905,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2063421314}
-  m_LocalRotation: {x: -0.033477575, y: 0.9335602, z: 0.09054315, w: 0.3451761}
+  m_LocalRotation: {x: -0.034390554, y: 0.93334264, z: 0.093034886, w: 0.3450122}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
