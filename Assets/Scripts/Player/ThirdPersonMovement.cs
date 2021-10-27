@@ -1,3 +1,4 @@
+//Author: Mattias Larsson
 using UnityEngine;
 
 public class ThirdPersonMovement : MonoBehaviour
@@ -17,6 +18,10 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private LayerMask ledgeMask;
     [SerializeField] private GameObject ledgeCheck;
     private float ledgeCheckLength = 1.35f; 
+
+    [Header("Energy")]
+    [SerializeField] private Energy energy;
+    private float teleportEnergyCost = 1f;
 
     //Changes during runtime
     private float turnSmoothVelocity;
@@ -103,7 +108,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
         if (Physics.Raycast(ledgeCheck.gameObject.transform.position, Vector3.down, out hit, ledgeCheckLength))
         {
-            velocity = new Vector3(0,0,0);
+            velocity = new Vector3(0,0,0); //removes all velocity during climb
             controller.enabled = false;
             transform.position = hit.point;
             controller.enabled = true;
@@ -114,8 +119,10 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Teleport()
     {
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && energy.CheckEnergy(teleportEnergyCost))
         {
+            energy.SpendEnergy(1f);
+
             animator.SetTrigger("Teleport");
 
             isTeleporting = true;
@@ -211,14 +218,14 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 minDistance = Vector3.Distance(currentPosition, climbTransforms.GetClimbPositionInList(i).position);
                 closestPosition = climbTransforms.GetClimbPositionInList(i).position;
-                Debug.Log("Första siffran är: " + minDistance);
+                Debug.Log("Fï¿½rsta siffran ï¿½r: " + minDistance);
             }
 
             if (minDistance > Vector3.Distance(currentPosition, climbTransforms.GetClimbPositionInList(i).position))
             {
                 minDistance = Vector3.Distance(currentPosition, climbTransforms.GetClimbPositionInList(i).position);
                 closestPosition = climbTransforms.GetClimbPositionInList(i).position;
-                Debug.Log(i + " siffran är: " + minDistance);
+                Debug.Log(i + " siffran ï¿½r: " + minDistance);
             }
         }
         velocity.y = 0;

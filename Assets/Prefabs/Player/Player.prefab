@@ -41,6 +41,7 @@ GameObject:
   - component: {fileID: 1762694613964198751}
   - component: {fileID: 1762694613964198748}
   - component: {fileID: 1762694613964198749}
+  - component: {fileID: 8444907791314147622}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -106,6 +107,19 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   ledgeCheck: {fileID: 30882857776937913}
+  energy: {fileID: 8444907791314147622}
+--- !u!114 &8444907791314147622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1762694613964198746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b03f7d5408761544882fc6e88733edea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1762694614227774978
 GameObject:
   m_ObjectHideFlags: 0
