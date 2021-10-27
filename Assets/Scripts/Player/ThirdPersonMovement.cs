@@ -8,9 +8,7 @@ public class ThirdPersonMovement : MonoBehaviour
      *     private const float MIN_SPACING_PATROL = 1f;
     private const float MIN_SPACING_INVESTIGATE = 10f;
     private const float MIN_SPACING_CHASE = 5f;
-     * 
      */
-
 
     [Header("Main camera")]
     [SerializeField] private Transform mainCameraTransform;
@@ -68,11 +66,12 @@ public class ThirdPersonMovement : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked; //prevents mouse from leaving screen
 
+        /////////////////////////////////////////////////////////////////
         //Vettefan vad emil gjort, kopierade vad han skrev i sitt script
         rend = GetComponentInChildren<Renderer>();
         rend.enabled = true; 
         rend.sharedMaterial = materials[0];
-        //Vettefan vad emil gjort, kopierade vad han skrev i sitt script
+        ////////////////////////////////////////////////////////////////
 
         animator = GetComponentInChildren<Animator>();
 
@@ -139,7 +138,7 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         RaycastHit hit;
 
-        if (Physics.Raycast(ledgeCheck.gameObject.transform.position, Vector3.down, out hit, ledgeCheckLength))
+        if (Physics.Raycast(ledgeCheck.gameObject.transform.position, Vector3.down, out hit, ledgeCheckLength, ledgeMask))
         {
             velocity = new Vector3(0,0,0); //removes all velocity during climb
             controller.enabled = false;
@@ -166,7 +165,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
             RaycastHit hit;
 
-            if (Physics.SphereCast(transform.position, 1f, transform.forward, out hit, TeleportDistanceCheck))
+            if (Physics.SphereCast(transform.position, 1f, transform.forward, out hit, TeleportDistanceCheck, ledgeMask))
             {
                 ControllerMove(transform.forward * hit.distance * TeleportMarginMultiplier);
             }

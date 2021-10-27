@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TelekinesisToggle : MonoBehaviour
@@ -32,6 +30,8 @@ public class TelekinesisToggle : MonoBehaviour
             x--;
         }
     }
+
+    //Class exists to test a shader in a test scene
 
    /* public void ToggleTelekinesisOn()
     {

@@ -37,10 +37,12 @@ public class Energy : MonoBehaviour
             //Set the energy label text. We use Mathf.Approximatly() here instead of == because
             //of complications arising from float point precision. You should look that up.
             //Eller typecasta till en integer? typ (int)currentEnergy == (int)maxEnergy /matte
+            /*
             if (Mathf.Approximately(currentEnergy, maxEnergy))
                 Debug.Log("Energy: FULL");
             else
                 Debug.Log("Energy: " + currentEnergy);
+                */
         }
     }
 

@@ -1,17 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Telekinesis : MonoBehaviour
 {
-
     [SerializeField] private GameObject mainCamera;
 
-    private GameObject player;
+    [SerializeField] private GameObject player;
 
     private CharacterController characterController;
 
     private GameObject carriedObject;
+
+    private LayerMask canBeCarried;
 
     private bool carrying;
 
@@ -21,11 +20,53 @@ public class Telekinesis : MonoBehaviour
 
     void Start()
     {
-        //mainCamera = GameObject.FindWithTag("MainCamera");
-        player = this.gameObject;
         characterController = player.GetComponent<CharacterController>();
+        carriedObject = null;
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            FindObject();
+        }
+
+        if (carriedObject != null)
+        {
+            Carry();
+        }
+
+        /*if (PlayerState.current == PlayerState.State.carrying)
+        {
+
+        }*/
+    }
+
+    private void Carry()
+    {
+        carriedObject.GetComponent<Rigidbody>().AddForce(new Vector3(0, 2f, 0));
+    }
+
+    private void FindObject()
+    {
+        RaycastHit hit;
+
+        Debug.DrawRay(player.transform.position, player.transform.forward * 5f, Color.red, 10f);
+
+        if (Physics.Raycast(player.transform.position, player.transform.forward * 5f, out hit, 10f, canBeCarried))
+        {
+            Debug.Log("asasdasd");
+            carriedObject = hit.transform.gameObject;
+            Debug.Log(carriedObject);
+        }
+        else
+            return;
+    }
+
+    private void Drop()
+    {
+
+    }
 
     /*
 
