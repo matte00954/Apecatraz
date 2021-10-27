@@ -237,6 +237,7 @@ public class EnemyMovement : MonoBehaviour
     public Vector3 PlayerDetectionPosition { get => playerDetectionPoint.transform.position; }
     public NavMeshAgent Agent { get => agent; }
     public bool DetectingPlayer { get => detectingPlayer; }
+    public bool DetectedPlayerOnce { get => detectedPlayerOnce; }
     public GuardState CurrentState { get => currentState; set => currentState = value; }
     
 }

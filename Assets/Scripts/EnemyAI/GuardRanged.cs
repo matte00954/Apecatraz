@@ -6,6 +6,7 @@ public class GuardRanged : MonoBehaviour
     [Header("References")]
     private EnemyMovement enemyMovement;
     [SerializeField] private GameObject netProjectilePrefab;
+    [SerializeField] private GameObject firePositionObject;
     [SerializeField] private GameObject playerMovementPredictionObject;
 
     [Header("Chase state variables")]
@@ -26,7 +27,8 @@ public class GuardRanged : MonoBehaviour
     void Update()
     {
         if (Vector3.Distance(enemyMovement.HeadPosition, enemyMovement.PlayerDetectionPosition) <= attackRangeMax
-            && enemyMovement.DetectingPlayer && chargeTimer >= attackChargeTime && !isCharging)
+            && enemyMovement.DetectingPlayer && chargeTimer >= attackChargeTime && !isCharging
+            && enemyMovement.DetectedPlayerOnce && enemyMovement.CurrentState != EnemyMovement.GuardState.dumbstruck)
         {
             chargeTimer = 0f;
             enemyMovement.CurrentState = EnemyMovement.GuardState.shooting;
@@ -56,8 +58,8 @@ public class GuardRanged : MonoBehaviour
 
     private void FireAtPlayer()
     {
-        Debug.LogWarning("Bang");
-        //Instantiate(netProjectilePrefab, transform.position, Quaternion.LookRotation());
+        firePositionObject.transform.LookAt(playerMovementPredictionObject.transform.position);
+        Instantiate(netProjectilePrefab, firePositionObject.transform.position, firePositionObject.transform.rotation);
     }
 
     private void OnDrawGizmosSelected()
