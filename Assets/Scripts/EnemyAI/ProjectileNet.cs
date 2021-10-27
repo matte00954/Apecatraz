@@ -30,7 +30,8 @@ public class ProjectileNet : MonoBehaviour
             if (raycastHit.collider.gameObject.CompareTag("Player"))
             {
                 //Kill monke. mmmm, monke.
-                Destroy(this.gameObject);
+                //Destroy(this.gameObject);
+                //ResetScene.RestartScene();
             }
             Destroy(this.gameObject, 2f);
         }
@@ -42,6 +43,10 @@ public class ProjectileNet : MonoBehaviour
         {
             isActive = false;
             Destroy(this.gameObject, 2f);
+        }
+        else if(other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            ResetScene.RestartScene();
         }
     }
 
