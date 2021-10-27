@@ -171,7 +171,7 @@ public class EnemyMovement : MonoBehaviour
             agent.SetDestination(transform.position);
             detectedPlayerOnce = true;
         }
-        else if (currentState != GuardState.dumbstruck)
+        else if (currentState != GuardState.dumbstruck && currentState != GuardState.shooting)
         {
             currentState = GuardState.chasing;
             detectionTimer = 0f;
