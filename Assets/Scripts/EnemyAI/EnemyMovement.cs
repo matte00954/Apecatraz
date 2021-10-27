@@ -4,6 +4,10 @@ using UnityEngine.AI;
 
 public class EnemyMovement : MonoBehaviour
 {
+    //'public' necessery to reference a specific state in other scripts (if they have a reference to EnemyMovement).
+    public enum GuardState { patrolling, waiting, investigating, dumbstruck, chasing, shooting } 
+    private GuardState currentState;
+
     private const float MIN_SPACING_PATROL = 1f;
     private const float MIN_SPACING_INVESTIGATE = 10f;
     private const float MIN_SPACING_CHASE = 5f;
@@ -48,9 +52,6 @@ public class EnemyMovement : MonoBehaviour
     private bool isPathInverted;
     private bool detectedPlayerOnce;
     private bool detectingPlayer;
-
-    private enum GuardState { patrolling, waiting, investigating, dumbstruck, chasing }
-    private GuardState currentState;
 
     public void Start()
     {
@@ -133,6 +134,10 @@ public class EnemyMovement : MonoBehaviour
                     detectionTimer = 0f;
                 else if (agent.remainingDistance <= MIN_SPACING_CHASE && detectionTimer >= lostDetectionDelay)
                     StartWaiting();
+                break;
+            case GuardState.shooting:
+                if (agent.remainingDistance >= 1f)
+                    agent.SetDestination(transform.position);
                 break;
             default:
                 Debug.LogError("currentState is NULL!");
@@ -228,6 +233,10 @@ public class EnemyMovement : MonoBehaviour
     }
 
     //Gets & sets
-    public Transform HeadTransform { get => headTransform; }
-    public GameObject PlayerDetectionPoint { get => playerDetectionPoint; }
+    public Vector3 HeadPosition { get => headTransform.position; }
+    public Vector3 PlayerDetectionPosition { get => playerDetectionPoint.transform.position; }
+    public NavMeshAgent Agent { get => agent; }
+    public bool DetectingPlayer { get => detectingPlayer; }
+    public GuardState CurrentState { get => currentState; set => currentState = value; }
+    
 }

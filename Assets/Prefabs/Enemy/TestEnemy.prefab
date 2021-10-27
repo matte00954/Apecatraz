@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3235691328590164835}
   - component: {fileID: 3235691328590164833}
+  - component: {fileID: 7785098873823440994}
   - component: {fileID: 3235691328590164844}
   - component: {fileID: 3235691328590164832}
   - component: {fileID: 3235691328590164838}
@@ -70,6 +71,22 @@ MonoBehaviour:
   totalWaitTime: 2
   stopDistancePatrol: 1
   waypoints: []
+--- !u!114 &7785098873823440994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3235691328590164847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26570925b01833c409c9f84b993196c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  netProjectilePrefab: {fileID: 9099105687734081422, guid: 3d7a74aa0488f0c41a07b15be25abefa, type: 3}
+  playerMovementPredictionObject: {fileID: 0}
+  attackRangeMax: 15
+  attackChargeTime: 1
 --- !u!136 &3235691328590164844
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -335,15 +352,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1046446337789844658, guid: 4e5d0daefaaf553449b490651cc7113a, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1046446337789844658, guid: 4e5d0daefaaf553449b490651cc7113a, type: 3}
       propertyPath: m_LocalScale.y
-      value: 3.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1046446337789844658, guid: 4e5d0daefaaf553449b490651cc7113a, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1046446337789844658, guid: 4e5d0daefaaf553449b490651cc7113a, type: 3}
       propertyPath: m_LocalPosition.x
