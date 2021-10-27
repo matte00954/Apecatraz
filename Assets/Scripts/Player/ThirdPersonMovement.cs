@@ -97,6 +97,11 @@ public class ThirdPersonMovement : MonoBehaviour
 
         Ledge();
 
+        if (Input.GetKey(KeyCode.P))
+        {
+            ResetScene.RestartScene();
+        }
+
         if (Time.timeScale != 1 && !isTeleporting)
         {
             ActivateRenderer(0); //Default
