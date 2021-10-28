@@ -2,25 +2,20 @@ using UnityEngine;
 
 public class Telekinesis : MonoBehaviour
 {
-    [SerializeField] private GameObject mainCamera;
+    [SerializeField] private Transform holdParent;
 
-    [SerializeField] private GameObject player;
+    [SerializeField] private float moveForce = 250f;
 
-    private CharacterController characterController;
+    [SerializeField] private float pickupRange = 6f;
 
     private GameObject carriedObject;
 
-    private LayerMask canBeCarried;
+    [SerializeField] private LayerMask canBeCarriedLayer;
 
     private bool carrying;
 
-    private float distance;
-
-    private float smooth;
-
     void Start()
     {
-        characterController = player.GetComponent<CharacterController>();
         carriedObject = null;
     }
 
@@ -33,39 +28,67 @@ public class Telekinesis : MonoBehaviour
 
         if (carriedObject != null)
         {
-            Carry();
+            MoveObject();
         }
-
-        /*if (PlayerState.current == PlayerState.State.carrying)
-        {
-
-        }*/
-    }
-
-    private void Carry()
-    {
-        carriedObject.GetComponent<Rigidbody>().AddForce(new Vector3(0, 2f, 0));
     }
 
     private void FindObject()
     {
-        RaycastHit hit;
 
-        Debug.DrawRay(player.transform.position, player.transform.forward * 5f, Color.red, 10f);
-
-        if (Physics.Raycast(player.transform.position, player.transform.forward * 5f, out hit, 10f, canBeCarried))
+        if (carriedObject == null)
         {
-            Debug.Log("asasdasd");
-            carriedObject = hit.transform.gameObject;
-            Debug.Log(carriedObject);
+            RaycastHit hit;
+
+            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
+            {
+                PickupObject(hit.transform.gameObject);
+                Debug.Log("hit " + hit.transform.gameObject);
+            }
         }
         else
-            return;
+            DropObject();
     }
 
-    private void Drop()
+    private void PickupObject(GameObject pickObject)
     {
+        if (pickObject.GetComponent<Rigidbody>())
+        {
+            Rigidbody objectRigidbody = pickObject.GetComponent<Rigidbody>();
+            objectRigidbody.useGravity = false;
+            objectRigidbody.drag = 2f; //Makes object move slower when holding
+            //objectRigidbody.transform.parent = holdParent;
+            carriedObject = pickObject;
+        }
+    }
 
+    private void MoveObject()
+    {
+        if(Vector3.Distance(carriedObject.transform.position, holdParent.position) > 0.1f)
+        {
+            Vector3 moveDirection = holdParent.position - carriedObject.transform.position;
+            carriedObject.GetComponent<Rigidbody>().AddForce(moveDirection * moveForce);
+
+            //RaycastHit hit;
+
+            /*if (!Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
+            {
+                DropObject();
+            }*/
+        }
+    }
+
+    private void DropObject()
+    {
+        Rigidbody carriedRigidbody = carriedObject.GetComponent<Rigidbody>();
+        carriedRigidbody.useGravity = true;
+        carriedRigidbody.drag = 1f;
+        carriedObject.transform.parent = null;
+        carriedObject = null;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawRay(transform.position , transform.TransformDirection(Vector3.forward) * pickupRange);
     }
 
     /*

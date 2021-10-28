@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PickupObject : MonoBehaviour {
 	
-	private GameObject mainCamera;
+	/*private GameObject mainCamera;
     private GameObject player;
 	CharacterController characterController;
 	bool carrying;
@@ -65,5 +65,5 @@ public class PickupObject : MonoBehaviour {
 		carrying = false;
 		carriedObject.gameObject.GetComponent<Rigidbody>().useGravity = true;
 		carriedObject = null;
-	}
+	}*/
 }
