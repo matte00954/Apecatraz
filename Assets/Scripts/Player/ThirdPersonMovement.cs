@@ -3,6 +3,13 @@ using UnityEngine;
 
 public class ThirdPersonMovement : MonoBehaviour
 {
+
+    /*
+     *     private const float MIN_SPACING_PATROL = 1f;
+    private const float MIN_SPACING_INVESTIGATE = 10f;
+    private const float MIN_SPACING_CHASE = 5f;
+     */
+
     [Header("Main camera")]
     [SerializeField] private Transform mainCameraTransform;
 
@@ -22,6 +29,11 @@ public class ThirdPersonMovement : MonoBehaviour
     [Header("Energy")]
     [SerializeField] private Energy energy;
     private float teleportEnergyCost = 1f;
+
+
+    [Header("Ability Shaders")]
+    [SerializeField] Material[] materials;
+    private Renderer rend;
 
     //Changes during runtime
     private float turnSmoothVelocity;
@@ -50,7 +62,16 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Confined; //prevents mouse from leaving screen
+        //Cursor.lockState = CursorLockMode.Confined; //prevents mouse from leaving screen
+
+        Cursor.lockState = CursorLockMode.Locked; //prevents mouse from leaving screen
+
+        /////////////////////////////////////////////////////////////////
+        //Vettefan vad emil gjort, kopierade vad han skrev i sitt script
+        rend = GetComponentInChildren<Renderer>();
+        rend.enabled = true; 
+        rend.sharedMaterial = materials[0];
+        ////////////////////////////////////////////////////////////////
 
         animator = GetComponentInChildren<Animator>();
 
@@ -75,10 +96,21 @@ public class ThirdPersonMovement : MonoBehaviour
 
         Ledge();
 
+        if (Input.GetKey(KeyCode.P))
+        {
+            ResetScene.RestartScene();
+        }
+
         if (Time.timeScale != 1 && !isTeleporting)
         {
+            ActivateRenderer(0); //Default
             Time.timeScale = 1;
         }
+    }
+
+    private void ActivateRenderer(int index)
+    {
+        rend.sharedMaterial = materials[index]; //To switch shaders when using ability
     }
 
     private void Movement()
@@ -106,7 +138,7 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         RaycastHit hit;
 
-        if (Physics.Raycast(ledgeCheck.gameObject.transform.position, Vector3.down, out hit, ledgeCheckLength))
+        if (Physics.Raycast(ledgeCheck.gameObject.transform.position, Vector3.down, out hit, ledgeCheckLength, ledgeMask))
         {
             velocity = new Vector3(0,0,0); //removes all velocity during climb
             controller.enabled = false;
@@ -121,6 +153,8 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftShift) && energy.CheckEnergy(teleportEnergyCost))
         {
+            ActivateRenderer(1); //Teleport shader
+
             energy.SpendEnergy(1f);
 
             animator.SetTrigger("Teleport");
@@ -131,7 +165,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
             RaycastHit hit;
 
-            if (Physics.SphereCast(transform.position, 1f, transform.forward, out hit, TeleportDistanceCheck))
+            if (Physics.SphereCast(transform.position, 1f, transform.forward, out hit, TeleportDistanceCheck, ledgeMask))
             {
                 ControllerMove(transform.forward * hit.distance * TeleportMarginMultiplier);
             }
