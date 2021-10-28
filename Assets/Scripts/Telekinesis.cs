@@ -55,8 +55,8 @@ public class Telekinesis : MonoBehaviour
         {
             Rigidbody objectRigidbody = pickObject.GetComponent<Rigidbody>();
             objectRigidbody.useGravity = false;
-            objectRigidbody.drag = 10f; //Makes object move slower when holding
-            objectRigidbody.transform.parent = holdParent;
+            objectRigidbody.drag = 2f; //Makes object move slower when holding
+            //objectRigidbody.transform.parent = holdParent;
             carriedObject = pickObject;
         }
     }
@@ -65,8 +65,15 @@ public class Telekinesis : MonoBehaviour
     {
         if(Vector3.Distance(carriedObject.transform.position, holdParent.position) > 0.1f)
         {
-            Vector3 moveDirection = (holdParent.position - carriedObject.transform.position);
+            Vector3 moveDirection = holdParent.position - carriedObject.transform.position;
             carriedObject.GetComponent<Rigidbody>().AddForce(moveDirection * moveForce);
+
+            //RaycastHit hit;
+
+            /*if (!Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
+            {
+                DropObject();
+            }*/
         }
     }
 
