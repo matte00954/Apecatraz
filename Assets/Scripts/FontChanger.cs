@@ -20,6 +20,7 @@ public class FontChanger : MonoBehaviour
 
     public void ChangeAllFonts()
     {
+        
         foreach (TMPro.TMP_Text text in TMProTextList)
         {
             text.GetComponent<TMPro.TMP_Text>().font = fontAsset[+1];

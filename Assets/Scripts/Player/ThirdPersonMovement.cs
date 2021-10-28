@@ -104,6 +104,7 @@ public class ThirdPersonMovement : MonoBehaviour
         if (Time.timeScale != 1 && !isTeleporting)
         {
             ActivateRenderer(0); //Default
+            //This timescale makes it so that the UI dosen't pause the game //Andreas
             Time.timeScale = 1;
         }
     }
