@@ -8,6 +8,8 @@ public class Telekinesis : MonoBehaviour
 
     [SerializeField] private float pickupRange = 6f;
 
+    [SerializeField] ThirdPersonMovement thirdPersonMovement;
+
     private GameObject carriedObject;
 
     [SerializeField] private LayerMask canBeCarriedLayer;
@@ -43,6 +45,7 @@ public class Telekinesis : MonoBehaviour
             {
                 PickupObject(hit.transform.gameObject);
                 Debug.Log("hit " + hit.transform.gameObject);
+                thirdPersonMovement.ActivateRenderer(1); // 1 = Ability shader
             }
         }
         else
@@ -79,6 +82,7 @@ public class Telekinesis : MonoBehaviour
 
     private void DropObject()
     {
+        thirdPersonMovement.ActivateRenderer(0); // 0 = default shader
         Rigidbody carriedRigidbody = carriedObject.GetComponent<Rigidbody>();
         carriedRigidbody.useGravity = true;
         carriedRigidbody.drag = 1f;
