@@ -1,9 +1,11 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Energy : MonoBehaviour
 {
-    [SerializeField] private Slider energyMeter;
+
+    private GameObject energyMeter;
 
     private float currentEnergy = 0f;
 
@@ -24,6 +26,7 @@ public class Energy : MonoBehaviour
         if (regenerateEnergy == true)
         {
             //Figure out how much energy should recharge this frame.
+            //Varför? det är väl alltid samma mängd? /matte
             float rechargeDelta = (maxEnergy / rechargeTime) * Time.deltaTime;
 
             //Set current energy to be the current energy amount plus the recharge amount, clamped to maxEnergy, so
@@ -34,31 +37,18 @@ public class Energy : MonoBehaviour
             //Set the energy label text. We use Mathf.Approximatly() here instead of == because
             //of complications arising from float point precision. You should look that up.
             //Eller typecasta till en integer? typ (int)currentEnergy == (int)maxEnergy /matte
-
-            energyMeter.value = currentEnergy;
-
-            /*if ((int)currentEnergy < (int)maxEnergy)
-            {
-                energyMeter.value = currentEnergy;
-            } 
-            else
-            {
-
-            }*/
-                
-
-            /*if (Mathf.Approximately(currentEnergy, maxEnergy))
+            /*
+            if (Mathf.Approximately(currentEnergy, maxEnergy))
                 Debug.Log("Energy: FULL");
             else
                 Debug.Log("Energy: " + currentEnergy);
                 */
-                
         }
     }
 
     public void SpendEnergy(float energyToBeRemoved)
     {
-        currentEnergy -= energyToBeRemoved;
+        currentEnergy = currentEnergy - energyToBeRemoved; //currentEnergy -= energyToBeRemoved är väl bättre?
     }
 
     public bool CheckEnergy(float energyToSpend)
@@ -66,9 +56,9 @@ public class Energy : MonoBehaviour
         return energyToSpend < currentEnergy;
     }
 
-    public void ActivateEnergyRegen(bool activate) //snälla kom på ett bättre namn trueOrFalse
+    public void ActivateEnergyRegen(bool trueOrFalse) //snälla kom på ett bättre namn trueOrFalse
     {
-        regenerateEnergy = activate;
+        regenerateEnergy = trueOrFalse;
     }
 
 }

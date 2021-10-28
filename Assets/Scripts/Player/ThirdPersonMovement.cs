@@ -88,27 +88,24 @@ public class ThirdPersonMovement : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        if (!InGameMenuManager.gameIsPaused)
+        Movement();
+
+        Gravity();
+
+        Teleport();
+
+        Ledge();
+
+        if (Input.GetKey(KeyCode.P))
         {
-            Movement();
+            ResetScene.RestartScene();
+        }
 
-            Gravity();
-
-            Teleport();
-
-            Ledge();
-
-            if (Input.GetKey(KeyCode.P))
-            {
-                ResetScene.RestartScene();
-            }
-
-            if (Time.timeScale != 1 && !isTeleporting)
-            {
-                ActivateRenderer(0); //Default
-                                     
-                Time.timeScale = 1;
-            }
+        if (Time.timeScale != 1 && !isTeleporting)
+        {
+            ActivateRenderer(0); //Default
+            //This timescale makes it so that the UI dosen't pause the game //Andreas
+            Time.timeScale = 1;
         }
     }
 
@@ -161,7 +158,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
             energy.SpendEnergy(1f);
 
-            //animator.SetTrigger("Teleport");
+            animator.SetTrigger("Teleport");
 
             isTeleporting = true;
 
@@ -206,8 +203,8 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             velocity.y += GravityValue * GravityMultiplier * Time.deltaTime; //gravity in the air
 
-            /*if(inAir)
-                animator.SetTrigger("InAir");*/
+            if(inAir)
+                animator.SetTrigger("InAir");
 
             if (!inAir)
                 inAir = true;

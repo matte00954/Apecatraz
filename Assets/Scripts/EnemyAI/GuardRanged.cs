@@ -62,15 +62,12 @@ public class GuardRanged : MonoBehaviour
         Instantiate(netProjectilePrefab, firePositionObject.transform.position, firePositionObject.transform.rotation);
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
-        if (Application.isPlaying)
+        if (enemyMovement.PlayerDetectionPosition != null)
         {
-            if (enemyMovement.PlayerDetectionPosition != null)
-            {
-                Gizmos.color = Color.green;
-                Gizmos.DrawRay(enemyMovement.HeadPosition, (enemyMovement.PlayerDetectionPosition - enemyMovement.HeadPosition).normalized * attackRangeMax);
-            }
+            Gizmos.color = Color.green;
+            Gizmos.DrawRay(enemyMovement.HeadPosition, (enemyMovement.PlayerDetectionPosition - enemyMovement.HeadPosition).normalized * attackRangeMax);
         }
     }
 }
