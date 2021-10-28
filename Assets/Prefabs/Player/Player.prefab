@@ -82,11 +82,11 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 1
-  m_Radius: 0.5
+  m_Height: 1.5
+  m_Radius: 1
   m_SlopeLimit: 60
   m_StepOffset: 0.2
-  m_SkinWidth: 0.05
+  m_SkinWidth: 0.1
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1762694613964198749
@@ -155,6 +155,7 @@ MonoBehaviour:
   holdParent: {fileID: 4820617511831386206}
   moveForce: 100
   pickupRange: 5
+  thirdPersonMovement: {fileID: 0}
   canBeCarriedLayer:
     serializedVersion: 2
     m_Bits: 2048

@@ -7597,6 +7597,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: KeyCardDoor
       objectReference: {fileID: 0}
+    - target: {fileID: 2652848767059744803, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
+      propertyPath: m_Layer
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 2652848767059744815, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -7652,6 +7656,10 @@ PrefabInstance:
     - target: {fileID: 2652848767059744815, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3842366010787735306, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
+      propertyPath: m_Layer
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7645738154663465722, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
       propertyPath: Color
@@ -10752,7 +10760,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 284597487}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: PurpleDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18281,7 +18289,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.033992, y: 1}
+    m_SensorSize: {x: 1.6720322, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -18895,7 +18903,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.033992, y: 1}
+    m_SensorSize: {x: 1.6720322, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -24516,6 +24524,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: KeyCardDoor (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 2652848767059744803, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
+      propertyPath: m_Layer
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 2652848767059744815, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -24571,6 +24583,10 @@ PrefabInstance:
     - target: {fileID: 2652848767059744815, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3842366010787735306, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
+      propertyPath: m_Layer
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
@@ -25224,6 +25240,10 @@ PrefabInstance:
     - target: {fileID: 8750177986321002944, guid: df86b814b11835a4bb2e94ac26a6d589, type: 3}
       propertyPath: m_Name
       value: Keycard (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8750177986321002944, guid: df86b814b11835a4bb2e94ac26a6d589, type: 3}
+      propertyPath: m_Layer
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8750177986321002945, guid: df86b814b11835a4bb2e94ac26a6d589, type: 3}
       propertyPath: m_RootOrder
@@ -35122,6 +35142,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 1762694613964198748, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
+      propertyPath: m_Height
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1762694613964198748, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
+      propertyPath: m_Radius
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1762694613964198748, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
+      propertyPath: m_SkinWidth
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 1762694613964198749, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
       propertyPath: groundMask.m_Bits
       value: 2057
@@ -35172,6 +35204,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1762694613964198751, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1762694614227774981, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1762694614227774981, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
+      propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8444907791314147622, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
@@ -36138,7 +36178,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.033992, y: 1}
+    m_SensorSize: {x: 1.6720322, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -54953,6 +54993,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: KeyCardDoor
       objectReference: {fileID: 0}
+    - target: {fileID: 2652848767059744803, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
+      propertyPath: m_Layer
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 2652848767059744815, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -55008,6 +55052,10 @@ PrefabInstance:
     - target: {fileID: 2652848767059744815, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3842366010787735306, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
+      propertyPath: m_Layer
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
@@ -72611,7 +72659,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.033992, y: 1}
+    m_SensorSize: {x: 1.6720322, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -72875,6 +72923,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: KeyCardDoor (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 2652848767059744803, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
+      propertyPath: m_Layer
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 2652848767059744815, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -72926,6 +72978,18 @@ PrefabInstance:
     - target: {fileID: 2652848767059744815, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3842366010787735306, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
+      propertyPath: m_Layer
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3842366010787735306, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3842366010787735306, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
+      propertyPath: m_TagString
+      value: Respawn
       objectReference: {fileID: 0}
     - target: {fileID: 7645738154663465722, guid: 647e3618a1f42964dbccc7dc7e25b02f, type: 3}
       propertyPath: Color
