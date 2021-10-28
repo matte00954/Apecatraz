@@ -112,7 +112,7 @@ public class ThirdPersonMovement : MonoBehaviour
         }
     }
 
-    private void ActivateRenderer(int index)
+    public void ActivateRenderer(int index)
     {
         rend.sharedMaterial = materials[index]; //To switch shaders when using ability
     }

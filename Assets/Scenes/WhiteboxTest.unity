@@ -35114,6 +35114,10 @@ PrefabInstance:
       propertyPath: pickupRange
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 1144972922802645919, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
+      propertyPath: thirdPersonMovement
+      value: 
+      objectReference: {fileID: 957737162}
     - target: {fileID: 1762694613964198746, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
       propertyPath: m_Name
       value: Player
@@ -35191,6 +35195,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1762694613964198751, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
   m_PrefabInstance: {fileID: 957737154}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &957737162 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1762694613964198749, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
+  m_PrefabInstance: {fileID: 957737154}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 957737156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65908062a0c5f1541b663151c64cbe6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &958463061
 PrefabInstance:
   m_ObjectHideFlags: 0
