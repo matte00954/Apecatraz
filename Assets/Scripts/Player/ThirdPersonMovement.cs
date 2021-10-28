@@ -157,6 +157,7 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftShift) && energy.CheckEnergy(teleportEnergyCost))
         {
+            GameObject.Find("Main Camera").GetComponent<DashEffects>().SlowDown();
             ActivateRenderer(1); //Teleport shader
 
             energy.SpendEnergy(1f);
@@ -178,6 +179,7 @@ public class ThirdPersonMovement : MonoBehaviour
         }
         else
         {
+            GameObject.Find("Main Camera").GetComponent<DashEffects>().SpeedUp();
             isTeleporting = false;
         }
     }
