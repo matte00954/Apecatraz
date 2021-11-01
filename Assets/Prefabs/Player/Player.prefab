@@ -82,8 +82,8 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 1.5
-  m_Radius: 1
+  m_Height: 1
+  m_Radius: 0.5
   m_SlopeLimit: 60
   m_StepOffset: 0.2
   m_SkinWidth: 0.1
@@ -101,15 +101,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65908062a0c5f1541b663151c64cbe6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCameraTransform: {fileID: 0}
+  mainCamera: {fileID: 0}
   controller: {fileID: 1762694613964198748}
   groundCheck: {fileID: 1762694614227774981}
   groundMask:
     serializedVersion: 2
-    m_Bits: 9
+    m_Bits: 6153
   ledgeMask:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 4096
   ledgeCheck: {fileID: 30882857776937913}
   energy: {fileID: 8444907791314147622}
   materials:
@@ -153,9 +153,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   holdParent: {fileID: 4820617511831386206}
-  moveForce: 100
-  pickupRange: 5
-  thirdPersonMovement: {fileID: 0}
+  moveForce: 5
+  pickupRange: 4
+  thirdPersonMovement: {fileID: 1762694613964198749}
   canBeCarriedLayer:
     serializedVersion: 2
     m_Bits: 2048
