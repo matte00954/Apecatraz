@@ -30,12 +30,11 @@ public class ThirdPersonMovement : MonoBehaviour
     [Header("Ledge")]
     [SerializeField] private LayerMask ledgeMask;
     [SerializeField] private GameObject ledgeCheck;
-    private float ledgeCheckLength = 1.35f; 
+    private float ledgeCheckLength = 1.35f;
 
     [Header("Energy")]
     [SerializeField] private Energy energy;
     private float dashEnergyCost = 4f;
-
 
     [Header("Ability Shaders")]
     [SerializeField] Material[] materials;
@@ -78,7 +77,7 @@ public class ThirdPersonMovement : MonoBehaviour
         /////////////////////////////////////////////////////////////////
         //Vettefan vad emil gjort, kopierade vad han skrev i sitt script
         rend = GetComponentInChildren<Renderer>();
-        rend.enabled = true; 
+        rend.enabled = true;
         rend.sharedMaterial = materials[0];
         ////////////////////////////////////////////////////////////////
 
@@ -108,7 +107,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
             StateCheck();
 
-            if(Input.GetKey(KeyCode.P))
+            if (Input.GetKey(KeyCode.P))
             {
                 ResetScene.RestartScene();
             }
@@ -119,7 +118,7 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
         }
-        else if(!InGameMenuManager.gameIsPaused && Cursor.lockState.Equals(CursorLockMode.None))
+        else if (!InGameMenuManager.gameIsPaused && Cursor.lockState.Equals(CursorLockMode.None))
         {
             Cursor.lockState = CursorLockMode.Locked;
         }
@@ -197,7 +196,7 @@ public class ThirdPersonMovement : MonoBehaviour
             && !playerState.Equals(State.dashing) && !playerState.Equals(State.telekinesis))
         {
             playerState = State.disabled;
-            velocity = new Vector3(0,0,0); //removes all velocity during climb
+            velocity = new Vector3(0, 0, 0); //removes all velocity during climb
             controller.enabled = false;
             transform.position = hit.point;
             controller.enabled = true;
@@ -281,6 +280,7 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         return Physics.CheckSphere(groundCheck.position, GroundCheckRadius, groundMask);
     }
+}
 
     /* OLD CLIMB FUNCTIONS
     private void OnTriggerEnter(Collider other)
@@ -327,4 +327,3 @@ public class ThirdPersonMovement : MonoBehaviour
         transform.position = closestPosition;
         controller.enabled = true;
         */
-}
