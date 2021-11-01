@@ -34,7 +34,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     [Header("Energy")]
     [SerializeField] private Energy energy;
-    private float dashEnergyCost = 4f;
+    private float dashEnergyCost = 5f;
 
     [Header("Ability Shaders")]
     [SerializeField] Material[] materials;
@@ -52,7 +52,7 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float TurnSmoothTime = 0.1f;
 
     //Teleport
-    private const float DashDistanceMultiplier = 0.5f; //per frame
+    private const float DashDistanceMultiplier = 0.75f; //per frame
     private const float TeleportDistanceCheck = 0.5f;
     private const float DashMarginMultiplier = 0.8f;
 
