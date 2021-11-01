@@ -109,7 +109,18 @@ public class ThirdPersonMovement : MonoBehaviour
                                      
                 Time.timeScale = 1;
             }
+
         }
+
+        if (InGameMenuManager.gameIsPaused && Cursor.lockState.Equals(CursorLockMode.Locked))
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else if(!InGameMenuManager.gameIsPaused && Cursor.lockState.Equals(CursorLockMode.None))
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+
     }
 
     public void ActivateRenderer(int index)
