@@ -58,7 +58,7 @@ public class DashEffects : MonoBehaviour
             dashing = false;
             aSource.clip = speedUpClip;
             aSource.Play();
-            targetWeight = 0; ;
+            targetWeight = 0;
         }
     }
 }

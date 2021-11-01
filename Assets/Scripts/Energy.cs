@@ -7,7 +7,7 @@ public class Energy : MonoBehaviour
 
     private float currentEnergy = 0f;
 
-    private float rechargeTime = 10f; //In seconds, for how long it takes to go from 0 to maxEnergy
+    private float rechargeTime = 3f; //In seconds, for how long it takes to go from 0 to maxEnergy
     private float maxEnergy = 100f;
 
     private bool regenerateEnergy = true;
