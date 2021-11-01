@@ -46,6 +46,7 @@ public class Telekinesis : MonoBehaviour
                 PickupObject(hit.transform.gameObject);
                 Debug.Log("hit " + hit.transform.gameObject);
                 thirdPersonMovement.ActivateRenderer(1); // 1 = Ability shader
+                thirdPersonMovement.PlayerState = ThirdPersonMovement.State.telekinesis;
             }
         }
         else
@@ -88,6 +89,7 @@ public class Telekinesis : MonoBehaviour
         carriedRigidbody.drag = 1f;
         carriedObject.transform.parent = null;
         carriedObject = null;
+        thirdPersonMovement.PlayerState = ThirdPersonMovement.State.nothing;
     }
 
     private void OnDrawGizmos()
