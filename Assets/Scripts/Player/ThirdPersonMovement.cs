@@ -125,7 +125,6 @@ public class ThirdPersonMovement : MonoBehaviour
 
     }
 
-
     private void StateCheck()
     {
         switch (playerState)
@@ -198,6 +197,7 @@ public class ThirdPersonMovement : MonoBehaviour
             playerState = State.disabled;
             velocity = new Vector3(0, 0, 0); //removes all velocity during climb
             controller.enabled = false;
+            animator.SetTrigger("LedgeGrab");
             transform.position = hit.point;
             controller.enabled = true;
             playerState = State.nothing;
