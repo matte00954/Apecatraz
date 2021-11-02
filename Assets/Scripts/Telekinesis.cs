@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Telekinesis : MonoBehaviour
 {
-    [SerializeField] private Transform holdParent;
+    [SerializeField] private Transform cameraTelekinesisTarget;
 
     [SerializeField] private float moveForce = 250f;
 
@@ -70,9 +70,9 @@ public class Telekinesis : MonoBehaviour
 
     private void MoveObject()
     {
-        if(Vector3.Distance(carriedObject.transform.position, holdParent.position) > 0.1f)
+        if(Vector3.Distance(carriedObject.transform.position, cameraTelekinesisTarget.position) > 0.1f)
         {
-            Vector3 moveDirection = holdParent.position - carriedObject.transform.position;
+            Vector3 moveDirection = cameraTelekinesisTarget.position - carriedObject.transform.position;
             carriedObject.GetComponent<Rigidbody>().AddForce(moveDirection * moveForce);
 
             if (Vector3.Distance(transform.position, carriedObject.transform.position) > maxRange)
