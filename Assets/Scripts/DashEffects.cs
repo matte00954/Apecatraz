@@ -31,8 +31,8 @@ public class DashEffects : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        effectWeight+= (targetWeight- effectWeight)*Time.deltaTime* fadeSpeed;
-        volume.GetComponent<Volume>().weight = effectWeight/ 100;
+        //effectWeight+= (targetWeight- effectWeight)*Time.deltaTime* fadeSpeed;
+        //volume.GetComponent<Volume>().weight = effectWeight / 100; 
         if (Input.GetKeyUp(KeyCode.LeftShift))
         {
             ready = true;
@@ -58,7 +58,7 @@ public class DashEffects : MonoBehaviour
             dashing = false;
             aSource.clip = speedUpClip;
             aSource.Play();
-            targetWeight = 0; ;
+            targetWeight = 0;
         }
     }
 }

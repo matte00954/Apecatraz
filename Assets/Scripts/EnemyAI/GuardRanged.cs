@@ -1,4 +1,4 @@
-//Author: William Örnquist
+//Author: William ï¿½rnquist
 using UnityEngine;
 
 public class GuardRanged : MonoBehaviour
@@ -8,6 +8,7 @@ public class GuardRanged : MonoBehaviour
     [SerializeField] private GameObject netProjectilePrefab;
     [SerializeField] private GameObject firePositionObject;
     [SerializeField] private GameObject playerMovementPredictionObject;
+
 
     [Header("Chase state variables")]
     [SerializeField, Range(5f, 50f), Tooltip("The maximum range from the player before the enemy can start shooting.")]
