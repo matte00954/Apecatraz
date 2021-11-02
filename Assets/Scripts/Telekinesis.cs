@@ -8,7 +8,7 @@ public class Telekinesis : MonoBehaviour
 
     [SerializeField] private float pickupRange = 6f;
 
-    [SerializeField] private float maxRange = 50f; //needs to be higher than pickuprange
+    [SerializeField] private float maxRange = 15f; //needs to be higher than pickuprange
 
     [SerializeField] ThirdPersonMovement thirdPersonMovement;
 
@@ -16,13 +16,12 @@ public class Telekinesis : MonoBehaviour
 
     [SerializeField] private LayerMask canBeCarriedLayer;
 
-    private bool carrying;
-
     private bool silenced;
 
     void Start()
     {
         carriedObject = null;
+
     }
 
     private void Update()
