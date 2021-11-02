@@ -8,6 +8,8 @@ public class Telekinesis : MonoBehaviour
 
     [SerializeField] private float pickupRange = 6f;
 
+    [SerializeField] private float maxRange = 50f; //needs to be higher than pickuprange
+
     [SerializeField] ThirdPersonMovement thirdPersonMovement;
 
     private GameObject carriedObject;
@@ -74,6 +76,11 @@ public class Telekinesis : MonoBehaviour
             Vector3 moveDirection = holdParent.position - carriedObject.transform.position;
             carriedObject.GetComponent<Rigidbody>().AddForce(moveDirection * moveForce);
 
+            if (Vector3.Distance(transform.position, carriedObject.transform.position) > maxRange)
+            {
+                DropObject();
+            }
+
             //RaycastHit hit;
 
             /*if (!Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
@@ -109,63 +116,71 @@ public class Telekinesis : MonoBehaviour
         }
     }
 
-        /*
-
-        void Update()
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("AntiAbilityZone"))
         {
-            if (carrying)
-            {
-                Carry(carriedObject);
-                CheckDrop();
-            }
-            else
-            {
-                Pickup();
-            }
+            silenced = false;
         }
+    }
 
+    /*
 
-        void Carry(GameObject o)
+    void Update()
+    {
+        if (carrying)
         {
+            Carry(carriedObject);
+            CheckDrop();
+        }
+        else
+        {
+            Pickup();
+        }
+    }
+
+
+    void Carry(GameObject o)
+    {
+        RaycastHit hit;
+        Physics.SphereCast(o.transform.position, o.GetComponent<BoxCollider>().bounds.size.y / 2, transform.forward, out hit);
+        Debug.Log(hit);
+        o.transform.position = Vector3.Lerp(o.transform.position, player.transform.position + player.transform.forward * distance, Time.deltaTime * smooth);
+        o.transform.rotation = Quaternion.identity;
+    }
+
+    void Pickup()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Vector3 startPositionForRay = player.transform.position + characterController.center;
             RaycastHit hit;
-            Physics.SphereCast(o.transform.position, o.GetComponent<BoxCollider>().bounds.size.y / 2, transform.forward, out hit);
-            Debug.Log(hit);
-            o.transform.position = Vector3.Lerp(o.transform.position, player.transform.position + player.transform.forward * distance, Time.deltaTime * smooth);
-            o.transform.rotation = Quaternion.identity;
-        }
-
-        void Pickup()
-        {
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Physics.SphereCast(startPositionForRay, characterController.height / 2, player.transform.forward, out hit, distance))
             {
-                Vector3 startPositionForRay = player.transform.position + characterController.center;
-                RaycastHit hit;
-                if (Physics.SphereCast(startPositionForRay, characterController.height / 2, player.transform.forward, out hit, distance))
+                GameObject p = hit.collider.gameObject;
+                Debug.Log(p);
+                if (p.CompareTag("moveable"))
                 {
-                    GameObject p = hit.collider.gameObject;
-                    Debug.Log(p);
-                    if (p.CompareTag("moveable"))
-                    {
-                        carrying = true;
-                        carriedObject = p;
-                        carriedObject.GetComponent<Rigidbody>().useGravity = false;
-                    }
+                    carrying = true;
+                    carriedObject = p;
+                    carriedObject.GetComponent<Rigidbody>().useGravity = false;
                 }
             }
         }
-
-        void CheckDrop()
-        {
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                dropObject();
-            }
-        }
-
-        void dropObject()
-        {
-            carrying = false;
-            carriedObject.gameObject.GetComponent<Rigidbody>().useGravity = true;
-            carriedObject = null;
-        }*/
     }
+
+    void CheckDrop()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            dropObject();
+        }
+    }
+
+    void dropObject()
+    {
+        carrying = false;
+        carriedObject.gameObject.GetComponent<Rigidbody>().useGravity = true;
+        carriedObject = null;
+    }*/
+}
