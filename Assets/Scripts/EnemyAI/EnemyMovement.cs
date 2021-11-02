@@ -1,4 +1,4 @@
-//Author: William Örnquist
+//Author: William ï¿½rnquist
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,6 +11,11 @@ public class EnemyMovement : MonoBehaviour
     private const float MIN_SPACING_PATROL = 1f;
     private const float MIN_SPACING_INVESTIGATE = 10f;
     private const float MIN_SPACING_CHASE = 5f;
+    
+    [Header("References")]
+    [SerializeField] private GameObject exclamationMark;
+    [SerializeField] private AudioClip alertSoundEffect;
+    private AudioSource audioSource;
 
     [Header("Agent")]
     [SerializeField] private NavMeshAgent agent;
@@ -55,6 +60,7 @@ public class EnemyMovement : MonoBehaviour
 
     public void Start()
     {
+        audioSource = gameObject.GetComponent<AudioSource>();
         detectionRange = fieldOfViewCollider.bounds.size.z;
         detectedPlayerOnce = false;
 
@@ -115,6 +121,8 @@ public class EnemyMovement : MonoBehaviour
                 else if (detectingPlayer)
                 {
                     //Play "alert" voice here
+                    exclamationMark.SetActive(true);
+                    audioSource.PlayOneShot(alertSoundEffect);
                     currentState = GuardState.chasing;
                 }
                 else
@@ -133,7 +141,10 @@ public class EnemyMovement : MonoBehaviour
                 if (detectingPlayer)
                     detectionTimer = 0f;
                 else if (agent.remainingDistance <= MIN_SPACING_CHASE && detectionTimer >= lostDetectionDelay)
+                {
+                    exclamationMark.SetActive(false);
                     StartWaiting();
+                }
                 break;
             case GuardState.shooting:
                 if (agent.remainingDistance >= 1f)

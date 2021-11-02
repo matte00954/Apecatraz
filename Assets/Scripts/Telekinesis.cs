@@ -8,6 +8,8 @@ public class Telekinesis : MonoBehaviour
 
     [SerializeField] private float pickupRange = 6f;
 
+    [SerializeField] private float maxRange = 50f; //needs to be higher than pickuprange
+
     [SerializeField] ThirdPersonMovement thirdPersonMovement;
 
     private GameObject carriedObject;
@@ -15,6 +17,8 @@ public class Telekinesis : MonoBehaviour
     [SerializeField] private LayerMask canBeCarriedLayer;
 
     private bool carrying;
+
+    private bool silenced;
 
     void Start()
     {
@@ -37,7 +41,7 @@ public class Telekinesis : MonoBehaviour
     private void FindObject()
     {
 
-        if (carriedObject == null)
+        if (carriedObject == null && !silenced)
         {
             RaycastHit hit;
 
@@ -46,6 +50,7 @@ public class Telekinesis : MonoBehaviour
                 PickupObject(hit.transform.gameObject);
                 Debug.Log("hit " + hit.transform.gameObject);
                 thirdPersonMovement.ActivateRenderer(1); // 1 = Ability shader
+                thirdPersonMovement.PlayerState = ThirdPersonMovement.State.telekinesis;
             }
         }
         else
@@ -71,6 +76,11 @@ public class Telekinesis : MonoBehaviour
             Vector3 moveDirection = holdParent.position - carriedObject.transform.position;
             carriedObject.GetComponent<Rigidbody>().AddForce(moveDirection * moveForce);
 
+            if (Vector3.Distance(transform.position, carriedObject.transform.position) > maxRange)
+            {
+                DropObject();
+            }
+
             //RaycastHit hit;
 
             /*if (!Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
@@ -88,11 +98,30 @@ public class Telekinesis : MonoBehaviour
         carriedRigidbody.drag = 1f;
         carriedObject.transform.parent = null;
         carriedObject = null;
+        thirdPersonMovement.PlayerState = ThirdPersonMovement.State.nothing;
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.DrawRay(transform.position , transform.TransformDirection(Vector3.forward) * pickupRange);
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("AntiAbilityZone"))
+        {
+            thirdPersonMovement.PlayerState = ThirdPersonMovement.State.nothing;
+            DropObject();
+            silenced = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("AntiAbilityZone"))
+        {
+            silenced = false;
+        }
     }
 
     /*
