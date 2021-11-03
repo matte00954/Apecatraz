@@ -9,11 +9,11 @@ public class Telekinesis : MonoBehaviour
 
     [Header("Energy")]
     [SerializeField] private Energy energy;
-    private float telekinesisEnergyCost = 1f;
+    private float telekinesisEnergyCost = 0.1f;
 
     private GameObject carriedObject;
 
-    private float moveForce = 25f;
+    private float moveForce = 5f;
 
     private float pickupRange = 6f;
 
@@ -78,7 +78,7 @@ public class Telekinesis : MonoBehaviour
 
             energy.SpendEnergy(telekinesisEnergyCost);
 
-            if(energy.CheckEnergy(telekinesisEnergyCost))
+            if(!energy.CheckEnergy(telekinesisEnergyCost))
             {
                 DropObject();
             }
@@ -92,13 +92,18 @@ public class Telekinesis : MonoBehaviour
 
     private void DropObject()
     {
-        thirdPersonMovement.ActivateRenderer(0); // 0 = default shader
-        Rigidbody carriedRigidbody = carriedObject.GetComponent<Rigidbody>();
-        carriedRigidbody.useGravity = true;
-        carriedRigidbody.drag = 1f;
-        carriedObject.transform.parent = null;
-        carriedObject = null;
-        thirdPersonMovement.PlayerState = ThirdPersonMovement.State.nothing;
+        if(carriedObject != null)
+        {
+            thirdPersonMovement.ActivateRenderer(0); // 0 = default shader
+            Rigidbody carriedRigidbody = carriedObject.GetComponent<Rigidbody>();
+            carriedRigidbody.useGravity = true;
+            carriedRigidbody.drag = 1f;
+            carriedObject.transform.parent = null;
+            carriedObject = null;
+            thirdPersonMovement.PlayerState = ThirdPersonMovement.State.nothing;
+        }
+        else
+            Debug.LogError("carriedObject is null");
     }
 
     private void OnTriggerStay(Collider other)
