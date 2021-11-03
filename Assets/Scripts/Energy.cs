@@ -66,7 +66,7 @@ public class Energy : MonoBehaviour
         return energyToSpend < currentEnergy;
     }
 
-    public void ActivateEnergyRegen(bool activate) //snälla kom på ett bättre namn trueOrFalse
+    public void ActivateEnergyRegen(bool activate)
     {
         regenerateEnergy = activate;
     }

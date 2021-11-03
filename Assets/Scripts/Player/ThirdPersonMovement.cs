@@ -75,7 +75,7 @@ public class ThirdPersonMovement : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked; //prevents mouse from leaving screen
 
         /////////////////////////////////////////////////////////////////
-        //Vettefan vad emil gjort, kopierade vad han skrev i sitt script
+        //Emils grej
         rend = GetComponentInChildren<Renderer>();
         rend.enabled = true;
         rend.sharedMaterial = materials[0];
@@ -281,49 +281,3 @@ public class ThirdPersonMovement : MonoBehaviour
         return Physics.CheckSphere(groundCheck.position, GroundCheckRadius, groundMask);
     }
 }
-
-    /* OLD CLIMB FUNCTIONS
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Climb"))
-        {
-            Debug.Log("Climb trigger hit");
-            Climb(other.gameObject.GetComponentInChildren<ClimbTransforms>());
-        }
-    }
-
-    private void Climb(ClimbTransforms climbTransforms)
-    {
-        if (climbTransforms.climbList.Count == 0)
-        {
-            Debug.LogError("climbTransforms list is 0, should be atleast 1");
-            return;
-        }
-
-        Vector3 closestPosition = transform.position;
-
-        Vector3 currentPosition = transform.position;
-
-        float minDistance = 0;
-
-        for (int i = 0; i < climbTransforms.climbList.Count; i++)
-        {
-            if (i == 0)
-            {
-                minDistance = Vector3.Distance(currentPosition, climbTransforms.GetClimbPositionInList(i).position);
-                closestPosition = climbTransforms.GetClimbPositionInList(i).position;
-                Debug.Log("F�rsta siffran �r: " + minDistance);
-            }
-
-            if (minDistance > Vector3.Distance(currentPosition, climbTransforms.GetClimbPositionInList(i).position))
-            {
-                minDistance = Vector3.Distance(currentPosition, climbTransforms.GetClimbPositionInList(i).position);
-                closestPosition = climbTransforms.GetClimbPositionInList(i).position;
-                Debug.Log(i + " siffran �r: " + minDistance);
-            }
-        }
-        velocity.y = 0;
-        controller.enabled = false;
-        transform.position = closestPosition;
-        controller.enabled = true;
-        */
