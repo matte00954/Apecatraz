@@ -185,7 +185,9 @@ public class ThirdPersonMovement : MonoBehaviour
 
             ControllerMove(moveDirection * PlayerSpeed * Time.deltaTime);
         }
-        StopRunning();
+        if (CheckGround()) {
+            StopRunning();
+        }
         animator.SetFloat("runY", direction.magnitude); //Joches grej
     }
 
@@ -287,6 +289,10 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         if (controller.velocity.magnitude> 3)
         {
+            if (!moving)
+            {
+                animator.SetTrigger("Start");
+            }
             moving = true;
         }
         if (controller.velocity.magnitude < 3 && moving)
