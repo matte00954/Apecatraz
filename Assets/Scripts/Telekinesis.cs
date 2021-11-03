@@ -2,26 +2,28 @@ using UnityEngine;
 
 public class Telekinesis : MonoBehaviour
 {
-    [SerializeField] private Transform cameraTelekinesisTarget;
-
-    [SerializeField] private float moveForce = 250f;
-
-    [SerializeField] private float pickupRange = 6f;
-
-    [SerializeField] private float maxRange = 15f; //needs to be higher than pickuprange
-
+    [Header("Game Object references")]
     [SerializeField] ThirdPersonMovement thirdPersonMovement;
+    [SerializeField] private Transform cameraTelekinesisTarget;
+    [SerializeField] private LayerMask canBeCarriedLayer;
+
+    [Header("Energy")]
+    [SerializeField] private Energy energy;
+    private float telekinesisEnergyCost = 1f;
 
     private GameObject carriedObject;
 
-    [SerializeField] private LayerMask canBeCarriedLayer;
+    private float moveForce = 250f;
+
+    private float pickupRange = 6f;
+
+    private float maxRange = 15f; //needs to be higher than pickuprange
 
     private bool silenced;
 
     void Start()
     {
         carriedObject = null;
-
     }
 
     private void Update()
@@ -40,7 +42,7 @@ public class Telekinesis : MonoBehaviour
     private void FindObject()
     {
 
-        if (carriedObject == null && !silenced)
+        if (carriedObject == null && !silenced && energy.CheckEnergy(telekinesisEnergyCost))
         {
             RaycastHit hit;
 
@@ -63,7 +65,6 @@ public class Telekinesis : MonoBehaviour
             Rigidbody objectRigidbody = pickObject.GetComponent<Rigidbody>();
             objectRigidbody.useGravity = false;
             objectRigidbody.drag = 2f; //Makes object move slower when holding
-            //objectRigidbody.transform.parent = holdParent;
             carriedObject = pickObject;
         }
     }
@@ -75,17 +76,17 @@ public class Telekinesis : MonoBehaviour
             Vector3 moveDirection = cameraTelekinesisTarget.position - carriedObject.transform.position;
             carriedObject.GetComponent<Rigidbody>().AddForce(moveDirection * moveForce);
 
-            if (Vector3.Distance(transform.position, carriedObject.transform.position) > maxRange)
+            energy.SpendEnergy(telekinesisEnergyCost);
+
+            if(energy.CheckEnergy(telekinesisEnergyCost))
             {
                 DropObject();
             }
 
-            //RaycastHit hit;
-
-            /*if (!Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
+            if (Vector3.Distance(transform.position, carriedObject.transform.position) > maxRange)
             {
                 DropObject();
-            }*/
+            }
         }
     }
 
@@ -98,11 +99,6 @@ public class Telekinesis : MonoBehaviour
         carriedObject.transform.parent = null;
         carriedObject = null;
         thirdPersonMovement.PlayerState = ThirdPersonMovement.State.nothing;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawRay(transform.position , transform.TransformDirection(Vector3.forward) * pickupRange);
     }
 
     private void OnTriggerStay(Collider other)
@@ -123,63 +119,9 @@ public class Telekinesis : MonoBehaviour
         }
     }
 
-    /*
-
-    void Update()
+    private void OnDrawGizmos()
     {
-        if (carrying)
-        {
-            Carry(carriedObject);
-            CheckDrop();
-        }
-        else
-        {
-            Pickup();
-        }
+        //Gizmos.DrawRay(transform.position, transform.TransformDirection(Vector3.forward));
+        //For testing
     }
-
-
-    void Carry(GameObject o)
-    {
-        RaycastHit hit;
-        Physics.SphereCast(o.transform.position, o.GetComponent<BoxCollider>().bounds.size.y / 2, transform.forward, out hit);
-        Debug.Log(hit);
-        o.transform.position = Vector3.Lerp(o.transform.position, player.transform.position + player.transform.forward * distance, Time.deltaTime * smooth);
-        o.transform.rotation = Quaternion.identity;
-    }
-
-    void Pickup()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            Vector3 startPositionForRay = player.transform.position + characterController.center;
-            RaycastHit hit;
-            if (Physics.SphereCast(startPositionForRay, characterController.height / 2, player.transform.forward, out hit, distance))
-            {
-                GameObject p = hit.collider.gameObject;
-                Debug.Log(p);
-                if (p.CompareTag("moveable"))
-                {
-                    carrying = true;
-                    carriedObject = p;
-                    carriedObject.GetComponent<Rigidbody>().useGravity = false;
-                }
-            }
-        }
-    }
-
-    void CheckDrop()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            dropObject();
-        }
-    }
-
-    void dropObject()
-    {
-        carrying = false;
-        carriedObject.gameObject.GetComponent<Rigidbody>().useGravity = true;
-        carriedObject = null;
-    }*/
 }
