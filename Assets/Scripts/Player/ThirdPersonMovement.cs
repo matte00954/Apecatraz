@@ -30,7 +30,16 @@ public class ThirdPersonMovement : MonoBehaviour
     [Header("Ledge")]
     [SerializeField] private LayerMask ledgeMask;
     [SerializeField] private GameObject ledgeCheck;
-    private float ledgeCheckLength = 1.35f;
+    [SerializeField] private AnimationClip climbAnimation;
+    [SerializeField] private Transform leftFoot;
+    [SerializeField] private Transform rightFoot;
+    private Vector3 betweenFeet;
+    private RaycastHit ledgeHit;
+    private bool startTimerForLedgeAnimation;
+    private float ledgeCheckDownLength = 1.35f;
+    private float ledgeCheckForward = 10f;
+    private float timeRemaining;
+    private float maxClimbAnimationTimer;
 
     [Header("Energy")]
     [SerializeField] private Energy energy;
@@ -69,7 +78,11 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Start()
     {
+        betweenFeet = rightFoot.position + leftFoot.position / 2;
+
         dashEffectsReference = mainCamera.GetComponent<DashEffects>();
+
+        maxClimbAnimationTimer = climbAnimation.length;
 
         playerState = State.nothing;
 
@@ -108,6 +121,11 @@ public class ThirdPersonMovement : MonoBehaviour
 
             StateCheck();
 
+            if (startTimerForLedgeAnimation)
+            {
+                LedgeAnimation();
+            }
+
             if (Input.GetKey(KeyCode.P))
             {
                 ResetScene.RestartScene();
@@ -132,7 +150,7 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             case State.dashing:
                 Dash();
-                LedgeClimb();
+                LedgeCheck();
                 break;
             case State.telekinesis:
                 Movement();
@@ -143,7 +161,7 @@ public class ThirdPersonMovement : MonoBehaviour
             case State.nothing:
                 Movement();
                 Jump();
-                LedgeClimb();
+                LedgeCheck();
 
                 if (Input.GetKeyDown(KeyCode.LeftShift))
                 {
@@ -185,28 +203,56 @@ public class ThirdPersonMovement : MonoBehaviour
 
             ControllerMove(moveDirection * PlayerSpeed * Time.deltaTime);
         }
-        if (CheckGround()) {
+
+        if (CheckGround())
+        {
             StopRunning();
         }
         animator.SetFloat("runY", direction.magnitude); //Joches grej
     }
 
-    private void LedgeClimb() //may need to expand this, no bugs yet
+    private void LedgeCheck() //may need to expand this, no bugs yet
     {
-        RaycastHit hit;
+        RaycastHit downHit; //ray from ledge check game object
 
-        if (Physics.Raycast(ledgeCheck.gameObject.transform.position, Vector3.down, out hit, ledgeCheckLength, ledgeMask)
+        if (Physics.Raycast(ledgeCheck.gameObject.transform.position, Vector3.down, out downHit, ledgeCheckDownLength, ledgeMask)
             && !playerState.Equals(State.dashing) && !playerState.Equals(State.telekinesis))
         {
-            playerState = State.disabled;
-            velocity = new Vector3(0, 0, 0); //removes all velocity during climb
-            controller.enabled = false;
-            animator.SetTrigger("LedgeGrab");
-            transform.position = hit.point;
-            controller.enabled = true;
-            playerState = State.nothing;
+            RaycastHit forwardHit;
+            if (Physics.Raycast(transform.position, Vector3.forward, out forwardHit, ledgeCheckForward, ledgeMask))
+            {
+                animator.SetTrigger("LedgeGrab");
+                ledgeHit = downHit;
+                Debug.Log("CLIMB");
+                playerState = State.disabled;
+                velocity = new Vector3(0, 0, 0); //removes all velocity during climb
+                controller.enabled = false;
+                timeRemaining = maxClimbAnimationTimer;
+                startTimerForLedgeAnimation = true;
+            }
         }
-        //may need another raycast to check front, works well without at the moment
+    }
+
+    private void LedgeAnimation()
+    {
+
+        if (timeRemaining > 0)
+        {
+            timeRemaining -= Time.deltaTime;
+        }
+
+        if (timeRemaining < maxClimbAnimationTimer)
+        {
+            startTimerForLedgeAnimation = false;
+            LedgeClimb();
+        }
+    }
+
+    private void LedgeClimb()
+    {
+        transform.position = ledgeHit.point;
+        controller.enabled = true;
+        playerState = State.nothing;
     }
 
     private void Dash()
