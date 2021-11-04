@@ -54,6 +54,7 @@ public class ThirdPersonMovement : MonoBehaviour
     private bool inAir = false;
     private bool moving = false;
     private Vector3 velocity;
+    private float saveRot;
 
     //ground check
     private const float GroundCheckRadius = 0.15f; // comparing ground check game object to floor
@@ -110,6 +111,7 @@ public class ThirdPersonMovement : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        GetTurn();
         if (!InGameMenuManager.gameIsPaused)
         {
             if (Time.timeScale != 1) //to unpause game
@@ -196,14 +198,12 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + mainCamera.transform.eulerAngles.y; //first find target angle
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TurnSmoothTime); //adjust angle for smoothing
-
             transform.rotation = Quaternion.Euler(0f, angle, 0f); //adjusted angle used here for rotation
 
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward; //adjust direction to camera rotation/direction
 
             ControllerMove(moveDirection * PlayerSpeed * Time.deltaTime);
         }
-
         if (CheckGround())
         {
             StopRunning();
@@ -301,7 +301,6 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             velocity.y += GravityValue * GravityMultiplier * Time.deltaTime; //gravity in the air
             animator.SetFloat("YSpeed", velocity.y);
-            Debug.Log(velocity.y);
 
             /*if(inAir)
                 animator.SetTrigger("InAir");*/
@@ -348,5 +347,11 @@ public class ThirdPersonMovement : MonoBehaviour
             moving = false;
             animator.SetTrigger("Stop");
         }
+    }
+
+    private void GetTurn()
+    {
+        animator.SetFloat("runX", (saveRot + 1000) - (transform.eulerAngles.y + 1000));
+        saveRot = transform.eulerAngles.y;
     }
 }
