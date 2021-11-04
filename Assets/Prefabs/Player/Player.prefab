@@ -159,7 +159,7 @@ MonoBehaviour:
   canBeCarriedLayer:
     serializedVersion: 2
     m_Bits: 2048
-  energy: {fileID: 0}
+  energy: {fileID: 8444907791314147622}
 --- !u!136 &8106888074099415624
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -335,6 +335,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -2529083445792942949, guid: 1b2d75bd5e7877241bd9de762d21df29, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 517cf3c7715016a45be7243915734ac5, type: 2}
     - target: {fileID: 919132149155446097, guid: 1b2d75bd5e7877241bd9de762d21df29, type: 3}
       propertyPath: m_Name
       value: monke2
