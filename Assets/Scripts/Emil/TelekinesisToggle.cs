@@ -3,6 +3,7 @@ using UnityEngine;
 public class TelekinesisToggle : MonoBehaviour
 {
     public Material[] materials;
+    public bool isCarried;
     public int x;
     Renderer rend;
 
@@ -10,6 +11,7 @@ public class TelekinesisToggle : MonoBehaviour
     void Start()
     {
         x = 0;
+        isCarried = false;
         rend = GetComponent<Renderer>();
         rend.enabled = true;
         rend.sharedMaterial = materials[x];
@@ -20,30 +22,14 @@ public class TelekinesisToggle : MonoBehaviour
     {
         rend.sharedMaterial = materials[x];
 
-        if (Input.GetButtonDown("Fire1"))
+        if (isCarried)
         {
-            x++;
-           // ToggleTelekinesis();
+            x = 1;
         }
-        if (Input.GetButtonUp("Fire1"))
-        {
-            x--;
-        }
-    }
-
-    //Class exists to test a shader in a test scene
-
-   /* public void ToggleTelekinesisOn()
-    {
-        if (x < 1)
-        {
-            x++;
-        }
-        else
+        if (!isCarried)
         {
             x = 0;
         }
-    } */
+    }
 
-   
 }
