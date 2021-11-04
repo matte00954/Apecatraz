@@ -29,7 +29,7 @@ public class GuardRanged : MonoBehaviour
     {
         if (Vector3.Distance(enemyMovement.HeadPosition, enemyMovement.PlayerDetectionPosition) <= attackRangeMax
             && enemyMovement.DetectingPlayer && chargeTimer >= attackChargeTime && !isCharging
-            && enemyMovement.DetectedPlayerOnce && enemyMovement.CurrentState != EnemyMovement.GuardState.dumbstruck)
+            && enemyMovement.CurrentState != EnemyMovement.GuardState.dumbstruck)
         {
             chargeTimer = 0f;
             enemyMovement.CurrentState = EnemyMovement.GuardState.shooting;
@@ -38,7 +38,7 @@ public class GuardRanged : MonoBehaviour
 
         if (isCharging && chargeTimer < attackChargeTime)
         {
-            RotateSelfToTarget();
+            enemyMovement.RotateSelfToPlayer();
             chargeTimer += Time.deltaTime;
         }
         else if (isCharging && chargeTimer >= attackChargeTime)
@@ -48,13 +48,6 @@ public class GuardRanged : MonoBehaviour
             enemyMovement.CurrentState = EnemyMovement.GuardState.chasing;
             enemyMovement.Agent.SetDestination(enemyMovement.PlayerDetectionPosition);
         }
-    }
-
-    private void RotateSelfToTarget()
-    {
-        Vector3 direction = (enemyMovement.PlayerDetectionPosition - transform.position).normalized;
-        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 3f);
     }
 
     private void FireAtPlayer()
