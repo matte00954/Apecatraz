@@ -43,6 +43,7 @@ public class ThirdPersonMovement : MonoBehaviour
     //Changes during runtime
     private float turnSmoothVelocity;
     private bool inAir = false;
+    private bool moving = false;
     private Vector3 velocity;
 
     //ground check
@@ -184,6 +185,9 @@ public class ThirdPersonMovement : MonoBehaviour
 
             ControllerMove(moveDirection * PlayerSpeed * Time.deltaTime);
         }
+        if (CheckGround()) {
+            StopRunning();
+        }
         animator.SetFloat("runY", direction.magnitude); //Joches grej
     }
 
@@ -279,5 +283,22 @@ public class ThirdPersonMovement : MonoBehaviour
     private bool CheckGround()
     {
         return Physics.CheckSphere(groundCheck.position, GroundCheckRadius, groundMask);
+    }
+
+    private void StopRunning()
+    {
+        if (controller.velocity.magnitude> 3)
+        {
+            if (!moving)
+            {
+                animator.SetTrigger("Start");
+            }
+            moving = true;
+        }
+        if (controller.velocity.magnitude < 3 && moving)
+        {
+            moving = false;
+            animator.SetTrigger("Stop");
+        }
     }
 }
