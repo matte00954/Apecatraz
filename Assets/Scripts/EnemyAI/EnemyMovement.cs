@@ -58,8 +58,9 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField, Tooltip("An array of waypoint objects the guard should follow in order.")]
     private GameObject[] waypoints;
 
-    private int currentWaypointIndex;
+    private Vector3 lastKnownPlayerDestination;
 
+    private int currentWaypointIndex;
     private float waitStateTimer;
     private float dumbStateTimer;
     private float detectionTimer;
@@ -143,6 +144,7 @@ public class EnemyMovement : MonoBehaviour
                 else
                 {
                     //Play "mistaken" voice here
+                    dumbStateTimer = TIMER_RESET_VALUE;
                     StartWaiting();
                 }
                 break;
@@ -243,6 +245,11 @@ public class EnemyMovement : MonoBehaviour
         Vector3 direction = (PlayerDetectionPosition - transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 3f);
+    }
+
+    public void RefreshDetectionDelay()
+    {
+        detectionTimer = 0f;
     }
 
     private void OnTriggerStay(Collider other)

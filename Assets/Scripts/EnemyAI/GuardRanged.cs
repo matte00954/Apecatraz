@@ -45,8 +45,9 @@ public class GuardRanged : MonoBehaviour
         {
             isCharging = false;
             FireAtPlayer();
-            enemyMovement.CurrentState = EnemyMovement.GuardState.chasing;
             enemyMovement.Agent.SetDestination(enemyMovement.PlayerDetectionPosition);
+            enemyMovement.RefreshDetectionDelay();
+            enemyMovement.CurrentState = EnemyMovement.GuardState.chasing;
         }
     }
 
