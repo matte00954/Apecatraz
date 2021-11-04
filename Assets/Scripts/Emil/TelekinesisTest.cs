@@ -13,6 +13,8 @@ public class TelekinesisTest : MonoBehaviour
 
     private GameObject carriedObject;
 
+    private TelekinesisToggle telekinesisToggle;
+
     private float moveForce = 5f;
 
     private float pickupRange = 6f;
@@ -66,6 +68,8 @@ public class TelekinesisTest : MonoBehaviour
             objectRigidbody.useGravity = false;
             objectRigidbody.drag = 2f; //Makes object move slower when holding
             carriedObject = pickObject;
+            telekinesisToggle = carriedObject.GetComponent<TelekinesisToggle>();
+            telekinesisToggle.isCarried = true;
         }
     }
 
@@ -98,9 +102,13 @@ public class TelekinesisTest : MonoBehaviour
             Rigidbody carriedRigidbody = carriedObject.GetComponent<Rigidbody>();
             carriedRigidbody.useGravity = true;
             carriedRigidbody.drag = 1f;
+            telekinesisToggle = carriedObject.GetComponent<TelekinesisToggle>();
+            telekinesisToggle.isCarried = false;
             carriedObject.transform.parent = null;
             carriedObject = null;
             thirdPersonMovement.PlayerState = ThirdPersonMovement.State.nothing;
+            
+
         }
         else
             Debug.LogError("carriedObject is null");
