@@ -300,6 +300,8 @@ public class ThirdPersonMovement : MonoBehaviour
         else
         {
             velocity.y += GravityValue * GravityMultiplier * Time.deltaTime; //gravity in the air
+            animator.SetFloat("YSpeed", velocity.y);
+            Debug.Log(velocity.y);
 
             /*if(inAir)
                 animator.SetTrigger("InAir");*/
