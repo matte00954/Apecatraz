@@ -110,6 +110,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4096
   ledgeCheck: {fileID: 30882857776937913}
+  climbAnimation: {fileID: -8211997847921910680, guid: 1b2d75bd5e7877241bd9de762d21df29, type: 3}
+  leftFoot: {fileID: 4156732291254600718}
+  rightFoot: {fileID: 1850526001144418179}
   energy: {fileID: 8444907791314147622}
   materials:
   - {fileID: 2100000, guid: b0e7e4d57becded4f9ec24fbbb2fde5a, type: 2}
@@ -151,14 +154,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e27f1fff52b7744ab10855633f75acc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraTelekinesisTarget: {fileID: 0}
-  moveForce: 5
-  pickupRange: 4
-  maxRange: 15
   thirdPersonMovement: {fileID: 1762694613964198749}
+  cameraTelekinesisTarget: {fileID: 0}
   canBeCarriedLayer:
     serializedVersion: 2
     m_Bits: 2048
+  energy: {fileID: 8444907791314147622}
 --- !u!136 &8106888074099415624
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -334,6 +335,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -2529083445792942949, guid: 1b2d75bd5e7877241bd9de762d21df29, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 517cf3c7715016a45be7243915734ac5, type: 2}
     - target: {fileID: 919132149155446097, guid: 1b2d75bd5e7877241bd9de762d21df29, type: 3}
       propertyPath: m_Name
       value: monke2
@@ -348,5 +353,15 @@ GameObject:
 --- !u!4 &8963748985797035977 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1b2d75bd5e7877241bd9de762d21df29, type: 3}
+  m_PrefabInstance: {fileID: 8930386584642920482}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4156732291254600718 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -4449355537797192660, guid: 1b2d75bd5e7877241bd9de762d21df29, type: 3}
+  m_PrefabInstance: {fileID: 8930386584642920482}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1850526001144418179 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7080072990076465057, guid: 1b2d75bd5e7877241bd9de762d21df29, type: 3}
   m_PrefabInstance: {fileID: 8930386584642920482}
   m_PrefabAsset: {fileID: 0}

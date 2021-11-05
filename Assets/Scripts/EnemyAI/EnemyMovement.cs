@@ -8,10 +8,13 @@ public class EnemyMovement : MonoBehaviour
     public enum GuardState { patrolling, waiting, investigating, dumbstruck, chasing, shooting } 
     private GuardState currentState;
 
-    private const float MIN_SPACING_PATROL = 1f;
-    private const float MIN_SPACING_INVESTIGATE = 10f;
-    private const float MIN_SPACING_CHASE = 5f;
-    
+    //Default spacing from agent destinations
+    private const float DEFAULT_MIN_SPACING = 1f;
+    //Default timer reset value
+    private const float TIMER_RESET_VALUE = 0f;
+    private const float DEFAULT_PATROL_SPEED = 3f;
+    private const float DEFAULT_ALERT_SPEED = 6f;
+
     [Header("References")]
     [SerializeField] private GameObject exclamationMark;
     [SerializeField] private AudioClip alertSoundEffect;
@@ -19,6 +22,15 @@ public class EnemyMovement : MonoBehaviour
 
     [Header("Agent")]
     [SerializeField] private NavMeshAgent agent;
+    [SerializeField, Range(1f, 10f)] private float patrolSpeed = DEFAULT_PATROL_SPEED;
+    [SerializeField, Range(1f, 10f)] private float alertSpeed = DEFAULT_ALERT_SPEED;
+
+    [SerializeField, Range(1f, 10f)]
+    private float patrolDestinationSpacing = DEFAULT_MIN_SPACING;
+    [SerializeField, Range(1f, 10f)]
+    private float investigateDestinationSpacing = DEFAULT_MIN_SPACING;
+    [SerializeField, Range(1f, 10f)]
+    private float chaseDestinationSpacing = DEFAULT_MIN_SPACING;
 
     [Header("Detection")]
     [SerializeField] private GameObject playerDetectionPoint;
@@ -42,27 +54,26 @@ public class EnemyMovement : MonoBehaviour
     private bool isCircling;
     [SerializeField, Tooltip("The amount of time the guard should wait after reaching a waypoint.")]
     private float totalWaitTime;
-    [SerializeField, Range(1f, 10f)]
-    private float stopDistancePatrol = 1f;
+    
     [SerializeField, Tooltip("An array of waypoint objects the guard should follow in order.")]
     private GameObject[] waypoints;
 
-    private int currentWaypointIndex;
+    private Vector3 lastKnownPlayerDestination;
 
+    private int currentWaypointIndex;
     private float waitStateTimer;
     private float dumbStateTimer;
     private float detectionTimer;
     private float detectionRange;
 
     private bool isPathInverted;
-    private bool detectedPlayerOnce;
     private bool detectingPlayer;
 
     public void Start()
     {
         audioSource = gameObject.GetComponent<AudioSource>();
         detectionRange = fieldOfViewCollider.bounds.size.z;
-        detectedPlayerOnce = false;
+        agent.speed = patrolSpeed;
 
         if (isStationary)
             Debug.Log(gameObject.name + " is set to stationary.");
@@ -96,7 +107,7 @@ public class EnemyMovement : MonoBehaviour
         switch (currentState)
         {
             case GuardState.patrolling:
-                if (agent.remainingDistance <= MIN_SPACING_PATROL)
+                if (agent.remainingDistance <= patrolDestinationSpacing)
                     StartWaiting();
                 break;
             case GuardState.waiting:
@@ -112,22 +123,28 @@ public class EnemyMovement : MonoBehaviour
                 }
                 break;
             case GuardState.investigating:
-                if (agent.remainingDistance <= MIN_SPACING_INVESTIGATE)
+                if (agent.remainingDistance <= investigateDestinationSpacing)
                     StartWaiting();
                 break;
             case GuardState.dumbstruck:
                 if (dumbStateTimer < dumbstruckTime)
+                {
                     dumbStateTimer += Time.deltaTime;
-                else if (detectingPlayer)
+                    RotateSelfToPlayer();
+                }
+                else if (detectingPlayer) //This runs once when enemy transitions from 'dumbstruck' to 'chasing'.
                 {
                     //Play "alert" voice here
                     exclamationMark.SetActive(true);
                     audioSource.PlayOneShot(alertSoundEffect);
+                    dumbStateTimer = TIMER_RESET_VALUE;
                     currentState = GuardState.chasing;
+                    agent.speed = alertSpeed;
                 }
                 else
                 {
                     //Play "mistaken" voice here
+                    dumbStateTimer = TIMER_RESET_VALUE;
                     StartWaiting();
                 }
                 break;
@@ -139,8 +156,8 @@ public class EnemyMovement : MonoBehaviour
                 }
 
                 if (detectingPlayer)
-                    detectionTimer = 0f;
-                else if (agent.remainingDistance <= MIN_SPACING_CHASE && detectionTimer >= lostDetectionDelay)
+                    detectionTimer = TIMER_RESET_VALUE;
+                else if (agent.remainingDistance <= chaseDestinationSpacing && detectionTimer >= lostDetectionDelay)
                 {
                     exclamationMark.SetActive(false);
                     StartWaiting();
@@ -159,7 +176,9 @@ public class EnemyMovement : MonoBehaviour
     private void StartWaiting()
     {
         currentState = GuardState.waiting;
-        waitStateTimer = 0f;
+        agent.SetDestination(transform.position);
+        waitStateTimer = TIMER_RESET_VALUE;
+        agent.speed = patrolSpeed;
     }
 
     private void UpdateDetectionRays()
@@ -176,16 +195,15 @@ public class EnemyMovement : MonoBehaviour
 
     private void ReactToPlayer()
     {
-        if (!detectedPlayerOnce)
+        if (currentState.Equals(GuardState.patrolling) || currentState.Equals(GuardState.waiting) || currentState.Equals(GuardState.investigating))
         {
             currentState = GuardState.dumbstruck;
             agent.SetDestination(transform.position);
-            detectedPlayerOnce = true;
         }
         else if (currentState != GuardState.dumbstruck && currentState != GuardState.shooting)
         {
             currentState = GuardState.chasing;
-            detectionTimer = 0f;
+            detectionTimer = TIMER_RESET_VALUE;
         }
     }
 
@@ -222,6 +240,18 @@ public class EnemyMovement : MonoBehaviour
         agent.SetDestination(waypoints[currentWaypointIndex].transform.position);
     }
 
+    public void RotateSelfToPlayer()
+    {
+        Vector3 direction = (PlayerDetectionPosition - transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 3f);
+    }
+
+    public void RefreshDetectionDelay()
+    {
+        detectionTimer = 0f;
+    }
+
     private void OnTriggerStay(Collider other)
     {
         if (currentState == GuardState.patrolling || currentState == GuardState.waiting)
@@ -248,7 +278,6 @@ public class EnemyMovement : MonoBehaviour
     public Vector3 PlayerDetectionPosition { get => playerDetectionPoint.transform.position; }
     public NavMeshAgent Agent { get => agent; }
     public bool DetectingPlayer { get => detectingPlayer; }
-    public bool DetectedPlayerOnce { get => detectedPlayerOnce; }
     public GuardState CurrentState { get => currentState; set => currentState = value; }
     
 }

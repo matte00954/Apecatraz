@@ -30,7 +30,16 @@ public class ThirdPersonMovement : MonoBehaviour
     [Header("Ledge")]
     [SerializeField] private LayerMask ledgeMask;
     [SerializeField] private GameObject ledgeCheck;
-    private float ledgeCheckLength = 1.35f;
+    [SerializeField] private AnimationClip climbAnimation;
+    [SerializeField] private Transform leftFoot;
+    [SerializeField] private Transform rightFoot;
+    private Vector3 betweenFeet;
+    private RaycastHit ledgeHit;
+    private bool startTimerForLedgeAnimation;
+    private float ledgeCheckDownLength = 1.35f;
+    private float ledgeCheckForward = 10f;
+    private float timeRemaining;
+    private float maxClimbAnimationTimer;
 
     [Header("Energy")]
     [SerializeField] private Energy energy;
@@ -43,7 +52,9 @@ public class ThirdPersonMovement : MonoBehaviour
     //Changes during runtime
     private float turnSmoothVelocity;
     private bool inAir = false;
+    private bool moving = false;
     private Vector3 velocity;
+    private float saveRot;
 
     //ground check
     private const float GroundCheckRadius = 0.15f; // comparing ground check game object to floor
@@ -68,7 +79,11 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Start()
     {
+        betweenFeet = rightFoot.position + leftFoot.position / 2;
+
         dashEffectsReference = mainCamera.GetComponent<DashEffects>();
+
+        maxClimbAnimationTimer = climbAnimation.length;
 
         playerState = State.nothing;
 
@@ -96,6 +111,7 @@ public class ThirdPersonMovement : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        GetTurn();
         if (!InGameMenuManager.gameIsPaused)
         {
             if (Time.timeScale != 1) //to unpause game
@@ -106,6 +122,11 @@ public class ThirdPersonMovement : MonoBehaviour
             }
 
             StateCheck();
+
+            if (startTimerForLedgeAnimation)
+            {
+                LedgeAnimation();
+            }
 
             if (Input.GetKey(KeyCode.P))
             {
@@ -131,7 +152,7 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             case State.dashing:
                 Dash();
-                LedgeClimb();
+                LedgeCheck();
                 break;
             case State.telekinesis:
                 Movement();
@@ -142,7 +163,7 @@ public class ThirdPersonMovement : MonoBehaviour
             case State.nothing:
                 Movement();
                 Jump();
-                LedgeClimb();
+                LedgeCheck();
 
                 if (Input.GetKeyDown(KeyCode.LeftShift))
                 {
@@ -177,32 +198,61 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + mainCamera.transform.eulerAngles.y; //first find target angle
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TurnSmoothTime); //adjust angle for smoothing
-
             transform.rotation = Quaternion.Euler(0f, angle, 0f); //adjusted angle used here for rotation
 
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward; //adjust direction to camera rotation/direction
 
             ControllerMove(moveDirection * PlayerSpeed * Time.deltaTime);
         }
+        if (CheckGround())
+        {
+            StopRunning();
+        }
         animator.SetFloat("runY", direction.magnitude); //Joches grej
     }
 
-    private void LedgeClimb() //may need to expand this, no bugs yet
+    private void LedgeCheck() //may need to expand this, no bugs yet
     {
-        RaycastHit hit;
+        RaycastHit downHit; //ray from ledge check game object
 
-        if (Physics.Raycast(ledgeCheck.gameObject.transform.position, Vector3.down, out hit, ledgeCheckLength, ledgeMask)
+        if (Physics.Raycast(ledgeCheck.gameObject.transform.position, Vector3.down, out downHit, ledgeCheckDownLength, ledgeMask)
             && !playerState.Equals(State.dashing) && !playerState.Equals(State.telekinesis))
         {
-            playerState = State.disabled;
-            velocity = new Vector3(0, 0, 0); //removes all velocity during climb
-            controller.enabled = false;
-            animator.SetTrigger("LedgeGrab");
-            transform.position = hit.point;
-            controller.enabled = true;
-            playerState = State.nothing;
+            RaycastHit forwardHit;
+            if (Physics.Raycast(transform.position, Vector3.forward, out forwardHit, ledgeCheckForward, ledgeMask))
+            {
+                animator.SetTrigger("LedgeGrab");
+                ledgeHit = downHit;
+                Debug.Log("CLIMB");
+                playerState = State.disabled;
+                velocity = new Vector3(0, 0, 0); //removes all velocity during climb
+                controller.enabled = false;
+                timeRemaining = maxClimbAnimationTimer;
+                startTimerForLedgeAnimation = true;
+            }
         }
-        //may need another raycast to check front, works well without at the moment
+    }
+
+    private void LedgeAnimation()
+    {
+
+        if (timeRemaining > 0)
+        {
+            timeRemaining -= Time.deltaTime;
+        }
+
+        if (timeRemaining < maxClimbAnimationTimer)
+        {
+            startTimerForLedgeAnimation = false;
+            LedgeClimb();
+        }
+    }
+
+    private void LedgeClimb()
+    {
+        transform.position = ledgeHit.point;
+        controller.enabled = true;
+        playerState = State.nothing;
     }
 
     private void Dash()
@@ -250,6 +300,7 @@ public class ThirdPersonMovement : MonoBehaviour
         else
         {
             velocity.y += GravityValue * GravityMultiplier * Time.deltaTime; //gravity in the air
+            animator.SetFloat("YSpeed", velocity.y);
 
             /*if(inAir)
                 animator.SetTrigger("InAir");*/
@@ -279,5 +330,28 @@ public class ThirdPersonMovement : MonoBehaviour
     private bool CheckGround()
     {
         return Physics.CheckSphere(groundCheck.position, GroundCheckRadius, groundMask);
+    }
+
+    private void StopRunning()
+    {
+        if (controller.velocity.magnitude> 3)
+        {
+            if (!moving)
+            {
+                animator.SetTrigger("Start");
+            }
+            moving = true;
+        }
+        if (controller.velocity.magnitude < 3 && moving)
+        {
+            moving = false;
+            animator.SetTrigger("Stop");
+        }
+    }
+
+    private void GetTurn()
+    {
+        animator.SetFloat("runX", (saveRot + 1000) - (transform.eulerAngles.y + 1000));
+        saveRot = transform.eulerAngles.y;
     }
 }
