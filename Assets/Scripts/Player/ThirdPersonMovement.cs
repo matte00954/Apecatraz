@@ -127,12 +127,6 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 LedgeAnimation();
             }
-
-            if (Input.GetKey(KeyCode.P))
-            {
-                ResetScene.RestartScene();
-            }
-
         }
 
         if (InGameMenuManager.gameIsPaused && Cursor.lockState.Equals(CursorLockMode.Locked))
@@ -353,5 +347,11 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         animator.SetFloat("runX", (saveRot + 1000) - (transform.eulerAngles.y + 1000));
         saveRot = transform.eulerAngles.y;
+    }
+    public void MoveTo(Vector3 position)
+    {
+        gameObject.GetComponent<CharacterController>().enabled = false;
+        gameObject.transform.position = position;
+        gameObject.GetComponent<CharacterController>().enabled = true;
     }
 }
