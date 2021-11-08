@@ -10,7 +10,7 @@ public class ThirdPersonMovement : MonoBehaviour
     public State PlayerState { get => playerState; set => playerState = value; }
 
     /*
-     *     private const float MIN_SPACING_PATROL = 1f;
+     * private const float MIN_SPACING_PATROL = 1f;
     private const float MIN_SPACING_INVESTIGATE = 10f;
     private const float MIN_SPACING_CHASE = 5f;
      */
@@ -31,9 +31,6 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private LayerMask ledgeMask;
     [SerializeField] private GameObject ledgeCheck;
     [SerializeField] private AnimationClip climbAnimation;
-    [SerializeField] private Transform leftFoot;
-    [SerializeField] private Transform rightFoot;
-    private Vector3 betweenFeet;
     private RaycastHit ledgeHit;
     private bool startTimerForLedgeAnimation;
     private float ledgeCheckDownLength = 1.35f;
@@ -79,7 +76,6 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Start()
     {
-        betweenFeet = rightFoot.position + leftFoot.position / 2;
 
         dashEffectsReference = mainCamera.GetComponent<DashEffects>();
 

@@ -11,6 +11,10 @@ public class Telekinesis : MonoBehaviour
     [SerializeField] private Energy energy;
     private float telekinesisEnergyCost = 0.1f;
 
+    [Header("Telekinesis")]
+    [SerializeField] private GameObject mainCamera;
+    [SerializeField] private GameObject telekinesisOrigin;
+
     private GameObject carriedObject;
 
     private float moveForce = 5f;
@@ -46,7 +50,7 @@ public class Telekinesis : MonoBehaviour
         {
             RaycastHit hit;
 
-            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
+            if (Physics.Raycast(telekinesisOrigin.transform.position, /*transform.TransformDirection(Vector3.forward)*/ mainCamera.transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
             {
                 PickupObject(hit.transform.gameObject);
                 Debug.Log("hit " + hit.transform.gameObject);
