@@ -158,7 +158,7 @@ public class ThirdPersonMovement : MonoBehaviour
                 Jump();
                 LedgeCheck();
 
-                if (Input.GetKeyDown(KeyCode.LeftShift))
+                if (Input.GetKeyDown(KeyCode.LeftShift) && !dashInactive)
                 {
                     playerState = State.dashing;
                     ActivateRenderer(1);
@@ -260,33 +260,30 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Dash()
     {
-        if (!dashInactive)
+        if (Input.GetKey(KeyCode.LeftShift) && energy.CheckEnergy(dashEnergyCost))
         {
-            if (Input.GetKey(KeyCode.LeftShift) && energy.CheckEnergy(dashEnergyCost))
+            dashEffectsReference.SlowDown();
+            ActivateRenderer(1); //Teleport shader
+
+            energy.SpendEnergy(dashEnergyCost);
+
+            //animator.SetTrigger("Teleport");
+
+
+            RaycastHit hit;
+
+            if (Physics.SphereCast(transform.position, 1f, transform.forward, out hit, TELEPORT_DISTANCE_CHECK, ledgeMask))
             {
-                dashEffectsReference.SlowDown();
-                ActivateRenderer(1); //Teleport shader
-
-                energy.SpendEnergy(dashEnergyCost);
-
-                //animator.SetTrigger("Teleport");
-
-
-                RaycastHit hit;
-
-                if (Physics.SphereCast(transform.position, 1f, transform.forward, out hit, TELEPORT_DISTANCE_CHECK, ledgeMask))
-                {
-                    ControllerMove(transform.forward * hit.distance * DASH_MARIGIN_MULTIPLIER);
-                }
-                else
-                    ControllerMove(transform.forward * DASH_DISTANCE_MULTIPLIER);
+                ControllerMove(transform.forward * hit.distance * DASH_MARIGIN_MULTIPLIER);
             }
             else
-            {
-                ActivateRenderer(0);
-                dashEffectsReference.SpeedUp();
-                playerState = State.nothing;
-            }
+                ControllerMove(transform.forward * DASH_DISTANCE_MULTIPLIER);
+        }
+        else
+        {
+            ActivateRenderer(0);
+            dashEffectsReference.SpeedUp();
+            playerState = State.nothing;
         }
     }
 
