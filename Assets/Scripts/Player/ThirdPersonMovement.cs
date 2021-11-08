@@ -213,7 +213,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void LedgeCheck() 
     {
-        if (ledgeGrabInactive)
+        if (!ledgeGrabInactive)
         {
             RaycastHit downHit; //ray from ledge check game object
 
@@ -260,7 +260,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Dash()
     {
-        if (ledgeGrabInactive)
+        if (!dashInactive)
         {
             if (Input.GetKey(KeyCode.LeftShift) && energy.CheckEnergy(dashEnergyCost))
             {
