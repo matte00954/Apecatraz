@@ -23,7 +23,7 @@ public class Telekinesis : MonoBehaviour
 
     private float pickupRange = 7f;
 
-    private float minRange = 2.2f; 
+    private float minRange = 1.95f; 
     private float maxRange = 10f; //needs to be higher than pickuprange
 
     private bool silenced;

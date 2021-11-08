@@ -221,11 +221,10 @@ public class ThirdPersonMovement : MonoBehaviour
                 && !playerState.Equals(State.dashing) && !playerState.Equals(State.telekinesis))
             {
                 RaycastHit forwardHit;
-                if (Physics.Raycast(transform.position, Vector3.forward, out forwardHit, ledgeCheckForward, ledgeMask))
+                if (Physics.Raycast(transform.position, Vector3.forward * 2f, out forwardHit, ledgeCheckForward, ledgeMask))
                 {
                     animator.SetTrigger("LedgeGrab");
                     ledgeHit = downHit;
-                    Debug.Log("CLIMB");
                     playerState = State.disabled;
                     velocity = new Vector3(0, 0, 0); //removes all velocity during climb
                     controller.enabled = false;
