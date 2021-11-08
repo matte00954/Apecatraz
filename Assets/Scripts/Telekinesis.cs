@@ -32,14 +32,17 @@ public class Telekinesis : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (thirdPersonMovement.isTelekinesisActive)
         {
-            FindObject();
-        }
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                FindObject();
+            }
 
-        if (carriedObject != null)
-        {
-            MoveObject();
+            if (carriedObject != null)
+            {
+                MoveObject();
+            }
         }
     }
 

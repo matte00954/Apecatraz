@@ -21,6 +21,7 @@ public class Energy : MonoBehaviour
 
     void Update()
     {
+
         if (regenerateEnergy == true)
         {
             //Figure out how much energy should recharge this frame.
@@ -45,15 +46,15 @@ public class Energy : MonoBehaviour
             {
 
             }*/
-                
+
 
             /*if (Mathf.Approximately(currentEnergy, maxEnergy))
                 Debug.Log("Energy: FULL");
             else
                 Debug.Log("Energy: " + currentEnergy);
                 */
-                
         }
+
     }
 
     public void SpendEnergy(float energyToBeRemoved)
@@ -71,4 +72,10 @@ public class Energy : MonoBehaviour
         regenerateEnergy = activate;
     }
 
+    public void InfiniteEnergy()
+    {
+        rechargeTime = 0.1f;
+        currentEnergy = 10000f;
+        maxEnergy = 10000f;
+    }
 }

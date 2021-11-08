@@ -9,11 +9,24 @@ public class ThirdPersonMovement : MonoBehaviour
 
     public State PlayerState { get => playerState; set => playerState = value; }
 
-    /*
-     * private const float MIN_SPACING_PATROL = 1f;
-    private const float MIN_SPACING_INVESTIGATE = 10f;
-    private const float MIN_SPACING_CHASE = 5f;
-     */
+    //teleport
+    private const float DASH_DISTANCE_MULTIPLIER = 0.75f; //per frame
+    private const float TELEPORT_DISTANCE_CHECK = 0.5f;
+    private const float DASH_MARIGIN_MULTIPLIER = 0.8f;
+
+    //movement
+    private const float PLAYER_SPEED = 6f; //Do not change
+    private const float JUMP_HEIGHT = 4f; //Do not change
+
+    //gravity
+    private const float GRAVITY_VALUE = -9.81f; // do not change this -9.81f
+    private const float GRAVITY_MULTIPLIER = 1.5f; //multiplies gravity force
+
+    //ground check
+    private const float GROUND_CHECK_RADIUS = 0.15f; // comparing ground check game object to floor
+
+    //rotation
+    private const float TURN_SMOOTH_TIME = 0.1f;
 
     [Header("Main camera")]
     [SerializeField] private Camera mainCamera;
@@ -46,36 +59,32 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] Material[] materials;
     private Renderer rend;
 
+    [Header("ONLY FOR PROTOTYPES")]
+    [SerializeField] private bool dashInactive = false;
+    [SerializeField] private bool ledgeGrabInactive = false;
+    [SerializeField] private bool telekinesInactive = false;
+    [SerializeField] private bool godMode = false;
+    [SerializeField] private bool infiniteEnergy = false;
+
+    [HideInInspector] public bool isTelekinesisActive { get; set; }
+
     //Changes during runtime
     private float turnSmoothVelocity;
     private bool inAir = false;
     private bool moving = false;
     private Vector3 velocity;
-    private float saveRot;
-
-    //ground check
-    private const float GroundCheckRadius = 0.15f; // comparing ground check game object to floor
-
-    //Rotation
-    private const float TurnSmoothTime = 0.1f;
-
-    //Teleport
-    private const float DashDistanceMultiplier = 0.75f; //per frame
-    private const float TeleportDistanceCheck = 0.5f;
-    private const float DashMarginMultiplier = 0.8f;
-
-    //movement, these are constant
-    private const float PlayerSpeed = 6f; //Do not change
-    private const float JumpHeight = 4f; //Do not change
-
-    //gravity
-    private const float GravityValue = -9.81f; // do not change this -9.81f
-    private const float GravityMultiplier = 1.5f; //multiplies gravity force
+    private float saveRotation;
 
     private DashEffects dashEffectsReference;
 
     private void Start()
     {
+        if (telekinesInactive)
+        {
+            isTelekinesisActive = false;
+        }
+        else
+            isTelekinesisActive = true;
 
         dashEffectsReference = mainCamera.GetComponent<DashEffects>();
 
@@ -107,22 +116,16 @@ public class ThirdPersonMovement : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        GetTurn();
+
         if (!InGameMenuManager.gameIsPaused)
         {
+
             if (Time.timeScale != 1) //to unpause game
             {
-                ActivateRenderer(0); //Default shader
-
                 Time.timeScale = 1;
             }
 
             StateCheck();
-
-            if (startTimerForLedgeAnimation)
-            {
-                LedgeAnimation();
-            }
         }
 
         if (InGameMenuManager.gameIsPaused && Cursor.lockState.Equals(CursorLockMode.Locked))
@@ -136,7 +139,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     }
 
-    private void StateCheck()
+    private void StateCheck() //this is in update
     {
         switch (playerState)
         {
@@ -170,6 +173,13 @@ public class ThirdPersonMovement : MonoBehaviour
         }
 
         Gravity(); //Always on
+
+        GetTurn();
+
+        if (startTimerForLedgeAnimation)
+        {
+            LedgeAnimation();
+        }
     }
 
     public void ActivateRenderer(int index)
@@ -187,12 +197,12 @@ public class ThirdPersonMovement : MonoBehaviour
         if (direction.magnitude >= 0.1f)
         {
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + mainCamera.transform.eulerAngles.y; //first find target angle
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TurnSmoothTime); //adjust angle for smoothing
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TURN_SMOOTH_TIME); //adjust angle for smoothing
             transform.rotation = Quaternion.Euler(0f, angle, 0f); //adjusted angle used here for rotation
 
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward; //adjust direction to camera rotation/direction
 
-            ControllerMove(moveDirection * PlayerSpeed * Time.deltaTime);
+            ControllerMove(moveDirection * PLAYER_SPEED * Time.deltaTime);
         }
         if (CheckGround())
         {
@@ -201,24 +211,27 @@ public class ThirdPersonMovement : MonoBehaviour
         animator.SetFloat("runY", direction.magnitude); //Joches grej
     }
 
-    private void LedgeCheck() //may need to expand this, no bugs yet
+    private void LedgeCheck() 
     {
-        RaycastHit downHit; //ray from ledge check game object
-
-        if (Physics.Raycast(ledgeCheck.gameObject.transform.position, Vector3.down, out downHit, ledgeCheckDownLength, ledgeMask)
-            && !playerState.Equals(State.dashing) && !playerState.Equals(State.telekinesis))
+        if (ledgeGrabInactive)
         {
-            RaycastHit forwardHit;
-            if (Physics.Raycast(transform.position, Vector3.forward, out forwardHit, ledgeCheckForward, ledgeMask))
+            RaycastHit downHit; //ray from ledge check game object
+
+            if (Physics.Raycast(ledgeCheck.gameObject.transform.position, Vector3.down, out downHit, ledgeCheckDownLength, ledgeMask)
+                && !playerState.Equals(State.dashing) && !playerState.Equals(State.telekinesis))
             {
-                animator.SetTrigger("LedgeGrab");
-                ledgeHit = downHit;
-                Debug.Log("CLIMB");
-                playerState = State.disabled;
-                velocity = new Vector3(0, 0, 0); //removes all velocity during climb
-                controller.enabled = false;
-                timeRemaining = maxClimbAnimationTimer;
-                startTimerForLedgeAnimation = true;
+                RaycastHit forwardHit;
+                if (Physics.Raycast(transform.position, Vector3.forward, out forwardHit, ledgeCheckForward, ledgeMask))
+                {
+                    animator.SetTrigger("LedgeGrab");
+                    ledgeHit = downHit;
+                    Debug.Log("CLIMB");
+                    playerState = State.disabled;
+                    velocity = new Vector3(0, 0, 0); //removes all velocity during climb
+                    controller.enabled = false;
+                    timeRemaining = maxClimbAnimationTimer;
+                    startTimerForLedgeAnimation = true;
+                }
             }
         }
     }
@@ -247,30 +260,33 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Dash()
     {
-        if (Input.GetKey(KeyCode.LeftShift) && energy.CheckEnergy(dashEnergyCost))
+        if (ledgeGrabInactive)
         {
-            dashEffectsReference.SlowDown();
-            ActivateRenderer(1); //Teleport shader
-
-            energy.SpendEnergy(dashEnergyCost);
-
-            //animator.SetTrigger("Teleport");
-
-
-            RaycastHit hit;
-
-            if (Physics.SphereCast(transform.position, 1f, transform.forward, out hit, TeleportDistanceCheck, ledgeMask))
+            if (Input.GetKey(KeyCode.LeftShift) && energy.CheckEnergy(dashEnergyCost))
             {
-                ControllerMove(transform.forward * hit.distance * DashMarginMultiplier);
+                dashEffectsReference.SlowDown();
+                ActivateRenderer(1); //Teleport shader
+
+                energy.SpendEnergy(dashEnergyCost);
+
+                //animator.SetTrigger("Teleport");
+
+
+                RaycastHit hit;
+
+                if (Physics.SphereCast(transform.position, 1f, transform.forward, out hit, TELEPORT_DISTANCE_CHECK, ledgeMask))
+                {
+                    ControllerMove(transform.forward * hit.distance * DASH_MARIGIN_MULTIPLIER);
+                }
+                else
+                    ControllerMove(transform.forward * DASH_DISTANCE_MULTIPLIER);
             }
             else
-                ControllerMove(transform.forward * DashDistanceMultiplier);
-        }
-        else
-        {
-            ActivateRenderer(0);
-            dashEffectsReference.SpeedUp();
-            playerState = State.nothing;
+            {
+                ActivateRenderer(0);
+                dashEffectsReference.SpeedUp();
+                playerState = State.nothing;
+            }
         }
     }
 
@@ -289,7 +305,7 @@ public class ThirdPersonMovement : MonoBehaviour
         }
         else
         {
-            velocity.y += GravityValue * GravityMultiplier * Time.deltaTime; //gravity in the air
+            velocity.y += GRAVITY_VALUE * GRAVITY_MULTIPLIER * Time.deltaTime; //gravity in the air
             animator.SetFloat("YSpeed", velocity.y);
 
             /*if(inAir)
@@ -308,7 +324,7 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             animator.SetTrigger("Jump");
             inAir = true;
-            velocity.y = Mathf.Sqrt(JumpHeight * -2f * GravityValue);
+            velocity.y = Mathf.Sqrt(JUMP_HEIGHT * -2f * GRAVITY_VALUE);
         }
     }
 
@@ -319,10 +335,10 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private bool CheckGround()
     {
-        return Physics.CheckSphere(groundCheck.position, GroundCheckRadius, groundMask);
+        return Physics.CheckSphere(groundCheck.position, GROUND_CHECK_RADIUS, groundMask);
     }
 
-    private void StopRunning()
+    private void StopRunning() //Joche
     {
         if (controller.velocity.magnitude> 3)
         {
@@ -339,11 +355,12 @@ public class ThirdPersonMovement : MonoBehaviour
         }
     }
 
-    private void GetTurn()
+    private void GetTurn() //Joche
     {
-        animator.SetFloat("runX", (saveRot + 1000) - (transform.eulerAngles.y + 1000));
-        saveRot = transform.eulerAngles.y;
+        animator.SetFloat("runX", (saveRotation + 1000) - (transform.eulerAngles.y + 1000));
+        saveRotation = transform.eulerAngles.y;
     }
+
     public void MoveTo(Vector3 position)
     {
         gameObject.GetComponent<CharacterController>().enabled = false;
