@@ -15,19 +15,23 @@ public class Telekinesis : MonoBehaviour
     [SerializeField] private GameObject mainCamera;
     [SerializeField] private GameObject telekinesisOrigin;
 
+    private float telkenesisOffsetMultiplier;
+
     private GameObject carriedObject;
 
-    private float moveForce = 5f;
+    private float moveForce = 3f;
 
-    private float pickupRange = 6f;
+    private float pickupRange = 7f;
 
-    private float maxRange = 15f; //needs to be higher than pickuprange
+    private float minRange = 2.2f; 
+    private float maxRange = 10f; //needs to be higher than pickuprange
 
     private bool silenced;
 
     void Start()
     {
         carriedObject = null;
+        telkenesisOffsetMultiplier = 0f;
     }
 
     private void Update()
@@ -43,6 +47,8 @@ public class Telekinesis : MonoBehaviour
             {
                 MoveObject();
             }
+            else
+                telkenesisOffsetMultiplier = 0f;
         }
     }
 
@@ -56,7 +62,7 @@ public class Telekinesis : MonoBehaviour
             if (Physics.Raycast(telekinesisOrigin.transform.position, /*transform.TransformDirection(Vector3.forward)*/ mainCamera.transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
             {
                 PickupObject(hit.transform.gameObject);
-                Debug.Log("hit " + hit.transform.gameObject);
+                //Debug.Log("hit " + hit.transform.gameObject);
                 thirdPersonMovement.ActivateRenderer(1); // 1 = Ability shader
                 thirdPersonMovement.PlayerState = ThirdPersonMovement.State.telekinesis;
             }
@@ -80,7 +86,7 @@ public class Telekinesis : MonoBehaviour
     {
         if(Vector3.Distance(carriedObject.transform.position, cameraTelekinesisTarget.position) > 0.1f)
         {
-            Vector3 moveDirection = cameraTelekinesisTarget.position - carriedObject.transform.position;
+            Vector3 moveDirection = cameraTelekinesisTarget.position - carriedObject.transform.position + (cameraTelekinesisTarget.forward * telkenesisOffsetMultiplier);
             carriedObject.GetComponent<Rigidbody>().AddForce(moveDirection * moveForce);
 
             energy.SpendEnergy(telekinesisEnergyCost);
@@ -88,12 +94,25 @@ public class Telekinesis : MonoBehaviour
             if(!energy.CheckEnergy(telekinesisEnergyCost))
             {
                 DropObject();
+                return;
             }
 
             if (Vector3.Distance(transform.position, carriedObject.transform.position) > maxRange)
             {
                 DropObject();
+                return;
             }
+
+            if(Vector3.Distance(transform.position, carriedObject.transform.position) < minRange)
+            {
+                DropObject();
+                return;
+            }
+
+            if (Input.mouseScrollDelta.y > 0)
+                telkenesisOffsetMultiplier += Input.mouseScrollDelta.y; 
+            if (Input.mouseScrollDelta.y < 0)
+                telkenesisOffsetMultiplier -= -Input.mouseScrollDelta.y; //do not touch
         }
     }
 
