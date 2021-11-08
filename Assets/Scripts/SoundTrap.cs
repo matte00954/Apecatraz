@@ -8,6 +8,7 @@ public class SoundTrap : MonoBehaviour
 {
     private const float DEFAULT_COOLDOWN = 2f;
     private const float TIMER_RESET = 0f;
+
 #pragma warning disable IDE0044 // Add readonly modifier
     [SerializeField, Range(0.1f, 5f)] private float triggerCooldown = DEFAULT_COOLDOWN;
     [SerializeField] private AudioClip collisionSound;
@@ -15,7 +16,7 @@ public class SoundTrap : MonoBehaviour
 #pragma warning restore IDE0044 // Add readonly modifier
 
     private AudioSource audioSource;
-    private readonly string playerName = "CanBeCarried";
+    private readonly string playerLayerName = "Player";
     private float cooldownTimer;
 
 #pragma warning disable IDE0051 // Remove unused private members
@@ -33,12 +34,12 @@ public class SoundTrap : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.layer.Equals(LayerMask.NameToLayer(playerName)))
+        if (other.gameObject.layer.Equals(LayerMask.NameToLayer(playerLayerName)))
         {
-            Debug.Log("Collision Success");
+            Debug.Log("SoundTrap triggered");
             if (cooldownTimer >= triggerCooldown)
             {
-                onCollision.Invoke();
+                onCollision.Invoke(); //Activates a method in the 'SoundLure'-script that emits the lure trigger collider for a brief second.
                 cooldownTimer = TIMER_RESET;
                 audioSource.PlayOneShot(collisionSound);
             }
