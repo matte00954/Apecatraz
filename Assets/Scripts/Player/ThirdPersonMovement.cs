@@ -4,7 +4,7 @@ using UnityEngine;
 public class ThirdPersonMovement : MonoBehaviour
 {
 
-    public enum State { dashing, telekinesis, disabled, nothing }
+    public enum State { dashing, telekinesis, disabled, nothing, climbing }
     private State playerState;
 
     public State PlayerState { get => playerState; set => playerState = value; }
@@ -42,12 +42,14 @@ public class ThirdPersonMovement : MonoBehaviour
 
     [Header("Ledge")]
     [SerializeField] private LayerMask ledgeMask;
-    [SerializeField] private GameObject ledgeCheck;
+    [SerializeField] private LayerMask playerLayer;
+    [SerializeField] private GameObject ledgeDownCheck;
+    [SerializeField] private GameObject ledgeForwardCheck;
     [SerializeField] private AnimationClip climbAnimation;
     private RaycastHit ledgeHit;
     private bool startTimerForLedgeAnimation;
-    private float ledgeCheckDownLength = 1.35f;
-    private float ledgeCheckForward = 10f;
+    private float ledgeCheckDownLength = 2f;
+    private float ledgeCheckForwardLength = 2f;
     private float timeRemaining;
     private float maxClimbAnimationTimer;
 
@@ -153,6 +155,8 @@ public class ThirdPersonMovement : MonoBehaviour
                 break;
             case State.disabled:
                 break;
+            case State.climbing:
+                break;
             case State.nothing:
                 Movement();
                 Jump();
@@ -172,7 +176,8 @@ public class ThirdPersonMovement : MonoBehaviour
                 break;
         }
 
-        Gravity(); //Always on
+        if(!playerState.Equals(State.climbing))
+            Gravity();
 
         GetTurn();
 
@@ -217,20 +222,27 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             RaycastHit downHit; //ray from ledge check game object
 
-            if (Physics.Raycast(ledgeCheck.gameObject.transform.position, Vector3.down, out downHit, ledgeCheckDownLength, ledgeMask)
-                && !playerState.Equals(State.dashing) && !playerState.Equals(State.telekinesis))
+            if (Physics.Raycast(ledgeDownCheck.gameObject.transform.position, new Vector3(0, ledgeCheckDownLength, 0), out downHit, ledgeCheckDownLength, ledgeMask)
+                 && !playerState.Equals(State.telekinesis) && !playerState.Equals(State.climbing))
             {
+                playerState = State.climbing;
                 RaycastHit forwardHit;
-                if (Physics.Raycast(transform.position, Vector3.forward * 2f, out forwardHit, ledgeCheckForward, ledgeMask))
+                if (Physics.Raycast(ledgeForwardCheck.transform.position, transform.forward * ledgeCheckForwardLength, out forwardHit, ledgeCheckForwardLength, ~playerLayer))
                 {
-                    animator.SetTrigger("LedgeGrab");
-                    ledgeHit = downHit;
-                    playerState = State.disabled;
-                    velocity = new Vector3(0, 0, 0); //removes all velocity during climb
-                    controller.enabled = false;
-                    timeRemaining = maxClimbAnimationTimer;
-                    startTimerForLedgeAnimation = true;
+                    if (forwardHit.collider.gameObject.layer == ledgeMask)
+                    {
+                        animator.SetTrigger("LedgeGrab");
+                        ledgeHit = downHit;
+                        velocity = new Vector3(0, 0, 0); //removes all velocity during climb
+                        controller.enabled = false;
+                        startTimerForLedgeAnimation = true;
+                        timeRemaining = maxClimbAnimationTimer;
+                    }
+                    else
+                        Debug.LogError("ledgecheck number 2 hit something other than ledgemask " + forwardHit.collider.gameObject.layer);
                 }
+                else
+                    Debug.LogError("ledgecheck number 2 did not hit anything ");
             }
         }
     }
@@ -238,22 +250,20 @@ public class ThirdPersonMovement : MonoBehaviour
     private void LedgeAnimation()
     {
 
-        if (timeRemaining > 0)
+        if (timeRemaining < 0)
         {
             timeRemaining -= Time.deltaTime;
         }
-
-        if (timeRemaining < maxClimbAnimationTimer)
+        else
         {
-            startTimerForLedgeAnimation = false;
             LedgeClimb();
+            startTimerForLedgeAnimation = false;
         }
     }
 
     private void LedgeClimb()
     {
-        transform.position = ledgeHit.point;
-        controller.enabled = true;
+        MoveTo(ledgeHit.point);
         playerState = State.nothing;
     }
 
@@ -359,8 +369,13 @@ public class ThirdPersonMovement : MonoBehaviour
 
     public void MoveTo(Vector3 position)
     {
-        gameObject.GetComponent<CharacterController>().enabled = false;
+        controller.enabled = false;
         gameObject.transform.position = position;
-        gameObject.GetComponent<CharacterController>().enabled = true;
+        controller.enabled = true;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawRay(ledgeForwardCheck.transform.position, Vector3.forward * 2f);
     }
 }

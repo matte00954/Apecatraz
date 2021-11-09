@@ -19,12 +19,12 @@ public class Telekinesis : MonoBehaviour
 
     private GameObject carriedObject;
 
-    private float moveForce = 3f;
+    private float moveForce = 10f;
 
     private float pickupRange = 7f;
 
-    private float minRange = 1.95f; 
-    private float maxRange = 10f; //needs to be higher than pickuprange
+    private float minRange = 1.5f;
+    private float maxRange = 12.5f; //needs to be higher than pickuprange
 
     private bool silenced;
 
@@ -77,7 +77,8 @@ public class Telekinesis : MonoBehaviour
         {
             Rigidbody objectRigidbody = pickObject.GetComponent<Rigidbody>();
             objectRigidbody.useGravity = false;
-            objectRigidbody.drag = 2f; //Makes object move slower when holding
+            objectRigidbody.freezeRotation = true;
+            objectRigidbody.drag = 6f; //Makes object move slower when holding
             carriedObject = pickObject;
         }
     }
@@ -122,6 +123,7 @@ public class Telekinesis : MonoBehaviour
         {
             thirdPersonMovement.ActivateRenderer(0); // 0 = default shader
             Rigidbody carriedRigidbody = carriedObject.GetComponent<Rigidbody>();
+            carriedRigidbody.freezeRotation = false;
             carriedRigidbody.useGravity = true;
             carriedRigidbody.drag = 1f;
             carriedObject.transform.parent = null;
