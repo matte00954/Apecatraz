@@ -44,14 +44,13 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private LayerMask ledgeMask;
     [SerializeField] private LayerMask playerLayer;
     [SerializeField] private GameObject ledgeDownCheck;
-    [SerializeField] private GameObject ledgeForwardCheck;
+    [SerializeField] private GameObject ledgeUpCheck;
     [SerializeField] private AnimationClip climbAnimation;
+
     private RaycastHit ledgeHit;
-    private bool startTimerForLedgeAnimation;
-    private float ledgeCheckDownLength = 2f;
-    private float ledgeCheckForwardLength = 2f;
-    private float timeRemaining;
-    private float maxClimbAnimationTimer;
+    private float ledgeLengthRayMultiplier = 2f;
+
+    private float timeRemainingOnAnimation;
 
     [Header("Energy")]
     [SerializeField] private Energy energy;
@@ -89,8 +88,6 @@ public class ThirdPersonMovement : MonoBehaviour
             isTelekinesisActive = true;
 
         dashEffectsReference = mainCamera.GetComponent<DashEffects>();
-
-        maxClimbAnimationTimer = climbAnimation.length;
 
         playerState = State.nothing;
 
@@ -156,6 +153,7 @@ public class ThirdPersonMovement : MonoBehaviour
             case State.disabled:
                 break;
             case State.climbing:
+                LedgeClimb();
                 break;
             case State.nothing:
                 Movement();
@@ -180,11 +178,6 @@ public class ThirdPersonMovement : MonoBehaviour
             Gravity();
 
         GetTurn();
-
-        if (startTimerForLedgeAnimation)
-        {
-            LedgeAnimation();
-        }
     }
 
     public void ActivateRenderer(int index)
@@ -220,51 +213,41 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         if (!ledgeGrabInactive)
         {
-            RaycastHit downHit; //ray from ledge check game object
+            RaycastHit upHit;
 
-            if (Physics.Raycast(ledgeDownCheck.gameObject.transform.position, new Vector3(0, ledgeCheckDownLength, 0), out downHit, ledgeCheckDownLength, ledgeMask)
-                 && !playerState.Equals(State.telekinesis) && !playerState.Equals(State.climbing))
+            if (!Physics.Raycast(ledgeUpCheck.gameObject.transform.position, Vector3.up * ledgeLengthRayMultiplier, out upHit, ledgeLengthRayMultiplier, ledgeMask))
             {
-                playerState = State.climbing;
-                RaycastHit forwardHit;
-                if (Physics.Raycast(ledgeForwardCheck.transform.position, transform.forward * ledgeCheckForwardLength, out forwardHit, ledgeCheckForwardLength, ~playerLayer))
+
+                RaycastHit downHit; //ray from ledge check game object
+
+                if (Physics.Raycast(ledgeDownCheck.gameObject.transform.position, Vector3.down * ledgeLengthRayMultiplier, out downHit, ledgeLengthRayMultiplier, ledgeMask))
                 {
-                    if (forwardHit.collider.gameObject.layer == ledgeMask)
-                    {
-                        animator.SetTrigger("LedgeGrab");
-                        ledgeHit = downHit;
-                        velocity = new Vector3(0, 0, 0); //removes all velocity during climb
-                        controller.enabled = false;
-                        startTimerForLedgeAnimation = true;
-                        timeRemaining = maxClimbAnimationTimer;
-                    }
-                    else
-                        Debug.LogError("ledgecheck number 2 hit something other than ledgemask " + forwardHit.collider.gameObject.layer);
+
+                    playerState = State.climbing;
+
+                    animator.SetTrigger("LedgeGrab");
+
+                    ledgeHit = downHit;
+
+                    velocity = new Vector3(0, 0, 0); //removes all velocity during climb
+
+                    timeRemainingOnAnimation = climbAnimation.length; //0,8
                 }
-                else
-                    Debug.LogError("ledgecheck number 2 did not hit anything ");
             }
-        }
-    }
-
-    private void LedgeAnimation()
-    {
-
-        if (timeRemaining < 0)
-        {
-            timeRemaining -= Time.deltaTime;
-        }
-        else
-        {
-            LedgeClimb();
-            startTimerForLedgeAnimation = false;
         }
     }
 
     private void LedgeClimb()
     {
-        MoveTo(ledgeHit.point);
-        playerState = State.nothing;
+
+        timeRemainingOnAnimation -= Time.deltaTime;
+
+        if (timeRemainingOnAnimation < 0)
+        {
+            MoveTo(ledgeHit.point);
+
+            playerState = State.nothing;
+        }
     }
 
     private void Dash()
@@ -277,7 +260,6 @@ public class ThirdPersonMovement : MonoBehaviour
             energy.SpendEnergy(dashEnergyCost);
 
             //animator.SetTrigger("Teleport");
-
 
             RaycastHit hit;
 
@@ -372,10 +354,5 @@ public class ThirdPersonMovement : MonoBehaviour
         controller.enabled = false;
         gameObject.transform.position = position;
         controller.enabled = true;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawRay(ledgeForwardCheck.transform.position, Vector3.forward * 2f);
     }
 }
