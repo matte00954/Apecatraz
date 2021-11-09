@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class Telekinesis : MonoBehaviour
 {
@@ -21,13 +22,35 @@ public class Telekinesis : MonoBehaviour
 
     private bool silenced;
 
+    public VisualEffect thinking;
+    
+    //Render for the carriedObject
+    [SerializeField] private Material outlineMaterial;
+    [SerializeField] private float outlineScaleFactor;
+    [SerializeField] private Color outlineColor;
+    private Renderer outlineRenderer;
+
+    private GameObject carriedObjectOutline;
+
+
     void Start()
     {
         carriedObject = null;
+     
+        //Vfx
+        thinking.Stop();
+
+        //
+        carriedObjectOutline = null;
+        //OutlineRenderer
+        //outlineRenderer = CreateOutline(outlineMaterial, outlineScaleFactor, outlineColor);
+
     }
 
     private void Update()
     {
+        FindObjectDemo();
+
         if (Input.GetKeyDown(KeyCode.E))
         {
             FindObject();
@@ -37,6 +60,7 @@ public class Telekinesis : MonoBehaviour
         {
             MoveObject();
         }
+        
     }
 
     private void FindObject()
@@ -52,6 +76,10 @@ public class Telekinesis : MonoBehaviour
                 Debug.Log("hit " + hit.transform.gameObject);
                 thirdPersonMovement.ActivateRenderer(1); // 1 = Ability shader
                 thirdPersonMovement.PlayerState = ThirdPersonMovement.State.telekinesis;
+
+                //Makes the VFX play
+                thinking.Play();
+                
             }
         }
         else
@@ -66,6 +94,9 @@ public class Telekinesis : MonoBehaviour
             objectRigidbody.useGravity = false;
             objectRigidbody.drag = 2f; //Makes object move slower when holding
             carriedObject = pickObject;
+
+            //Outline the object that would be hit curently
+            //CreateOutline(outlineMaterial, outlineScaleFactor, outlineColor, carriedObject);
         }
     }
 
@@ -101,6 +132,10 @@ public class Telekinesis : MonoBehaviour
             carriedObject.transform.parent = null;
             carriedObject = null;
             thirdPersonMovement.PlayerState = ThirdPersonMovement.State.nothing;
+            
+            //Stops vfx and objectOutline
+            thinking.Stop();
+            Destroy(carriedObjectOutline);
         }
         else
             Debug.LogError("carriedObject is null");
@@ -129,4 +164,42 @@ public class Telekinesis : MonoBehaviour
         //Gizmos.DrawRay(transform.position, transform.TransformDirection(Vector3.forward));
         //For testing
     }
+   
+    //Add a outline to the object
+    Renderer CreateOutline(Material outlineMat, float scaleFactor, Color color, GameObject hit)
+    {
+        GameObject outlineObject = Instantiate(hit.gameObject, hit.transform.position, hit.transform.rotation, hit.transform);
+        
+        carriedObjectOutline = outlineObject;
+        Debug.Log(carriedObjectOutline);
+        //Renderer previousRend;
+
+        Renderer rend = outlineObject.GetComponent<Renderer>();
+
+        rend.material = outlineMat;
+        rend.material.SetColor("_OutlineColor", color);
+        rend.material.SetFloat("_Scale", scaleFactor);
+        rend.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+
+        Destroy(outlineObject.GetComponent<Rigidbody>());
+        Destroy(outlineObject.GetComponent<Collider>());
+        //rend.enabled = false;
+
+        return rend;
+
+    }
+    private void FindObjectDemo()
+    {
+        if (carriedObjectOutline == null && !silenced && energy.CheckEnergy(telekinesisEnergyCost))
+        {
+            RaycastHit hit;
+
+            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
+            {
+                //Outline the object that would be hit curently
+                CreateOutline(outlineMaterial, outlineScaleFactor, outlineColor, hit.transform.gameObject);
+            }
+        }
+    }
+
 }
