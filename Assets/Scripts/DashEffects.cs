@@ -18,6 +18,7 @@ public class DashEffects : MonoBehaviour
     private bool dashing;
     private bool ready;
     private GameObject volume;
+    private float changeTimer;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,8 +32,18 @@ public class DashEffects : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //effectWeight+= (targetWeight- effectWeight)*Time.deltaTime* fadeSpeed;
-        //volume.GetComponent<Volume>().weight = effectWeight / 100; 
+
+        if (changeTimer> 0)
+        {
+            effectWeight += (targetWeight - effectWeight) * Time.deltaTime * fadeSpeed;
+            volume.GetComponent<Volume>().weight = effectWeight / 100;
+            changeTimer -= Time.deltaTime;
+            if (changeTimer< 0)
+            {
+                changeTimer = 0;
+            }
+        }
+
         if (Input.GetKeyUp(KeyCode.LeftShift))
         {
             ready = true;
@@ -43,6 +54,7 @@ public class DashEffects : MonoBehaviour
     {
         if (!dashing && ready)
         {
+            changeTimer = 0.5f;
             dashing = true;
             aSource.clip = slowDownClip;
             aSource.Play();
@@ -54,6 +66,7 @@ public class DashEffects : MonoBehaviour
     {
         if(dashing)
         {
+            changeTimer = 0.5f;
             ready = false;
             dashing = false;
             aSource.clip = speedUpClip;
