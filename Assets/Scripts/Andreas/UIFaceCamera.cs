@@ -5,13 +5,17 @@ using UnityEngine.UI;
 
 public class UIFaceCamera : MonoBehaviour
 {
-    public Camera camera;
+    public GameObject camera;
     public Canvas canvas;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (camera == null)
+        {
+            camera = GameObject.FindWithTag("MainCamera");
+
+        }
     }
 
     // Update is called once per frame

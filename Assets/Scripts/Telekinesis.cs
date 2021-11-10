@@ -32,6 +32,8 @@ public class Telekinesis : MonoBehaviour
 
     private GameObject carriedObjectOutline;
 
+    public Canvas interactiveIcon;
+
 
     void Start()
     {
@@ -97,6 +99,10 @@ public class Telekinesis : MonoBehaviour
 
             //Outline the object that would be hit curently
             //CreateOutline(outlineMaterial, outlineScaleFactor, outlineColor, carriedObject);
+
+            //Destroy Icon
+            Debug.Log(carriedObjectOutline);
+            Destroy(carriedObjectOutline);
         }
     }
 
@@ -174,6 +180,8 @@ public class Telekinesis : MonoBehaviour
         Debug.Log(carriedObjectOutline);
         //Renderer previousRend;
 
+        Canvas newIcon = Instantiate(interactiveIcon, hit.transform.position + (Vector3.up), (hit.transform.rotation.normalized), carriedObjectOutline.transform);
+
         Renderer rend = outlineObject.GetComponent<Renderer>();
 
         rend.material = outlineMat;
@@ -197,7 +205,11 @@ public class Telekinesis : MonoBehaviour
             if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
             {
                 //Outline the object that would be hit curently
-                CreateOutline(outlineMaterial, outlineScaleFactor, outlineColor, hit.transform.gameObject);
+                if (carriedObject == null)
+                {
+                    CreateOutline(outlineMaterial, outlineScaleFactor, outlineColor, hit.transform.gameObject);
+                }
+
             }
         }
     }

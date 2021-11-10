@@ -25,26 +25,21 @@ public class GatherColliders : MonoBehaviour
     {
         foreach (GameObject game in gObjects)
         {
-            game.AddComponent<LineRenderer>();
+            GameObject UIWall = Instantiate(game, transform);
+            UIWall.layer = 15;
+            UIWall.AddComponent<LineRenderer>();
 
-            LineRenderer line = game.GetComponent<LineRenderer>();
-            Collider collider = game.GetComponent<Collider>();
-            Mesh mesh = game.GetComponent<MeshFilter>().mesh;
+            LineRenderer line = UIWall.GetComponent<LineRenderer>();
+            Collider collider = UIWall.GetComponent<Collider>();
+            Mesh mesh = UIWall.GetComponent<MeshFilter>().mesh;
 
-            line.SetWidth(0.01f, 0.01f);
+            UIWall.GetComponent<MeshRenderer>().enabled = false;
+
+            line.SetWidth(0.1f, 0.1f);
             line.useWorldSpace =false;
 
             line.positionCount = mesh.vertices.Length;
             line.SetPositions(mesh.vertices);
         }
     }
-    /*private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-        foreach (Mesh box in boxes)
-        {
-            Gizmos.DrawWireCube(box.bounds.center, box.bounds.size);
-        }
-    }
-    */
 }
