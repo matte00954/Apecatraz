@@ -263,6 +263,8 @@ public class ThirdPersonMovement : MonoBehaviour
 
         if (timeRemainingOnAnimation < 0)
         {
+            animator.SetTrigger("StopClimb");
+
             MoveTo(ledgeHit.point);
 
             playerState = State.nothing;
