@@ -579,7 +579,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   materials:
   - {fileID: 2100000, guid: cbe263487dacff4478f22b4db53a34b4, type: 2}
-  - {fileID: 2100000, guid: 87f310ed876b5e24182713d0578fa06e, type: 2}
+  - {fileID: 2100000, guid: 75f8881fe6d20004483cde9829b75e82, type: 2}
   isCarried: 0
   x: 0
 --- !u!23 &348127467
@@ -861,7 +861,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8116902948021883489, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.06705245
+      value: 0.06705246
       objectReference: {fileID: 0}
     - target: {fileID: 8116902948021883489, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
       propertyPath: m_LocalRotation.y
@@ -869,7 +869,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8116902948021883489, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.24929217
+      value: -0.24929218
       objectReference: {fileID: 0}
     - target: {fileID: 8116902948021883489, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1382,7 +1382,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 886021253}
-  m_LocalRotation: {x: 0.06705245, y: 0.93294626, z: -0.2492921, w: 0.25093585}
+  m_LocalRotation: {x: 0.067052454, y: 0.93294626, z: -0.2492921, w: 0.25093585}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1787,7 +1787,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   materials:
   - {fileID: 2100000, guid: cbe263487dacff4478f22b4db53a34b4, type: 2}
-  - {fileID: 2100000, guid: 63a14ba698aae014c92cdc5e3b57d448, type: 2}
+  - {fileID: 2100000, guid: 87f310ed876b5e24182713d0578fa06e, type: 2}
   isCarried: 0
   x: 0
 --- !u!23 &1068241080
@@ -2655,7 +2655,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   materials:
   - {fileID: 2100000, guid: cbe263487dacff4478f22b4db53a34b4, type: 2}
-  - {fileID: 2100000, guid: 241c40fbcea140348818fd8b581111a1, type: 2}
+  - {fileID: 2100000, guid: f7ff1729ea14c1f4ab861af95d3268cf, type: 2}
   isCarried: 0
   x: 0
 --- !u!23 &1697993942
@@ -2818,20 +2818,10 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &1820299335 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7080072990076465057, guid: 1b2d75bd5e7877241bd9de762d21df29, type: 3}
-  m_PrefabInstance: {fileID: 8930386586255592037}
-  m_PrefabAsset: {fileID: 0}
 --- !u!20 &1823711836 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 8116902948021883494, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
   m_PrefabInstance: {fileID: 544271847}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1823880211 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -4449355537797192660, guid: 1b2d75bd5e7877241bd9de762d21df29, type: 3}
-  m_PrefabInstance: {fileID: 8930386586255592037}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1845382980 stripped
 Transform:
@@ -3416,12 +3406,15 @@ MonoBehaviour:
     m_Bits: 4096
   ledgeCheck: {fileID: 30882858311799294}
   climbAnimation: {fileID: -8211997847921910680, guid: 1b2d75bd5e7877241bd9de762d21df29, type: 3}
-  leftFoot: {fileID: 1823880211}
-  rightFoot: {fileID: 1820299335}
   energy: {fileID: 8444907791849026401}
   materials:
   - {fileID: 2100000, guid: b0e7e4d57becded4f9ec24fbbb2fde5a, type: 2}
   - {fileID: 2100000, guid: 5cb8495102a353d4588fdcfd6e775574, type: 2}
+  dashInactive: 0
+  ledgeGrabInactive: 0
+  telekinesInactive: 0
+  godMode: 0
+  infiniteEnergy: 0
 --- !u!143 &1762694615577082139
 CharacterController:
   m_ObjectHideFlags: 0
