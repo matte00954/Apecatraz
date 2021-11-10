@@ -8,6 +8,10 @@ public class DashEffects : MonoBehaviour
 {
     public float fadeSpeed;
 
+    public GameObject monkey;
+    public GameObject ball;
+    public ParticleSystem particle1;
+
     public AudioClip slowDownClip;
     public AudioClip speedUpClip;
 
@@ -27,6 +31,7 @@ public class DashEffects : MonoBehaviour
         targetWeight = 0;
         dashing = false;
         ready = true;
+        particle1.enableEmission = false;
     }
 
     // Update is called once per frame
@@ -54,6 +59,9 @@ public class DashEffects : MonoBehaviour
     {
         if (!dashing && ready)
         {
+            particle1.enableEmission= true;
+            monkey.GetComponent<SkinnedMeshRenderer>().enabled = false;
+            ball.GetComponent<MeshRenderer>().enabled = true;
             changeTimer = 0.5f;
             dashing = true;
             aSource.clip = slowDownClip;
@@ -66,6 +74,9 @@ public class DashEffects : MonoBehaviour
     {
         if(dashing)
         {
+            particle1.enableEmission = false;
+            monkey.GetComponent<SkinnedMeshRenderer>().enabled = true;
+            ball.GetComponent<MeshRenderer>().enabled = false;
             changeTimer = 0.5f;
             ready = false;
             dashing = false;
