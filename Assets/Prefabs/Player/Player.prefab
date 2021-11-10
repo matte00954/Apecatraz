@@ -29,7 +29,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1762694613964198751}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1597675662
 MonoBehaviour:
@@ -66,7 +66,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1322312886509759396}
   m_Layer: 7
-  m_Name: LedgeCheck
+  m_Name: LedgeCheckDown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -80,7 +80,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 30882857776937913}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 1.5}
+  m_LocalPosition: {x: 0, y: 1.5, z: 1.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1762694613964198751}
@@ -121,6 +121,7 @@ Transform:
   m_Children:
   - {fileID: 1762694614227774981}
   - {fileID: 1322312886509759396}
+  - {fileID: 8942716033989336974}
   - {fileID: 4947480733350189298}
   - {fileID: 8943312224588567922}
   - {fileID: 1597675661}
@@ -167,7 +168,11 @@ MonoBehaviour:
   ledgeMask:
     serializedVersion: 2
     m_Bits: 4096
-  ledgeCheck: {fileID: 30882857776937913}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  ledgeDownCheck: {fileID: 30882857776937913}
+  ledgeUpCheck: {fileID: 5349138436048165457}
   climbAnimation: {fileID: -8211997847921910680, guid: 1b2d75bd5e7877241bd9de762d21df29, type: 3}
   energy: {fileID: 8444907791314147622}
   materials:
@@ -295,7 +300,37 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1762694613964198751}
-  m_RootOrder: 3
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5349138436048165457
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8942716033989336974}
+  m_Layer: 7
+  m_Name: LedgeCheckUp
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8942716033989336974
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5349138436048165457}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.25, z: 1.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1762694613964198751}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6943567795002420066
 GameObject:
@@ -325,7 +360,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1762694613964198751}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &8074477075969015502
 Animator:
@@ -375,7 +410,7 @@ Transform:
   m_Children:
   - {fileID: 8963748985797035977}
   m_Father: {fileID: 1762694613964198751}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &8930386584642920482
 PrefabInstance:
