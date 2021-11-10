@@ -207,30 +207,46 @@ public class ThirdPersonMovement : MonoBehaviour
         animator.SetFloat("runY", direction.magnitude); //Joches grej
     }
 
-    private void LedgeCheck() 
+    private void LedgeCheck()
     {
         if (!ledgeGrabInactive)
         {
             RaycastHit upHit;
 
-            if (!Physics.Raycast(ledgeUpCheck.gameObject.transform.position, Vector3.up * ledgeLengthRayMultiplier, out upHit, ledgeLengthRayMultiplier, ledgeMask))
+            if (Physics.Raycast(ledgeUpCheck.gameObject.transform.position, Vector3.up * ledgeLengthRayMultiplier,
+                out upHit, ledgeLengthRayMultiplier, ledgeMask))
+            {
+                return;
+            }
+            else
             {
 
                 RaycastHit downHit; //ray from ledge check game object
 
-                if (Physics.Raycast(ledgeDownCheck.gameObject.transform.position, Vector3.down * ledgeLengthRayMultiplier, out downHit, ledgeLengthRayMultiplier, ledgeMask))
+                if (Physics.Raycast(ledgeDownCheck.gameObject.transform.position, Vector3.down * ledgeLengthRayMultiplier, 
+                    out downHit, ledgeLengthRayMultiplier, ledgeMask))
                 {
 
-                    playerState = State.climbing;
 
-                    animator.SetTrigger("LedgeGrab");
+                    RaycastHit forwardHit;
 
-                    ledgeHit = downHit;
+                    if(Physics.Raycast(transform.position, Vector3.forward * ledgeLengthRayMultiplier, 
+                        out forwardHit, ledgeLengthRayMultiplier))
+                    {
+                        MoveTo(forwardHit.point);
 
-                    velocity = new Vector3(0, 0, 0); //removes all velocity during climb
+                        playerState = State.climbing;
 
-                    timeRemainingOnAnimation = climbAnimation.length; //0,8
+                        animator.SetTrigger("LedgeGrab");
+
+                        ledgeHit = downHit;
+
+                        velocity = new Vector3(0, 0, 0); //removes all velocity during climb
+
+                        timeRemainingOnAnimation = climbAnimation.length; //0,8
+                    }
                 }
+
             }
         }
     }
