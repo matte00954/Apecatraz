@@ -53,7 +53,10 @@ public class Energy : MonoBehaviour
 
     public void SpendEnergy(float energyToBeRemoved)
     {
-        currentEnergy -= energyToBeRemoved;
+        if (!infiniteEnergy)
+        {
+            currentEnergy -= energyToBeRemoved;
+        }
     }
 
     public bool CheckEnergy(float energyToSpend)
