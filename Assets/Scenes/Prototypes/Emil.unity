@@ -3404,12 +3404,16 @@ MonoBehaviour:
   ledgeMask:
     serializedVersion: 2
     m_Bits: 4096
-  ledgeCheck: {fileID: 30882858311799294}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  ledgeDownCheck: {fileID: 0}
+  ledgeUpCheck: {fileID: 0}
   climbAnimation: {fileID: -8211997847921910680, guid: 1b2d75bd5e7877241bd9de762d21df29, type: 3}
   energy: {fileID: 8444907791849026401}
   materials:
-  - {fileID: 2100000, guid: b0e7e4d57becded4f9ec24fbbb2fde5a, type: 2}
-  - {fileID: 2100000, guid: 5cb8495102a353d4588fdcfd6e775574, type: 2}
+  - {fileID: 2100000, guid: 517cf3c7715016a45be7243915734ac5, type: 2}
+  - {fileID: 2100000, guid: e75f10c6188d0fa49ad30288534c25ea, type: 2}
   dashInactive: 0
   ledgeGrabInactive: 0
   telekinesInactive: 0
