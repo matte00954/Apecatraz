@@ -1,3 +1,5 @@
+//Author: Mattias Larsson
+//Author: William Örnquist
 using UnityEngine;
 
 public class Telekinesis : MonoBehaviour

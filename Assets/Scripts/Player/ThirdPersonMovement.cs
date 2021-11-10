@@ -30,7 +30,6 @@ public class ThirdPersonMovement : MonoBehaviour
 
     [Header("Main camera")]
     [SerializeField] private Camera mainCamera;
-    //[SerializeField] private Transform mainCameraTransform;
 
     [Header("Controller")]
     [SerializeField] private CharacterController controller;
@@ -64,8 +63,7 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private bool dashInactive = false;
     [SerializeField] private bool ledgeGrabInactive = false;
     [SerializeField] private bool telekinesInactive = false;
-    [SerializeField] private bool godMode = false;
-    [SerializeField] private bool infiniteEnergy = false;
+    [SerializeField] private bool godMode = false; //no effect atm
 
     [HideInInspector] public bool isTelekinesisActive { get; set; }
 
