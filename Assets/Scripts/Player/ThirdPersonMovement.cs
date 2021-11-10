@@ -45,6 +45,9 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private GameObject ledgeDownCheck;
     [SerializeField] private GameObject ledgeUpCheck;
     [SerializeField] private AnimationClip climbAnimation;
+    [SerializeField] private SkinnedMeshRenderer skinnedMeshRenderer;
+
+    //GetComponentInChildren<MeshFilter>().mesh.bounds.extents.y
 
     private RaycastHit ledgeHit;
     private float ledgeLengthRayMultiplier = 2f;
@@ -214,46 +217,48 @@ public class ThirdPersonMovement : MonoBehaviour
             RaycastHit upHit;
 
             if (Physics.Raycast(ledgeUpCheck.gameObject.transform.position, Vector3.up * ledgeLengthRayMultiplier,
-                out upHit, ledgeLengthRayMultiplier, ledgeMask))
+                out upHit, ledgeLengthRayMultiplier, ledgeMask)) //if player is above obstacle, do not climb
             {
                 return;
             }
-            else
+            else //nothing in the way
             {
-
                 RaycastHit downHit; //ray from ledge check game object
 
                 if (Physics.Raycast(ledgeDownCheck.gameObject.transform.position, Vector3.down * ledgeLengthRayMultiplier, 
-                    out downHit, ledgeLengthRayMultiplier, ledgeMask))
+                    out downHit, ledgeLengthRayMultiplier, ledgeMask)) //checks if target surface has "climb" layer
                 {
-
-
                     RaycastHit forwardHit;
 
                     if(Physics.Raycast(transform.position, Vector3.forward * ledgeLengthRayMultiplier, 
-                        out forwardHit, ledgeLengthRayMultiplier))
+                        out forwardHit, ledgeLengthRayMultiplier)) //checks distance from object so animation starts at correct the distance
                     {
-                        MoveTo(forwardHit.point);
+
+                        MoveTo(new Vector3(forwardHit.point.x, 
+                            downHit.point.y - skinnedMeshRenderer.bounds.extents.y,
+                            forwardHit.point.z)); 
+                        //adjusts player position before animation
+                        //y - y = height of object - height of player
 
                         playerState = State.climbing;
 
                         animator.SetTrigger("LedgeGrab");
 
-                        ledgeHit = downHit;
+                        ledgeHit = downHit; //target position of climb
 
                         velocity = new Vector3(0, 0, 0); //removes all velocity during climb
 
-                        timeRemainingOnAnimation = climbAnimation.length; //0,8
+                        timeRemainingOnAnimation = climbAnimation.length - 0.05f; //0.8 - 0.05f adjusted to look better in game
+
+                        //Method LedgeClimb() starts in update if playerstate is climbing
                     }
                 }
-
             }
         }
     }
 
     private void LedgeClimb()
     {
-
         timeRemainingOnAnimation -= Time.deltaTime;
 
         if (timeRemainingOnAnimation < 0)

@@ -174,15 +174,15 @@ MonoBehaviour:
   ledgeDownCheck: {fileID: 30882857776937913}
   ledgeUpCheck: {fileID: 5349138436048165457}
   climbAnimation: {fileID: -8211997847921910680, guid: 1b2d75bd5e7877241bd9de762d21df29, type: 3}
+  skinnedMeshRenderer: {fileID: 2813060135071446201}
   energy: {fileID: 8444907791314147622}
   materials:
   - {fileID: 2100000, guid: 517cf3c7715016a45be7243915734ac5, type: 2}
-  - {fileID: 2100000, guid: 5cb8495102a353d4588fdcfd6e775574, type: 2}
+  - {fileID: 2100000, guid: e75f10c6188d0fa49ad30288534c25ea, type: 2}
   dashInactive: 0
   ledgeGrabInactive: 0
   telekinesInactive: 0
   godMode: 0
-  infiniteEnergy: 0
 --- !u!114 &8444907791314147622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,6 +196,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   energyMeter: {fileID: 0}
+  infiniteEnergy: 0
 --- !u!114 &3314850606705756715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -681,5 +682,10 @@ GameObject:
 --- !u!4 &8963748985797035977 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1b2d75bd5e7877241bd9de762d21df29, type: 3}
+  m_PrefabInstance: {fileID: 8930386584642920482}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &2813060135071446201 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -2529083445792942949, guid: 1b2d75bd5e7877241bd9de762d21df29, type: 3}
   m_PrefabInstance: {fileID: 8930386584642920482}
   m_PrefabAsset: {fileID: 0}
