@@ -78,7 +78,7 @@ public class ThirdPersonMovement : MonoBehaviour
     private Vector3 velocity;
     private float saveRotation;
     private float dashCooldown;
-    private float gravity;
+    private float gravityTimer;
 
     private DashEffects dashEffectsReference;
 
@@ -329,14 +329,17 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Gravity()
     {
+
         if (!CheckGround())
         {
-
+            gravityTimer += Time.deltaTime;
         }
 
         if (CheckGround() && velocity.y < 0) //On ground gravity
         {
             velocity.y = -2f; //Default gravity force on the ground
+
+            gravityTimer = 0f;
 
             if (inAir)
             {
@@ -354,7 +357,12 @@ public class ThirdPersonMovement : MonoBehaviour
 
             //Debug.Log(gravity);
 
-            velocity.y += GRAVITY_VALUE * Time.deltaTime;
+            if(gravityTimer > 1f)
+            {
+                velocity.y += GRAVITY_JUMP_APEX * Time.deltaTime;
+            }
+            else
+                velocity.y += GRAVITY_VALUE * Time.deltaTime;
 
             animator.SetFloat("YSpeed", velocity.y);
 
