@@ -12,7 +12,8 @@ public class ThirdPersonMovement : MonoBehaviour
     //teleport
     private const float DASH_DISTANCE_MULTIPLIER = 0.75f; //per frame
     private const float TELEPORT_DISTANCE_CHECK = 1f;
-    private const float DASH_MULTIPLIER = 0.8f;
+    private const float DASH_DISTANCE_CHECK = 1f;
+    private const float DASH_MULTIPLIER = 50f;
 
     //movement
     private const float PLAYER_SPEED = 6f; //Do not change
@@ -20,7 +21,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     //gravity
     private const float GRAVITY_VALUE = -9.81f; // do not change this -9.81f
-    private const float GRAVITY_MULTIPLIER = 1.5f; //multiplies gravity force
+    private const float GRAVITY_JUMP_APEX = -30f; //multiplies gravity force
 
     //ground check
     private const float GROUND_CHECK_RADIUS = 0.15f; // comparing ground check game object to floor
@@ -77,6 +78,7 @@ public class ThirdPersonMovement : MonoBehaviour
     private Vector3 velocity;
     private float saveRotation;
     private float dashCooldown;
+    private float gravity;
 
     private DashEffects dashEffectsReference;
 
@@ -229,18 +231,18 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 RaycastHit downHit; //ray from ledge check game object
 
-                if (Physics.Raycast(ledgeDownCheck.gameObject.transform.position, Vector3.down * ledgeLengthRayMultiplier, 
+                if (Physics.Raycast(ledgeDownCheck.gameObject.transform.position, Vector3.down * ledgeLengthRayMultiplier,
                     out downHit, ledgeLengthRayMultiplier, ledgeMask)) //checks if target surface has "climb" layer
                 {
                     RaycastHit forwardHit;
 
-                    if(Physics.Raycast(transform.position, transform.forward * ledgeLengthRayMultiplier, 
+                    if (Physics.Raycast(transform.position, transform.forward * ledgeLengthRayMultiplier,
                         out forwardHit, ledgeLengthRayMultiplier)) //checks distance from object so animation starts at correct the distance
                     {
 
-                        MoveTo(new Vector3(forwardHit.point.x, 
+                        MoveTo(new Vector3(forwardHit.point.x,
                             downHit.point.y - skinnedMeshRenderer.bounds.extents.y,
-                            forwardHit.point.z)); 
+                            forwardHit.point.z));
                         //adjusts player position before animation
                         //y - y = height of object - height of player
 
@@ -309,20 +311,20 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         RaycastHit hit;
 
-        if (Physics.SphereCast(transform.position, 0.5f, transform.forward, out hit, TELEPORT_DISTANCE_CHECK, ~dashIgnoreLayer))
-        {
-            StopDashing();
-        }
-        else
-        {
-            if (energy.CheckEnergy(dashEnergyCost))
+            if (Physics.SphereCast(transform.position, 0.5f, transform.forward, out hit, DASH_DISTANCE_CHECK, ~dashIgnoreLayer))
             {
-                playerState = State.dashing;
-                dashEffectsReference.SlowDown();
-                ControllerMove(transform.forward * DASH_MULTIPLIER* Time.deltaTime* 100);
-                energy.SpendEnergy(dashEnergyCost);
+                StopDashing();
             }
-        }
+            else
+            {
+                if (energy.CheckEnergy(dashEnergyCost))
+                {
+                    playerState = State.dashing;
+                    dashEffectsReference.SlowDown();
+                    ControllerMove(transform.forward * DASH_MULTIPLIER * Time.deltaTime);
+                    energy.SpendEnergy(dashEnergyCost);
+                }
+            }
     }
 
     private void Gravity()
@@ -340,11 +342,19 @@ public class ThirdPersonMovement : MonoBehaviour
         }
         else
         {
-            velocity.y += GRAVITY_VALUE * GRAVITY_MULTIPLIER * Time.deltaTime; //gravity in the air
-            animator.SetFloat("YSpeed", velocity.y);
+            //velocity.y += GRAVITY_VALUE * Time.deltaTime; //gravity in the air
 
-            /*if(inAir)
-                animator.SetTrigger("InAir");*/
+            //float gravity = Mathf.SmoothDamp(GRAVITY_VALUE, GRAVITY_JUMP_APEX, ref gravity, 1.5f);
+
+            //velocity.y = gravity;
+
+            //Debug.Log(gravity);
+
+            gravity = Mathf.SmoothDamp(GRAVITY_VALUE, GRAVITY_JUMP_APEX, ref velocity.y, 1.5f);
+
+            velocity.y += gravity;
+
+            animator.SetFloat("YSpeed", velocity.y);
 
             if (!inAir)
                 inAir = true;
@@ -375,7 +385,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void StopRunning() //Joche
     {
-        if (controller.velocity.magnitude> 3)
+        if (controller.velocity.magnitude > 3)
         {
             if (!moving)
             {
