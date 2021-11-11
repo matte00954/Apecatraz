@@ -9,9 +9,16 @@ public class InGameMenuManager : MonoBehaviour
 
     [SerializeField] GameObject[] MenuItems;
     // Start is called before the first frame update
+
+    private void Awake()
+    {
+        Time.timeScale = 1;
+    }
     void Start()
     {
         animator = GetComponent<Animator>();
+        Time.timeScale = 1;
+
     }
 
     // Update is called once per frame
