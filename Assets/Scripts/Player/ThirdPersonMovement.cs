@@ -68,6 +68,7 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private bool ledgeGrabInactive = false;
     [SerializeField] private bool telekinesInactive = false;
     [SerializeField] private bool godMode = false; //no effect atm
+    [SerializeField] private bool slowmotionAllowed = false;
 
     [HideInInspector] public bool isTelekinesisActive { get; set; }
 
@@ -123,14 +124,32 @@ public class ThirdPersonMovement : MonoBehaviour
         if (!InGameMenuManager.gameIsPaused)
         {
 
-            if (Time.timeScale != 1) //to unpause game
+            if (Time.timeScale != 1 && !slowmotionAllowed) //to unpause game
             {
                 Time.timeScale = 1;
-                if (dashEffectsReference.slowmotion)
+            }
+
+            if (Input.GetKeyDown(KeyCode.Y) && godMode)
+            {
+                slowmotionAllowed = !slowmotionAllowed;
+            }
+
+            #region joche slowmotion
+            //ENDAST FÖR JOCHES PROTOTYP
+            if (slowmotionAllowed)
+            {
+
+                if (PlayerState.Equals(State.dashing) && Time.timeScale != 0.2f) //ENDAST FÖR JOCHES PROTOTYP
                 {
-                    Time.timeScale = 0.3f;
+                    Time.timeScale = 0.2f;
+                }
+                else if (!PlayerState.Equals(State.dashing) && Time.timeScale != 1)
+                {
+                    Time.timeScale = 1f;
                 }
             }
+            //ENDAST FÖR JOCHES PROTOTYP
+            #endregion
 
             StateCheck();
         }
@@ -143,7 +162,6 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
         }
-
     }
 
     private void StateCheck() //this is in update

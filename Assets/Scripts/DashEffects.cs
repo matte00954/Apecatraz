@@ -23,8 +23,9 @@ public class DashEffects : MonoBehaviour
     [Header("Effect")]
     [SerializeField] private float fadeSpeed;
 
+    [SerializeField] private GameObject volume;
+
     private AudioSource aSource;
-    private GameObject volume;
 
     private float effectWeight;
     private float targetWeight;
@@ -34,19 +35,16 @@ public class DashEffects : MonoBehaviour
     private bool slowDownReady;
     private bool dashing;
 
-    public bool slowmotion;
-    public bool effects;
-    public GameObject helpUI;
+    private bool effects;
+    private GameObject helpUI;
     // Start is called before the first frame update
 
     void Start()
     {
-        volume = GameObject.Find("DashVolume"); //Find is always bad, but only done once
         aSource = GetComponent<AudioSource>();
         aSource.volume = 0.03f; //TEMP FIX, audio too loud
         targetWeight = 0;
         slowDownReady = true;
-        particle1.enableEmission = false;
 
         dashing = false;
 
@@ -63,6 +61,7 @@ public class DashEffects : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*
         if (Input.GetKeyDown(KeyCode.Y))
         {
             slowmotion = !slowmotion;
@@ -75,11 +74,12 @@ public class DashEffects : MonoBehaviour
         {
             helpUI.active = !helpUI.active;
         }
+        */
 
         if (changeTimer > 0)
         {
             effectWeight += (targetWeight - effectWeight) * Time.deltaTime * fadeSpeed;
-            volume.GetComponent<Volume>().weight = effectWeight / 100;
+            volume.GetComponent<Volume>().weight = effectWeight / 100;  
             changeTimer -= Time.deltaTime;
 
             if (changeTimer < 0)
@@ -98,22 +98,18 @@ public class DashEffects : MonoBehaviour
     {
         if (!dashing && slowDownReady)
         {
-            if (slowmotion)
-            {
-                Time.timeScale = 0.2f;
-            }
 
             if (!effects)
             {
-                particle1.enableEmission = true;
+                particle1.Play();
 
-                monkeySkinnedMeshRenderer.enabled = false;
+                monkey.GetComponentInChildren<SkinnedMeshRenderer>().enabled = false; //TODO ingen getComponent
                 ballMeshRenderer.enabled = true;
                 targetWeight = 100;
             }
             
 
-            monkeySkinnedMeshRenderer.enabled = false;
+            //monkeySkinnedMeshRenderer.enabled = false;
             ballMeshRenderer.enabled = true;
             dashing = true;
 
@@ -129,9 +125,9 @@ public class DashEffects : MonoBehaviour
         if(dashing)
         {
             Time.timeScale = 1;
-            particle1.enableEmission = false;
+            particle1.Stop();
 
-            monkeySkinnedMeshRenderer.enabled = true;
+            monkey.GetComponentInChildren<SkinnedMeshRenderer>().enabled = true; //TODO ingen getComponent
             ballMeshRenderer.enabled = false;
             slowDownReady = false;
             dashing = false;
