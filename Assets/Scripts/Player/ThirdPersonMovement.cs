@@ -357,7 +357,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
             //Debug.Log(gravity);
 
-            if(gravityTimer > 1f)
+            if(gravityTimer > 0.65f)
             {
                 velocity.y += GRAVITY_JUMP_APEX * Time.deltaTime;
             }
