@@ -329,6 +329,10 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Gravity()
     {
+        if (!CheckGround())
+        {
+
+        }
 
         if (CheckGround() && velocity.y < 0) //On ground gravity
         {
@@ -350,9 +354,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
             //Debug.Log(gravity);
 
-            gravity = Mathf.SmoothDamp(GRAVITY_VALUE, GRAVITY_JUMP_APEX, ref velocity.y, 1.5f);
-
-            velocity.y += gravity;
+            velocity.y += GRAVITY_VALUE * Time.deltaTime;
 
             animator.SetFloat("YSpeed", velocity.y);
 
