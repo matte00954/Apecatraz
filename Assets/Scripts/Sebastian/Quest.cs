@@ -24,16 +24,4 @@ public class Quest : MonoBehaviour
         currentMissionID = 0;
     }
 
-
-    private void Update()
-    {
-        if(Input.GetMouseButtonDown(0))
-        {
-            NextMission();
-        }
-    }
-
-
-
-
 }
