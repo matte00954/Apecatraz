@@ -230,7 +230,7 @@ public class ThirdPersonMovement : MonoBehaviour
                 {
                     RaycastHit forwardHit;
 
-                    if(Physics.Raycast(transform.position, Vector3.forward * ledgeLengthRayMultiplier, 
+                    if(Physics.Raycast(transform.position, transform.forward * ledgeLengthRayMultiplier, 
                         out forwardHit, ledgeLengthRayMultiplier)) //checks distance from object so animation starts at correct the distance
                     {
 
