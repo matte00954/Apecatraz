@@ -18,12 +18,12 @@ public class FontChanger : MonoBehaviour
     // Update is called once per frame
     
 
-    public void ChangeAllFonts()
+    public void ChangeAllFonts(int fontNumber)
     {
         
         foreach (TMPro.TMP_Text text in TMProTextList)
         {
-            text.GetComponent<TMPro.TMP_Text>().font = fontAsset[+1];
+            text.GetComponent<TMPro.TMP_Text>().font = fontAsset[fontNumber];
         }
     }
         

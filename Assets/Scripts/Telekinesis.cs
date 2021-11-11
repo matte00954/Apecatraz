@@ -1,6 +1,7 @@
 //Author: Mattias Larsson
 //Author: William Örnquist
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class Telekinesis : MonoBehaviour
 {
@@ -30,14 +31,35 @@ public class Telekinesis : MonoBehaviour
 
     private bool silenced;
 
+    /// Added by Andreas 2021-11-11
+    //Render for the carriedObject
+    [SerializeField] private Material outlineMaterial;
+    [SerializeField] private float outlineScaleFactor;
+    [SerializeField] private Color outlineColor;
+
+    private Renderer outlineRenderer;
+    private GameObject carriedObjectOutline;
+
+    public Canvas interactiveIcon;    
+    public VisualEffect thinking;
+    ///
+
     void Start()
     {
         carriedObject = null;
         telkenesisOffsetMultiplier = 0f;
+
+        ///
+        thinking.Stop();
+        carriedObjectOutline = null;
+        ///
     }
 
     private void Update()
     {
+        //Enable for outline of objects.
+        //FindObjectOutline();
+
         if (thirdPersonMovement.isTelekinesisActive)
         {
             if (Input.GetKeyDown(KeyCode.E))
@@ -67,6 +89,9 @@ public class Telekinesis : MonoBehaviour
                 //Debug.Log("hit " + hit.transform.gameObject);
                 thirdPersonMovement.ActivateRenderer(1); // 1 = Ability shader
                 thirdPersonMovement.PlayerState = ThirdPersonMovement.State.telekinesis;
+
+                //Makes the VFX play
+                thinking.Play();
             }
         }
         else
@@ -82,6 +107,9 @@ public class Telekinesis : MonoBehaviour
             objectRigidbody.freezeRotation = true;
             objectRigidbody.drag = 6f; //Makes object move slower when holding
             carriedObject = pickObject;
+
+            //Destroy Icon
+            Destroy(carriedObjectOutline);
         }
     }
 
@@ -131,6 +159,10 @@ public class Telekinesis : MonoBehaviour
             carriedObject.transform.parent = null;
             carriedObject = null;
             thirdPersonMovement.PlayerState = ThirdPersonMovement.State.nothing;
+
+            //Stops vfx and objectOutline
+            thinking.Stop();
+            Destroy(carriedObjectOutline);
         }
         else
             Debug.LogError("carriedObject is null");
@@ -158,5 +190,46 @@ public class Telekinesis : MonoBehaviour
     {
         //Gizmos.DrawRay(transform.position, transform.TransformDirection(Vector3.forward));
         //For testing
+    }
+
+    /// This is how a outline is created
+    Renderer CreateOutline(Material outlineMat, float scaleFactor, Color color, GameObject hit)
+    {
+        GameObject outlineObject = Instantiate(hit.gameObject, hit.transform.position, hit.transform.rotation, hit.transform);
+
+        carriedObjectOutline = outlineObject;
+        Debug.Log(carriedObjectOutline);
+        //Renderer previousRend;
+
+        Canvas newIcon = Instantiate(interactiveIcon, hit.transform.position + (Vector3.up), (hit.transform.rotation.normalized), carriedObjectOutline.transform);
+
+        Renderer rend = outlineObject.GetComponent<Renderer>();
+
+        rend.material = outlineMat;
+        rend.material.SetColor("_OutlineColor", color);
+        rend.material.SetFloat("_Scale", scaleFactor);
+        rend.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+
+        Destroy(outlineObject.GetComponent<Rigidbody>());
+        Destroy(outlineObject.GetComponent<Collider>());
+        //rend.enabled = false;
+
+        return rend;
+    }
+    private void FindObjectOutline()
+    {
+        if (carriedObjectOutline == null && !silenced && energy.CheckEnergy(telekinesisEnergyCost))
+        {
+            RaycastHit hit;
+
+            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
+            {
+                //Outline the object that would be hit curently
+                if (carriedObject == null)
+                {
+                    CreateOutline(outlineMaterial, outlineScaleFactor, outlineColor, hit.transform.gameObject);
+                }
+            }
+        }
     }
 }
