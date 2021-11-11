@@ -124,6 +124,10 @@ public class ThirdPersonMovement : MonoBehaviour
             if (Time.timeScale != 1) //to unpause game
             {
                 Time.timeScale = 1;
+                if (dashEffectsReference.slowmotion)
+                {
+                    Time.timeScale = 0.2f;
+                }
             }
 
             StateCheck();

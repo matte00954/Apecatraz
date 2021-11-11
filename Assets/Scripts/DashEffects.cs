@@ -33,6 +33,10 @@ public class DashEffects : MonoBehaviour
 
     private bool slowDownReady;
     private bool dashing;
+
+    public bool slowmotion;
+    public bool effects;
+    public GameObject helpUI;
     // Start is called before the first frame update
 
     void Start()
@@ -59,6 +63,18 @@ public class DashEffects : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            slowmotion = !slowmotion;
+        }
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            effects = !effects;
+        }
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            helpUI.active = !helpUI.active;
+        }
 
         if (changeTimer > 0)
         {
@@ -82,7 +98,20 @@ public class DashEffects : MonoBehaviour
     {
         if (!dashing && slowDownReady)
         {
-            particle1.enableEmission = true;
+            if (slowmotion)
+            {
+                Time.timeScale = 0.2f;
+            }
+
+            if (!effects)
+            {
+                particle1.enableEmission = true;
+
+                monkeySkinnedMeshRenderer.enabled = false;
+                ballMeshRenderer.enabled = true;
+                targetWeight = 100;
+            }
+            
 
             monkeySkinnedMeshRenderer.enabled = false;
             ballMeshRenderer.enabled = true;
@@ -92,7 +121,6 @@ public class DashEffects : MonoBehaviour
 
             aSource.clip = slowDownClip;
             aSource.Play();
-            targetWeight = 100;
         }
     }
 
@@ -100,6 +128,7 @@ public class DashEffects : MonoBehaviour
     {
         if(dashing)
         {
+            Time.timeScale = 1;
             particle1.enableEmission = false;
 
             monkeySkinnedMeshRenderer.enabled = true;
