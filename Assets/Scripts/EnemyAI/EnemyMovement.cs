@@ -17,7 +17,11 @@ public class EnemyMovement : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private GameObject exclamationMark;
-    [SerializeField] private AudioClip alertSoundEffect;
+    [SerializeField] private AudioClip walkClip;
+    [SerializeField] private AudioClip alertClip;
+    [SerializeField] private AudioClip dumbstruckClip;
+    [SerializeField] private AudioClip lostplayerClip;
+    [SerializeField] private AudioClip mistakenClip;
     private AudioSource audioSource;
 
     [Header("Agent")]
@@ -74,6 +78,8 @@ public class EnemyMovement : MonoBehaviour
         audioSource = gameObject.GetComponent<AudioSource>();
         detectionRange = fieldOfViewCollider.bounds.size.z;
         agent.speed = patrolSpeed;
+        audioSource.clip = walkClip;
+        audioSource.loop = true;
 
         if (isStationary)
             Debug.Log(gameObject.name + " is set to stationary.");
@@ -97,18 +103,17 @@ public class EnemyMovement : MonoBehaviour
         UpdateState();
     }
 
-    //public bool TryGetComponent<T>(this GameObject obj, T result) where T : Component
-    //{
-    //    return (result = obj.GetComponent<T>()) != null;
-    //}
-
     private void UpdateState()
     {
         switch (currentState)
         {
             case GuardState.patrolling:
                 if (agent.remainingDistance <= patrolDestinationSpacing)
+                {
+                    audioSource.Pause();
+                    NextWaypoint();
                     StartWaiting();
+                }
                 break;
             case GuardState.waiting:
                 if (waitStateTimer < totalWaitTime)
@@ -118,7 +123,6 @@ public class EnemyMovement : MonoBehaviour
                     waitStateTimer = 0f;
                     currentState = GuardState.patrolling;
 
-                    NextWaypoint();
                     ResumePatrol();
                 }
                 break;
@@ -126,24 +130,24 @@ public class EnemyMovement : MonoBehaviour
                 if (agent.remainingDistance <= investigateDestinationSpacing)
                     StartWaiting();
                 break;
-            case GuardState.dumbstruck:
-                if (dumbStateTimer < dumbstruckTime)
+            case GuardState.dumbstruck: //While dumbstruck is active, the enemy will stand still and rotate towards the player until the dumbstruck timer runs out.
+                if (dumbStateTimer < dumbstruckTime) 
                 {
                     dumbStateTimer += Time.deltaTime;
                     RotateSelfToPlayer();
                 }
-                else if (detectingPlayer) //This runs once when enemy transitions from 'dumbstruck' to 'chasing'.
+                else if (detectingPlayer) //This runs once when enemy sees player at the end of dumbstruck time which transitions from 'dumbstruck' to 'chasing'.
                 {
-                    //Play "alert" voice here
                     exclamationMark.SetActive(true);
-                    audioSource.PlayOneShot(alertSoundEffect);
+                    audioSource.Stop();
+                    audioSource.PlayOneShot(alertClip);
                     dumbStateTimer = TIMER_RESET_VALUE;
                     currentState = GuardState.chasing;
                     agent.speed = alertSpeed;
                 }
-                else
+                else //This runs once when enemy does not see the player at the end of dumbstruck time which transitions from 'dumbstruck' to 'waiting'.
                 {
-                    //Play "mistaken" voice here
+                    audioSource.PlayOneShot(mistakenClip);
                     dumbStateTimer = TIMER_RESET_VALUE;
                     StartWaiting();
                 }
@@ -160,6 +164,7 @@ public class EnemyMovement : MonoBehaviour
                 else if (agent.remainingDistance <= chaseDestinationSpacing && detectionTimer >= lostDetectionDelay)
                 {
                     exclamationMark.SetActive(false);
+                    audioSource.PlayOneShot(lostplayerClip);
                     StartWaiting();
                 }
                 break;
@@ -198,6 +203,8 @@ public class EnemyMovement : MonoBehaviour
         if (currentState.Equals(GuardState.patrolling) || currentState.Equals(GuardState.waiting) || currentState.Equals(GuardState.investigating))
         {
             currentState = GuardState.dumbstruck;
+            audioSource.Stop();
+            audioSource.PlayOneShot(dumbstruckClip);
             agent.SetDestination(transform.position);
         }
         else if (currentState != GuardState.dumbstruck && currentState != GuardState.shooting)
@@ -237,6 +244,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void ResumePatrol()
     {
+        audioSource.Play();
         agent.SetDestination(waypoints[currentWaypointIndex].transform.position);
     }
 

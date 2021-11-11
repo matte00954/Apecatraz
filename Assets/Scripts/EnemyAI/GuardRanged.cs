@@ -9,6 +9,10 @@ public class GuardRanged : MonoBehaviour
     [SerializeField] private GameObject firePositionObject;
     [SerializeField] private GameObject playerMovementPredictionObject;
 
+    [Header("Sounds")]
+    [SerializeField] private AudioClip chargingClip;
+    [SerializeField] private AudioClip shootClip;
+    private AudioSource audioSource;
 
     [Header("Chase state variables")]
     [SerializeField, Range(5f, 50f), Tooltip("The maximum range from the player before the enemy can start shooting.")]
@@ -23,25 +27,28 @@ public class GuardRanged : MonoBehaviour
     {
         chargeTimer = attackChargeTime;
         enemyMovement = GetComponent<EnemyMovement>();
+        audioSource = GetComponent<AudioSource>();
     } 
 
     void Update()
     {
-        if (Vector3.Distance(enemyMovement.HeadPosition, enemyMovement.PlayerDetectionPosition) <= attackRangeMax
+        //Starts charging the weapon when the following conditions are meet.
+        if (Vector3.Distance(enemyMovement.HeadPosition, enemyMovement.PlayerDetectionPosition) <= attackRangeMax 
             && enemyMovement.DetectingPlayer && chargeTimer >= attackChargeTime && !isCharging
             && enemyMovement.CurrentState != EnemyMovement.GuardState.dumbstruck)
         {
             chargeTimer = 0f;
             enemyMovement.CurrentState = EnemyMovement.GuardState.shooting;
             isCharging = true;
+            audioSource.PlayOneShot(chargingClip);
         }
 
-        if (isCharging && chargeTimer < attackChargeTime)
+        if (isCharging && chargeTimer < attackChargeTime) //Rotates towards the player while counting down the charge timer.
         {
             enemyMovement.RotateSelfToPlayer();
             chargeTimer += Time.deltaTime;
         }
-        else if (isCharging && chargeTimer >= attackChargeTime)
+        else if (isCharging && chargeTimer >= attackChargeTime) 
         {
             isCharging = false;
             FireAtPlayer();
@@ -55,6 +62,7 @@ public class GuardRanged : MonoBehaviour
     {
         firePositionObject.transform.LookAt(playerMovementPredictionObject.transform.position);
         Instantiate(netProjectilePrefab, firePositionObject.transform.position, firePositionObject.transform.rotation);
+        audioSource.PlayOneShot(shootClip);
     }
 
     private void OnDrawGizmos()

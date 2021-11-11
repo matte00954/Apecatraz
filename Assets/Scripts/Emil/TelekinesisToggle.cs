@@ -5,6 +5,7 @@ public class TelekinesisToggle : MonoBehaviour
     public Material[] materials;
     public bool isCarried;
     public int x;
+
     Renderer rend;
 
     // Start is called before the first frame update
