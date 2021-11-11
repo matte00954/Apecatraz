@@ -274,9 +274,9 @@ public class ThirdPersonMovement : MonoBehaviour
     private void DashCheck()
     {
 
-        if (!dashInactive && Input.GetKeyDown(KeyCode.LeftShift))
+        if (!dashInactive)
         {
-            if (Input.GetKey(KeyCode.LeftShift) && dashCooldown >= 0f)
+            if (Input.GetKey(KeyCode.LeftShift) && dashCooldown <= 0f)
             {
                 if (energy.CheckEnergy(dashEnergyCost))
                 {
@@ -286,10 +286,10 @@ public class ThirdPersonMovement : MonoBehaviour
                 else
                     StopDashing();
             }
-        }
-        else if (playerState.Equals(State.dashing) && !Input.GetKey(KeyCode.LeftShift))
-        {
-            StopDashing();
+            else if (playerState.Equals(State.dashing))
+            {
+                StopDashing();
+            }
         }
     }
 
@@ -298,7 +298,7 @@ public class ThirdPersonMovement : MonoBehaviour
         ActivateRenderer(0);
         dashEffectsReference.SpeedUp();
         playerState = State.nothing;
-        dashCooldown = 2f;
+        dashCooldown = 1f;
     }
 
     private void Dash()
@@ -311,10 +311,13 @@ public class ThirdPersonMovement : MonoBehaviour
         }
         else
         {
-            playerState = State.dashing;
-            dashEffectsReference.SlowDown();
-            ControllerMove(transform.forward * DASH_MULTIPLIER);
-            energy.SpendEnergy(dashEnergyCost);
+            if (energy.CheckEnergy(dashEnergyCost))
+            {
+                playerState = State.dashing;
+                dashEffectsReference.SlowDown();
+                ControllerMove(transform.forward * DASH_MULTIPLIER);
+                energy.SpendEnergy(dashEnergyCost);
+            }
         }
     }
 
