@@ -108,7 +108,7 @@ public class Telekinesis : MonoBehaviour
             objectRigidbody.drag = 6f; //Makes object move slower when holding
             carriedObject = pickObject;
 
-            //Destroy Icon for particle effects and outline
+            //Destroy Icon
             Destroy(carriedObjectOutline);
         }
     }
