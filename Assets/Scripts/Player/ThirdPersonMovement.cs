@@ -126,7 +126,7 @@ public class ThirdPersonMovement : MonoBehaviour
                 Time.timeScale = 1;
                 if (dashEffectsReference.slowmotion)
                 {
-                    Time.timeScale = 0.2f;
+                    Time.timeScale = 0.3f;
                 }
             }
 
@@ -319,7 +319,7 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 playerState = State.dashing;
                 dashEffectsReference.SlowDown();
-                ControllerMove(transform.forward * DASH_MULTIPLIER);
+                ControllerMove(transform.forward * DASH_MULTIPLIER* Time.deltaTime* 100);
                 energy.SpendEnergy(dashEnergyCost);
             }
         }
