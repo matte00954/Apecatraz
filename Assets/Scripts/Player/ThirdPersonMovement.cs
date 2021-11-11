@@ -41,7 +41,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     [Header("Ledge")]
     [SerializeField] private LayerMask ledgeMask;
-    [SerializeField] private LayerMask playerLayer;
+    [SerializeField] private LayerMask dashIgnoreLayer;
     [SerializeField] private GameObject ledgeDownCheck;
     [SerializeField] private GameObject ledgeUpCheck;
     [SerializeField] private AnimationClip climbAnimation;
@@ -145,7 +145,6 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             case State.dashing:
                 Dash();
-                LedgeCheck();
                 break;
             case State.telekinesis:
                 Movement();
@@ -280,16 +279,14 @@ public class ThirdPersonMovement : MonoBehaviour
 
             energy.SpendEnergy(dashEnergyCost);
 
-            //animator.SetTrigger("Teleport");
-
             RaycastHit hit;
 
-            if (Physics.SphereCast(transform.position, 1f, transform.forward, out hit, TELEPORT_DISTANCE_CHECK, ledgeMask))
+            if (!Physics.SphereCast(transform.position, 2f, transform.forward, out hit, TELEPORT_DISTANCE_CHECK, ~dashIgnoreLayer))
             {
-                ControllerMove(transform.forward * hit.distance * DASH_MARIGIN_MULTIPLIER);
+                ControllerMove(transform.forward * DASH_MARIGIN_MULTIPLIER);
             }
             else
-                ControllerMove(transform.forward * DASH_DISTANCE_MULTIPLIER);
+                return;
         }
         else
         {
