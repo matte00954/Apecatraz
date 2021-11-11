@@ -10,8 +10,8 @@ public class DashEffects : MonoBehaviour
     [SerializeField] private GameObject monkey;
     [SerializeField] private GameObject ball;
 
-    [SerializeField] private SkinnedMeshRenderer monkeySkinnedMeshRenderer;
-    [SerializeField] private MeshRenderer ballMeshRenderer;
+    private SkinnedMeshRenderer monkeySkinnedMeshRenderer;
+    private MeshRenderer ballMeshRenderer;
 
     [Header("Particle system")]
     [SerializeField] private ParticleSystem particle1;
@@ -43,6 +43,12 @@ public class DashEffects : MonoBehaviour
 
         monkeySkinnedMeshRenderer = monkey.GetComponent<SkinnedMeshRenderer>();
         ballMeshRenderer = ball.GetComponent<MeshRenderer>();
+
+        if (thirdPersonMovement == null)
+        {
+            Debug.LogError("Third person movement reference in dash effects on main camera is not assigned!!!");
+            thirdPersonMovement = FindObjectOfType<ThirdPersonMovement>(); //Just to prevent any scene from being bugged in case someone forgets
+        }
     }
 
     // Update is called once per frame
