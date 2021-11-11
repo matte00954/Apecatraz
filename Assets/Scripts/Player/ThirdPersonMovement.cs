@@ -217,20 +217,20 @@ public class ThirdPersonMovement : MonoBehaviour
             RaycastHit upHit;
 
             if (Physics.Raycast(ledgeUpCheck.gameObject.transform.position, Vector3.up * ledgeLengthRayMultiplier,
-                out upHit, ledgeLengthRayMultiplier, ledgeMask)) //if player is above obstacle, do not climb
+                out upHit, ledgeLengthRayMultiplier, ledgeMask)) //if player is below obstacle, do not climb
             {
                 return;
             }
             else //nothing in the way
             {
-                RaycastHit downHit; //ray from ledge check game object
+                RaycastHit downHit; //ray from ledgeCheck gameo object
 
                 if (Physics.Raycast(ledgeDownCheck.gameObject.transform.position, Vector3.down * ledgeLengthRayMultiplier, 
                     out downHit, ledgeLengthRayMultiplier, ledgeMask)) //checks if target surface has "climb" layer
                 {
                     RaycastHit forwardHit;
 
-                    if(Physics.Raycast(transform.position, Vector3.forward * ledgeLengthRayMultiplier, 
+                    if(Physics.Raycast(transform.position, transform.forward * ledgeLengthRayMultiplier, 
                         out forwardHit, ledgeLengthRayMultiplier)) //checks distance from object so animation starts at correct the distance
                     {
 
