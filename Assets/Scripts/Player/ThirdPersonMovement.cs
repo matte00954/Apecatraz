@@ -11,8 +11,8 @@ public class ThirdPersonMovement : MonoBehaviour
 
     //teleport
     private const float DASH_DISTANCE_MULTIPLIER = 0.75f; //per frame
-    private const float TELEPORT_DISTANCE_CHECK = 0.5f;
-    private const float DASH_MARIGIN_MULTIPLIER = 0.8f;
+    private const float TELEPORT_DISTANCE_CHECK = 1f;
+    private const float DASH_MULTIPLIER = 0.8f;
 
     //movement
     private const float PLAYER_SPEED = 6f; //Do not change
@@ -76,6 +76,7 @@ public class ThirdPersonMovement : MonoBehaviour
     private bool moving = false;
     private Vector3 velocity;
     private float saveRotation;
+    private float dashCooldown;
 
     private DashEffects dashEffectsReference;
 
@@ -144,7 +145,7 @@ public class ThirdPersonMovement : MonoBehaviour
         switch (playerState)
         {
             case State.dashing:
-                Dash();
+                DashCheck();
                 break;
             case State.telekinesis:
                 Movement();
@@ -159,22 +160,22 @@ public class ThirdPersonMovement : MonoBehaviour
                 Movement();
                 Jump();
                 LedgeCheck();
-
-                if (Input.GetKeyDown(KeyCode.LeftShift) && !dashInactive)
-                {
-                    playerState = State.dashing;
-                    ActivateRenderer(1);
-                }
-                else
-                    ActivateRenderer(0);
-
+                DashCheck();
                 break;
             default:
                 Debug.LogError("Player state is null");
                 break;
         }
 
-        if(!playerState.Equals(State.climbing))
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            Debug.Log(playerState.ToString() + " : dash cooldown : " + dashCooldown);
+        }
+
+        if (!playerState.Equals(State.dashing) && dashCooldown >= 0f)
+            dashCooldown -= Time.deltaTime;
+
+        if (!playerState.Equals(State.climbing))
             Gravity();
 
         GetTurn();
@@ -270,29 +271,50 @@ public class ThirdPersonMovement : MonoBehaviour
         }
     }
 
+    private void DashCheck()
+    {
+
+        if (!dashInactive && Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            if (Input.GetKey(KeyCode.LeftShift) && dashCooldown >= 0f)
+            {
+                if (energy.CheckEnergy(dashEnergyCost))
+                {
+                    ActivateRenderer(1);
+                    Dash();
+                }
+                else
+                    StopDashing();
+            }
+        }
+        else if (playerState.Equals(State.dashing) && !Input.GetKey(KeyCode.LeftShift))
+        {
+            StopDashing();
+        }
+    }
+
+    private void StopDashing()
+    {
+        ActivateRenderer(0);
+        dashEffectsReference.SpeedUp();
+        playerState = State.nothing;
+        dashCooldown = 2f;
+    }
+
     private void Dash()
     {
-        if (Input.GetKey(KeyCode.LeftShift) && energy.CheckEnergy(dashEnergyCost))
+        RaycastHit hit;
+
+        if (Physics.SphereCast(transform.position, 0.5f, transform.forward, out hit, TELEPORT_DISTANCE_CHECK, ~dashIgnoreLayer))
         {
-            dashEffectsReference.SlowDown();
-            ActivateRenderer(1); //Teleport shader
-
-            energy.SpendEnergy(dashEnergyCost);
-
-            RaycastHit hit;
-
-            if (!Physics.SphereCast(transform.position, 2f, transform.forward, out hit, TELEPORT_DISTANCE_CHECK, ~dashIgnoreLayer))
-            {
-                ControllerMove(transform.forward * DASH_MARIGIN_MULTIPLIER);
-            }
-            else
-                return;
+            StopDashing();
         }
         else
         {
-            ActivateRenderer(0);
-            dashEffectsReference.SpeedUp();
-            playerState = State.nothing;
+            playerState = State.dashing;
+            dashEffectsReference.SlowDown();
+            ControllerMove(transform.forward * DASH_MULTIPLIER);
+            energy.SpendEnergy(dashEnergyCost);
         }
     }
 

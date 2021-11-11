@@ -18,7 +18,7 @@ public class Telekinesis : MonoBehaviour
     [SerializeField] private GameObject mainCamera;
     [SerializeField] private GameObject telekinesisOrigin;
 
-    private float telkenesisOffsetMultiplier;
+    private float telkenesisOffsetMultiplier = 0f;
 
     private GameObject carriedObject;
 
@@ -71,8 +71,6 @@ public class Telekinesis : MonoBehaviour
             {
                 MoveObject();
             }
-            else
-                telkenesisOffsetMultiplier = 0f;
         }
     }
 
@@ -141,9 +139,12 @@ public class Telekinesis : MonoBehaviour
             }
 
             if (Input.mouseScrollDelta.y > 0)
-                telkenesisOffsetMultiplier += Input.mouseScrollDelta.y; 
-            if (Input.mouseScrollDelta.y < 0)
-                telkenesisOffsetMultiplier -= -Input.mouseScrollDelta.y; //do not touch
+                telkenesisOffsetMultiplier += Input.mouseScrollDelta.y;
+            if (Input.mouseScrollDelta.y < 0 && telkenesisOffsetMultiplier > 0)
+            {
+                telkenesisOffsetMultiplier -= -Input.mouseScrollDelta.y;
+                Debug.Log(telkenesisOffsetMultiplier);
+            } 
         }
     }
 
@@ -159,6 +160,8 @@ public class Telekinesis : MonoBehaviour
             carriedObject.transform.parent = null;
             carriedObject = null;
             thirdPersonMovement.PlayerState = ThirdPersonMovement.State.nothing;
+
+            telkenesisOffsetMultiplier = 0f;
 
             //Stops vfx and objectOutline
             thinking.Stop();
