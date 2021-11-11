@@ -75,6 +75,11 @@ public class InGameMenuManager : MonoBehaviour
 
     }
 
+    public void OpenMainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
+
     public void OpenConfirmMenu(int menuNumber)
     {
         MenuItems[menuNumber].SetActive(true);
