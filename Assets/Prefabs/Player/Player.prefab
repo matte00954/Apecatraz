@@ -5019,7 +5019,7 @@ Transform:
   m_GameObject: {fileID: 1762694613964198746}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 2, z: 0}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1762694614227774981}
   - {fileID: 1322312886509759396}
@@ -5131,6 +5131,11 @@ MonoBehaviour:
   energy: {fileID: 8444907791314147622}
   mainCamera: {fileID: 0}
   telekinesisOrigin: {fileID: 6943567795002420066}
+  outlineMaterial: {fileID: 0}
+  outlineScaleFactor: 0
+  outlineColor: {r: 0, g: 0, b: 0, a: 0}
+  interactiveIcon: {fileID: 0}
+  thinking: {fileID: 0}
 --- !u!136 &8106888074099415624
 CapsuleCollider:
   m_ObjectHideFlags: 0
