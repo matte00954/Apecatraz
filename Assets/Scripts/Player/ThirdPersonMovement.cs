@@ -241,7 +241,7 @@ public class ThirdPersonMovement : MonoBehaviour
             RaycastHit upHit;
 
             if (Physics.Raycast(ledgeUpCheck.gameObject.transform.position, Vector3.up * ledgeLengthRayMultiplier,
-                out upHit, ledgeLengthRayMultiplier, ledgeMask)) //if player is above obstacle, do not climb
+                out upHit, ledgeLengthRayMultiplier)) //if player is above obstacle, do not climb
             {
                 return;
             }
