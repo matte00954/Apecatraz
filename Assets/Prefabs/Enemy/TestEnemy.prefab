@@ -55,11 +55,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   exclamationMark: {fileID: 2456521467785830000}
-  walkClip: {fileID: 8300000, guid: e64385c8f5a3b6147b76be9dc1421fd3, type: 3}
+  walkClip: {fileID: 8300000, guid: 9950b9a8ce9a30449aa2d41de3d00d28, type: 3}
   alertClip: {fileID: 8300000, guid: eabc7adfbe5cf2b4cbfebdd738c417c9, type: 3}
   dumbstruckClip: {fileID: 8300000, guid: 7e1adb11a9f08464186a68bf1c9aed8e, type: 3}
   lostplayerClip: {fileID: 8300000, guid: 98244e7d2d837364a889efc9014feffe, type: 3}
   mistakenClip: {fileID: 8300000, guid: 98244e7d2d837364a889efc9014feffe, type: 3}
+  chasingClips: []
   agent: {fileID: 3235691328590164832}
   patrolSpeed: 3
   alertSpeed: 6
@@ -166,7 +167,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -457,8 +458,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 13.67, y: 10.835913, z: 26.551392}
-  m_Center: {x: 0, y: 2.583353, z: 11.694305}
+  m_Size: {x: 20, y: 10.835913, z: 28.3}
+  m_Center: {x: 0, y: 2.583353, z: 10.4}
 --- !u!1001 &207701742721824259
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -23,7 +23,7 @@ public class Energy : MonoBehaviour
             float rechargeDelta = (maxEnergy / rechargeTime) * Time.deltaTime;
 
             //Set current energy to be the current energy amount plus the recharge amount, clamped to maxEnergy, so
-            //you can't over charge.
+            //you can't over charge.funger
 
             currentEnergy = Mathf.Clamp(currentEnergy + rechargeDelta, 0f, maxEnergy);
 
@@ -67,12 +67,5 @@ public class Energy : MonoBehaviour
     public void ActivateEnergyRegen(bool activate)
     {
         regenerateEnergy = activate;
-    }
-
-    private void InfiniteEnergy()
-    {
-        rechargeTime = 0.1f;
-        currentEnergy = 10000f;
-        maxEnergy = 10000f;
     }
 }
