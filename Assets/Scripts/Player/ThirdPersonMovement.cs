@@ -322,7 +322,7 @@ public class ThirdPersonMovement : MonoBehaviour
         ActivateRenderer(0);
         dashEffectsReference.SpeedUp();
         playerState = State.nothing;
-        dashCooldown = 1f;
+        dashCooldown = 0.5f;
     }
 
     private void Dash()
