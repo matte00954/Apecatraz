@@ -18,7 +18,13 @@ public class Telekinesis : MonoBehaviour
     [SerializeField] private GameObject mainCamera;
     [SerializeField] private GameObject telekinesisOrigin;
 
-    private float telkenesisOffsetMultiplier = 0f;
+    private float telkenesisOffset = 0f;
+    private float maxTelkenesisOffset = 3f;
+    private float minTelkenesisOffset = -1f;
+
+
+    private float minDrag = 1f;
+    private float maxDrag = 4f;
 
     private GameObject carriedObject;
 
@@ -27,7 +33,7 @@ public class Telekinesis : MonoBehaviour
     private float pickupRange = 7f;
 
     private float minRange = 1.5f;
-    private float maxRange = 12.5f; //needs to be higher than pickuprange
+    private float maxRange = 12f; //needs to be higher than pickuprange
 
     private bool silenced;
 
@@ -47,7 +53,7 @@ public class Telekinesis : MonoBehaviour
     void Start()
     {
         carriedObject = null;
-        telkenesisOffsetMultiplier = 0f;
+        telkenesisOffset = 0f;
 
         ///
         thinking.Stop();
@@ -103,7 +109,7 @@ public class Telekinesis : MonoBehaviour
             Rigidbody objectRigidbody = pickObject.GetComponent<Rigidbody>();
             objectRigidbody.useGravity = false;
             objectRigidbody.freezeRotation = true;
-            objectRigidbody.drag = 6f; //Makes object move slower when holding
+            objectRigidbody.drag = maxDrag; //Makes object move slower when holding
             carriedObject = pickObject;
 
             //Destroy Icon
@@ -115,7 +121,7 @@ public class Telekinesis : MonoBehaviour
     {
         if(Vector3.Distance(carriedObject.transform.position, cameraTelekinesisTarget.position) > 0.1f)
         {
-            Vector3 moveDirection = cameraTelekinesisTarget.position - carriedObject.transform.position + (cameraTelekinesisTarget.forward * telkenesisOffsetMultiplier);
+            Vector3 moveDirection = cameraTelekinesisTarget.position - carriedObject.transform.position + (cameraTelekinesisTarget.forward * telkenesisOffset);
             carriedObject.GetComponent<Rigidbody>().AddForce(moveDirection * moveForce);
 
             energy.SpendEnergy(telekinesisEnergyCost);
@@ -138,12 +144,16 @@ public class Telekinesis : MonoBehaviour
                 return;
             }
 
-            if (Input.mouseScrollDelta.y > 0)
-                telkenesisOffsetMultiplier += Input.mouseScrollDelta.y;
-            if (Input.mouseScrollDelta.y < 0 && telkenesisOffsetMultiplier > 0)
+            if (Input.mouseScrollDelta.y > 0 
+                && telkenesisOffset <= maxTelkenesisOffset)
             {
-                telkenesisOffsetMultiplier -= -Input.mouseScrollDelta.y;
-                Debug.Log(telkenesisOffsetMultiplier);
+                telkenesisOffset += Input.mouseScrollDelta.y;
+            }
+
+            if (Input.mouseScrollDelta.y < 0 &&
+               (telkenesisOffset >= minTelkenesisOffset))
+            {
+                telkenesisOffset -= -Input.mouseScrollDelta.y;
             } 
         }
     }
@@ -156,12 +166,12 @@ public class Telekinesis : MonoBehaviour
             Rigidbody carriedRigidbody = carriedObject.GetComponent<Rigidbody>();
             carriedRigidbody.freezeRotation = false;
             carriedRigidbody.useGravity = true;
-            carriedRigidbody.drag = 1f;
+            carriedRigidbody.drag = minDrag;
             carriedObject.transform.parent = null;
             carriedObject = null;
             thirdPersonMovement.PlayerState = ThirdPersonMovement.State.nothing;
 
-            telkenesisOffsetMultiplier = 0f;
+            telkenesisOffset = 0f;
 
             //Stops vfx and objectOutline
             thinking.Stop();

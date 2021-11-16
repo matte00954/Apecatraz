@@ -241,7 +241,7 @@ public class ThirdPersonMovement : MonoBehaviour
             RaycastHit upHit;
 
             if (Physics.Raycast(ledgeUpCheck.gameObject.transform.position, Vector3.up * ledgeLengthRayMultiplier,
-                out upHit, ledgeLengthRayMultiplier, ledgeMask)) //if player is above obstacle, do not climb
+                out upHit, ledgeLengthRayMultiplier)) //if player is above obstacle, do not climb
             {
                 return;
             }
@@ -322,7 +322,7 @@ public class ThirdPersonMovement : MonoBehaviour
         ActivateRenderer(0);
         dashEffectsReference.SpeedUp();
         playerState = State.nothing;
-        dashCooldown = 1f;
+        dashCooldown = 0.5f;
     }
 
     private void Dash()

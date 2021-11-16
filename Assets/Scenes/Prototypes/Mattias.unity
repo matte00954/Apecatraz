@@ -258,7 +258,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7777778, y: 1}
+    m_SensorSize: {x: 1.52534, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -281,7 +281,7 @@ MonoBehaviour:
     m_DecelTime: 0.1
     m_InputAxisName: Mouse Y
     m_InputAxisValue: 0
-    m_InvertInput: 0
+    m_InvertInput: 1
     m_MinValue: 0
     m_MaxValue: 1
     m_Wrap: 0
@@ -6072,7 +6072,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7777778, y: 1}
+    m_SensorSize: {x: 1.52534, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -6095,7 +6095,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 406890216}
-  m_LocalRotation: {x: 0.051215682, y: 0.9237108, z: -0.13304783, w: 0.35557497}
+  m_LocalRotation: {x: 0.051215675, y: 0.9237108, z: -0.13304783, w: 0.35557494}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -6569,6 +6569,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8467215526710244310, guid: 0ddcf868f68e2624eb0210ee9bdac1b8, type: 3}
+      propertyPath: m_Drag
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467215526710244310, guid: 0ddcf868f68e2624eb0210ee9bdac1b8, type: 3}
+      propertyPath: m_Mass
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467215526710244310, guid: 0ddcf868f68e2624eb0210ee9bdac1b8, type: 3}
+      propertyPath: m_AngularDrag
+      value: 0.2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ddcf868f68e2624eb0210ee9bdac1b8, type: 3}
 --- !u!1 &641764231
@@ -6842,6 +6854,18 @@ PrefabInstance:
     - target: {fileID: 8467215526710244309, guid: 0ddcf868f68e2624eb0210ee9bdac1b8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467215526710244310, guid: 0ddcf868f68e2624eb0210ee9bdac1b8, type: 3}
+      propertyPath: m_Drag
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467215526710244310, guid: 0ddcf868f68e2624eb0210ee9bdac1b8, type: 3}
+      propertyPath: m_Mass
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467215526710244310, guid: 0ddcf868f68e2624eb0210ee9bdac1b8, type: 3}
+      propertyPath: m_AngularDrag
+      value: 0.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ddcf868f68e2624eb0210ee9bdac1b8, type: 3}
@@ -7823,7 +7847,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7777778, y: 1}
+    m_SensorSize: {x: 1.52534, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -8142,6 +8166,18 @@ PrefabInstance:
     - target: {fileID: 8467215526710244309, guid: 0ddcf868f68e2624eb0210ee9bdac1b8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467215526710244310, guid: 0ddcf868f68e2624eb0210ee9bdac1b8, type: 3}
+      propertyPath: m_Drag
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467215526710244310, guid: 0ddcf868f68e2624eb0210ee9bdac1b8, type: 3}
+      propertyPath: m_Mass
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8467215526710244310, guid: 0ddcf868f68e2624eb0210ee9bdac1b8, type: 3}
+      propertyPath: m_AngularDrag
+      value: 0.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ddcf868f68e2624eb0210ee9bdac1b8, type: 3}
@@ -8915,7 +8951,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7777778, y: 1}
+    m_SensorSize: {x: 1.52534, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -9887,6 +9923,7 @@ MonoBehaviour:
   ledgeGrabInactive: 1
   telekinesInactive: 0
   godMode: 0
+  slowmotionAllowed: 0
 --- !u!4 &1762694614494913263
 Transform:
   m_ObjectHideFlags: 0
