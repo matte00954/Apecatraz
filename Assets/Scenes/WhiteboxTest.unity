@@ -39051,6 +39051,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8991546647383011376, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
   m_PrefabInstance: {fileID: 4589560397828365604}
   m_PrefabAsset: {fileID: 0}
+--- !u!137 &817893690 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1840590890288251770, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
+  m_PrefabInstance: {fileID: 4589560397828365604}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &824349719
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55078,8 +55083,8 @@ MonoBehaviour:
   m_StreamingVersion: 20170927
   m_Priority: 10
   m_StandbyUpdate: 2
-  m_LookAt: {fileID: 4589560397828365605}
-  m_Follow: {fileID: 4589560397828365605}
+  m_LookAt: {fileID: 1999734960}
+  m_Follow: {fileID: 1999734960}
   m_CommonLens: 1
   m_Lens:
     FieldOfView: 40
@@ -55090,7 +55095,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.3333334, y: 1}
+    m_SensorSize: {x: 2.3504763, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -77155,7 +77160,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8116902948021883489, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.24191219
+      value: 0.24191217
       objectReference: {fileID: 0}
     - target: {fileID: 8116902948021883489, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
       propertyPath: m_LocalRotation.y
@@ -77163,7 +77168,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8116902948021883489, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.09011698
+      value: 0.09011697
       objectReference: {fileID: 0}
     - target: {fileID: 8116902948021883489, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -82042,7 +82047,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.3333334, y: 1}
+    m_SensorSize: {x: 2.3504763, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -85862,7 +85867,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.3333334, y: 1}
+    m_SensorSize: {x: 2.3504763, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -89839,7 +89844,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.3333334, y: 1}
+    m_SensorSize: {x: 2.3504763, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -89862,7 +89867,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1933502966}
-  m_LocalRotation: {x: 0.24191219, y: -0.3372522, z: 0.090116985, w: 0.9053278}
+  m_LocalRotation: {x: 0.24191217, y: -0.3372522, z: 0.09011699, w: 0.9053278}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -93206,6 +93211,11 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!4 &1999734960 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3577167452004375612, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
+  m_PrefabInstance: {fileID: 4589560397828365604}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2000978902
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -101869,6 +101879,10 @@ PrefabInstance:
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 1630087973}
+    - target: {fileID: 1762694613964198749, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
+      propertyPath: skinnedMeshRenderer
+      value: 
+      objectReference: {fileID: 817893690}
     - target: {fileID: 1762694613964198751, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
       propertyPath: m_RootOrder
       value: 12
@@ -101935,11 +101949,6 @@ PrefabInstance:
       objectReference: {fileID: 163588981}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
---- !u!4 &4589560397828365605 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1269751164126519610, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
-  m_PrefabInstance: {fileID: 4589560397828365604}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6222951685285329462
 PrefabInstance:
   m_ObjectHideFlags: 0
