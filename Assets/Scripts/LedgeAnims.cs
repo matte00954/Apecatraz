@@ -18,9 +18,9 @@ public class LedgeAnims : MonoBehaviour
         RaycastHit hit;
 
         if (Physics.Raycast(raycast1.transform.position, raycast1.transform.forward * 1,
-            out hit, .6f)) //checks distance from object so animation starts at correct the distance
+            out hit, 1f)) //checks distance from object so animation starts at correct the distance
         {
-            anim.SetFloat("ledge", Vector3.Distance(raycast1.transform.position, hit.point)/ 0.6f);
+            anim.SetFloat("ledge", Vector3.Distance(raycast1.transform.position, hit.point));
 
         }
         else
