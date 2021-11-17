@@ -71,6 +71,10 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private bool slowmotionAllowed = false;
 
     [HideInInspector] public bool isTelekinesisActive { get; set; }
+    
+    //Added By Andreas
+    public bool InAir { get => inAir; set => inAir = value; }
+    public bool Moving { get => moving; set => moving = value; }
 
     //Changes during runtime
     private float turnSmoothVelocity;
@@ -359,10 +363,10 @@ public class ThirdPersonMovement : MonoBehaviour
 
             gravityTimer = 0f;
 
-            if (inAir)
+            if (InAir)
             {
                 animator.SetTrigger("Land");
-                inAir = false;
+                InAir = false;
             }
         }
         else
@@ -384,8 +388,8 @@ public class ThirdPersonMovement : MonoBehaviour
 
             animator.SetFloat("YSpeed", velocity.y);
 
-            if (!inAir)
-                inAir = true;
+            if (!InAir)
+                InAir = true;
         }
 
         ControllerMove(velocity * Time.deltaTime); //gravity applied
@@ -396,7 +400,7 @@ public class ThirdPersonMovement : MonoBehaviour
         if (CheckGround() && Input.GetKeyDown(KeyCode.Space)) //Jump
         {
             animator.SetTrigger("Jump");
-            inAir = true;
+            InAir = true;
             velocity.y = Mathf.Sqrt(JUMP_HEIGHT * -2f * GRAVITY_VALUE);
         }
     }
@@ -415,15 +419,15 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         if (controller.velocity.magnitude > 3)
         {
-            if (!moving)
+            if (!Moving)
             {
                 animator.SetTrigger("Start");
             }
-            moving = true;
+            Moving = true;
         }
-        if (controller.velocity.magnitude < 3 && moving)
+        if (controller.velocity.magnitude < 3 && Moving)
         {
-            moving = false;
+            Moving = false;
             animator.SetTrigger("Stop");
         }
     }
