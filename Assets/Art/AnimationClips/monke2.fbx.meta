@@ -10,11 +10,17 @@ ModelImporter:
       74: -8211997847921910680
     second: MonkeArmature|Climb2
   - first:
+      74: -5958858474576352734
+    second: MonkeArmature|Climb2OLD
+  - first:
       74: -5629234421544241846
     second: MonkeArmature|Default_Pose
   - first:
       74: -8575349858982119884
     second: MonkeArmature|Idle
+  - first:
+      74: 4611294413214925834
+    second: MonkeArmature|Idle2
   - first:
       74: -5229008389811883930
     second: MonkeArmature|IdleToRun
@@ -36,6 +42,9 @@ ModelImporter:
   - first:
       74: 2044618131513147494
     second: MonkeArmature|Land
+  - first:
+      74: 6554754353956626781
+    second: MonkeArmature|Climb3
   - first:
       74: -985887792319748648
     second: MonkeArmature|Random1
@@ -128,6 +137,35 @@ ModelImporter:
       takeName: MonkeArmature|Climb2
       internalID: 0
       firstFrame: 0
+      lastFrame: 18
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: MonkeArmature|Climb2OLD
+      takeName: MonkeArmature|Climb2OLD
+      internalID: 0
+      firstFrame: 0
       lastFrame: 36
       wrapMode: 0
       orientationOffsetY: 0
@@ -184,6 +222,35 @@ ModelImporter:
     - serializedVersion: 16
       name: MonkeArmature|Idle
       takeName: MonkeArmature|Idle
+      internalID: 0
+      firstFrame: 0
+      lastFrame: 180
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: MonkeArmature|Idle2
+      takeName: MonkeArmature|Idle2
       internalID: 0
       firstFrame: 0
       lastFrame: 180
@@ -390,6 +457,35 @@ ModelImporter:
       internalID: 0
       firstFrame: 0
       lastFrame: 28
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: MonkeArmature|Climb3
+      takeName: MonkeArmature|Climb3
+      internalID: 0
+      firstFrame: 0
+      lastFrame: 19
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -757,7 +853,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.0055
+    globalScale: 0.55
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
