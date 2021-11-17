@@ -21,9 +21,9 @@ public class MonkeyVFX : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (!thirdPersonMovement.Moving)
-        //{
-        //   dustTrail.Play();
-        //}
+        if (!thirdPersonMovement.Moving)
+        {
+           dustTrail.Play();
+        }
     }
 }
