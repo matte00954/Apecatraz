@@ -272,7 +272,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
                         velocity = new Vector3(0, 0, 0); //removes all velocity during climb
 
-                        timeRemainingOnAnimation = climbAnimation.length - 0.15f; //0.8 - 0.15f adjusted to look better in game
+                        timeRemainingOnAnimation = climbAnimation.length; 
 
                         //Method LedgeClimb() starts in update if playerstate is climbing
                     }
