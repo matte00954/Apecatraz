@@ -139,6 +139,7 @@ public class Telekinesis : MonoBehaviour
 
     // TODO
     // Audio feedback everything voice command related
+    // Up,down,left,right
 
     #endregion
 
