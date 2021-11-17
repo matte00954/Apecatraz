@@ -212,6 +212,10 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Movement()
     {
+        if (playerState != State.climbing && (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)))
+        {
+            animator.SetTrigger("StopClimb");
+        }
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
@@ -284,10 +288,10 @@ public class ThirdPersonMovement : MonoBehaviour
     private void LedgeClimb()
     {
         timeRemainingOnAnimation -= Time.deltaTime;
-
+        //(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
         if (timeRemainingOnAnimation < 0)
         {
-            animator.SetTrigger("StopClimb");
+            //animator.SetTrigger("StopClimb");
 
             MoveTo(ledgeHit.point);
 
