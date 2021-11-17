@@ -22,6 +22,7 @@ public class ThirdPersonMovement : MonoBehaviour
     //gravity
     private const float GRAVITY_VALUE = -9.81f; // do not change this -9.81f
     private const float GRAVITY_JUMP_APEX = -30f; //multiplies gravity force
+    private const float LEDGE_CHECK_RAY_LENGTH_MULTIPLIER = 1.5f;
 
     //ground check
     private const float GROUND_CHECK_RADIUS = 0.15f; // comparing ground check game object to floor
@@ -51,7 +52,6 @@ public class ThirdPersonMovement : MonoBehaviour
     //GetComponentInChildren<MeshFilter>().mesh.bounds.extents.y
 
     private RaycastHit ledgeHit;
-    private float ledgeLengthRayMultiplier = 2f;
 
     private float timeRemainingOnAnimation;
 
@@ -240,8 +240,8 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             RaycastHit upHit;
 
-            if (Physics.Raycast(ledgeUpCheck.gameObject.transform.position, Vector3.up * ledgeLengthRayMultiplier,
-                out upHit, ledgeLengthRayMultiplier)) //if player is above obstacle, do not climb
+            if (Physics.Raycast(ledgeUpCheck.gameObject.transform.position, Vector3.up * LEDGE_CHECK_RAY_LENGTH_MULTIPLIER,
+                out upHit, LEDGE_CHECK_RAY_LENGTH_MULTIPLIER)) //if player is above obstacle, do not climb
             {
                 return;
             }
@@ -249,13 +249,13 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 RaycastHit downHit; //ray from ledge check game object
 
-                if (Physics.Raycast(ledgeDownCheck.gameObject.transform.position, Vector3.down * ledgeLengthRayMultiplier,
-                    out downHit, ledgeLengthRayMultiplier, ledgeMask)) //checks if target surface has "climb" layer
+                if (Physics.Raycast(ledgeDownCheck.gameObject.transform.position, Vector3.down * LEDGE_CHECK_RAY_LENGTH_MULTIPLIER,
+                    out downHit, LEDGE_CHECK_RAY_LENGTH_MULTIPLIER, ledgeMask)) //checks if target surface has "climb" layer
                 {
                     RaycastHit forwardHit;
 
-                    if (Physics.Raycast(transform.position, transform.forward * ledgeLengthRayMultiplier,
-                        out forwardHit, ledgeLengthRayMultiplier)) //checks distance from object so animation starts at correct the distance
+                    if (Physics.Raycast(transform.position, transform.forward * LEDGE_CHECK_RAY_LENGTH_MULTIPLIER,
+                        out forwardHit, LEDGE_CHECK_RAY_LENGTH_MULTIPLIER)) //checks distance from object so animation starts at correct the distance
                     {
 
                         MoveTo(new Vector3(forwardHit.point.x,

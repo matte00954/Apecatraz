@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 920525497856613996}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 13}
+  m_LocalPosition: {x: 0, y: 0, z: 12}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8116902948021883489}
@@ -59,14 +59,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8116902948021883492}
-  m_LocalRotation: {x: 0.09273979, y: 0.9016105, z: -0.24091893, w: 0.34706762}
-  m_LocalPosition: {x: -5.6414557, y: 6.131, z: 6.962696}
+  m_LocalRotation: {x: -0.1950344, y: 0.7973963, z: -0.33770856, w: -0.4605146}
+  m_LocalPosition: {x: -52.542522, y: 6.7271695, z: 16.486027}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6978137422043859348}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 23.962, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -119.985, z: 0}
 --- !u!20 &8116902948021883494
 Camera:
   m_ObjectHideFlags: 0
@@ -374,6 +374,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acf93d6a9f94eb148821c27ba9eeed7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeSpeed: 10
+  thirdPersonMovement: {fileID: 0}
+  monkey: {fileID: 0}
+  ball: {fileID: 0}
+  particle1: {fileID: 0}
   slowDownClip: {fileID: 8300000, guid: c151469f624f3b54ab56cf9368091dbd, type: 3}
   speedUpClip: {fileID: 8300000, guid: 7899e7cfc28d3384394ced8933cb78e5, type: 3}
+  fadeSpeed: 10
+  volume: {fileID: 0}
