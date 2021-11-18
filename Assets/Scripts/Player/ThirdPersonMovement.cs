@@ -35,13 +35,13 @@ public class ThirdPersonMovement : MonoBehaviour
 
     [Header("Controller")]
     [SerializeField] private CharacterController controller;
-    private Animator animator;
 
     [Header("Ground check")]
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundMask;
 
     [Header("Ledge")]
+    [SerializeField] private CharAnims charAnims;
     [SerializeField] private LayerMask ledgeMask;
     [SerializeField] private LayerMask dashIgnoreLayer;
     [SerializeField] private GameObject ledgeDownCheck;
@@ -75,9 +75,8 @@ public class ThirdPersonMovement : MonoBehaviour
     //Changes during runtime
     private float turnSmoothVelocity;
     private bool inAir = false;
-    private bool moving = false;
+    private bool isMoving = false;
     private Vector3 velocity;
-    private float saveRotation;
     private float dashCooldown;
     private float gravityTimer;
 
@@ -105,7 +104,6 @@ public class ThirdPersonMovement : MonoBehaviour
         rend.sharedMaterial = materials[0];
         ////////////////////////////////////////////////////////////////
 
-        animator = GetComponentInChildren<Animator>();
 
         if (mainCamera.transform == null)
         {
@@ -202,7 +200,6 @@ public class ThirdPersonMovement : MonoBehaviour
         if (!playerState.Equals(State.climbing))
             Gravity();
 
-        GetTurn();
     }
 
     public void ActivateRenderer(int index)
@@ -212,13 +209,10 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Movement()
     {
-        if (playerState != State.climbing && (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)))
-        {
-            animator.SetTrigger("StopClimb");
-        }
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
+        
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
         if (direction.magnitude >= 0.1f)
@@ -231,11 +225,12 @@ public class ThirdPersonMovement : MonoBehaviour
 
             ControllerMove(moveDirection * PLAYER_SPEED * Time.deltaTime);
         }
+        charAnims.SetAnimFloat("runY", direction.magnitude); //Joches grej
+
         if (CheckGround())
         {
-            StopRunning();
+            charAnims.CheckStopRunning();
         }
-        animator.SetFloat("runY", direction.magnitude); //Joches grej
     }
 
     private void LedgeCheck()
@@ -270,7 +265,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
                         playerState = State.climbing;
 
-                        animator.SetTrigger("LedgeGrab");
+                        charAnims.SetTriggerFromString("LedgeGrab");
 
                         ledgeHit = downHit; //target position of climb
 
@@ -291,10 +286,9 @@ public class ThirdPersonMovement : MonoBehaviour
         //(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
         if (timeRemainingOnAnimation < 0)
         {
-            //animator.SetTrigger("StopClimb");
+            charAnims.SetTriggerFromString("StopClimb");
 
             MoveTo(ledgeHit.point);
-
             playerState = State.nothing;
         }
     }
@@ -365,7 +359,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
             if (inAir)
             {
-                animator.SetTrigger("Land");
+                charAnims.SetTriggerFromString("Land");
                 inAir = false;
             }
         }
@@ -386,7 +380,7 @@ public class ThirdPersonMovement : MonoBehaviour
             else
                 velocity.y += GRAVITY_VALUE * Time.deltaTime;
 
-            animator.SetFloat("YSpeed", velocity.y);
+            charAnims.SetAnimFloat("YSpeed", velocity.y);
 
             if (!inAir)
                 inAir = true;
@@ -399,7 +393,7 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         if (CheckGround() && Input.GetKeyDown(KeyCode.Space)) //Jump
         {
-            animator.SetTrigger("Jump");
+            charAnims.SetTriggerFromString("Jump");
             inAir = true;
             velocity.y = Mathf.Sqrt(JUMP_HEIGHT * -2f * GRAVITY_VALUE);
         }
@@ -415,33 +409,49 @@ public class ThirdPersonMovement : MonoBehaviour
         return Physics.CheckSphere(groundCheck.position, GROUND_CHECK_RADIUS, groundMask);
     }
 
-    private void StopRunning() //Joche
+    /*private void StopRunning() //Joche
     {
         if (controller.velocity.magnitude > 3)
         {
-            if (!moving)
+            if (!isMoving)
             {
                 animator.SetTrigger("Start");
             }
-            moving = true;
+            isMoving = true;
         }
-        if (controller.velocity.magnitude < 3 && moving)
+        if (controller.velocity.magnitude < 3 && isMoving)
         {
-            moving = false;
+            isMoving = false;
             animator.SetTrigger("Stop");
         }
-    }
+    }*/
 
-    private void GetTurn() //Joche
-    {
-        animator.SetFloat("runX", (saveRotation + 1000) - (transform.eulerAngles.y + 1000));
-        saveRotation = transform.eulerAngles.y;
-    }
+
 
     public void MoveTo(Vector3 position)
     {
         controller.enabled = false;
         gameObject.transform.position = position;
         controller.enabled = true;
+    }
+
+    public float GetVelocity()
+    {
+        return controller.velocity.magnitude;
+    }
+
+    public State GetState()
+    {
+        return playerState;
+    }
+
+    public bool GetIsMoving()
+    {
+        return isMoving;
+    }
+
+    public void SetIsMoving(bool newMoveBool)
+    {
+        isMoving = newMoveBool;
     }
 }

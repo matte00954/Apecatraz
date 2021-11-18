@@ -42356,6 +42356,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 35
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &897696661 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7443781307072734093, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
+  m_PrefabInstance: {fileID: 4589560397828365604}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &901213410
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -86252,6 +86257,11 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 26, y: 15, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!95 &1847252778 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 7121873317887988917, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
+  m_PrefabInstance: {fileID: 4589560397828365604}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1847540820
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -101968,6 +101978,21 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1762694613964198746, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
   m_PrefabInstance: {fileID: 4589560397828365604}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1762694615862925205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1762694615862925204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d00c9504619a48e43be1fcf2a61f4ee1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ledgeDistanceRay: {fileID: 897696661}
+  anim: {fileID: 1847252778}
+  tpm: {fileID: 1762694615862925203}
 --- !u!1 &2356523452091760885 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2356523452851733563, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
@@ -102049,6 +102074,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 1762694613964198749, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
+      propertyPath: charAnims
+      value: 
+      objectReference: {fileID: 1762694615862925205}
     - target: {fileID: 1762694613964198749, guid: 9b1b5ff0ebffeb94cb2cb69f21e02a6d, type: 3}
       propertyPath: mainCamera
       value: 
