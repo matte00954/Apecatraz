@@ -4,6 +4,7 @@ using UnityEngine;
 public class ThirdPersonMovement : MonoBehaviour
 {
 
+    //Player States
     public enum State { dashing, telekinesis, disabled, nothing, climbing }
     private State playerState;
 
@@ -19,6 +20,9 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float PLAYER_SPEED = 6f; //Do not change
     private const float JUMP_HEIGHT = 4f; //Do not change
 
+    //dash
+    private const float DASH_ENERGY_COST = 5f;
+
     //gravity
     private const float GRAVITY_VALUE = -9.81f; // do not change this -9.81f
     private const float GRAVITY_JUMP_APEX = -30f; //multiplies gravity force
@@ -30,8 +34,10 @@ public class ThirdPersonMovement : MonoBehaviour
     //rotation
     private const float TURN_SMOOTH_TIME = 0.1f;
 
+
     [Header("Main camera")]
     [SerializeField] private Camera mainCamera;
+    [SerializeField]private DashEffects dashEffectsReference;
 
     [Header("Controller")]
     [SerializeField] private CharacterController controller;
@@ -49,15 +55,9 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private AnimationClip climbAnimation;
     [SerializeField] private SkinnedMeshRenderer skinnedMeshRenderer;
 
-    //GetComponentInChildren<MeshFilter>().mesh.bounds.extents.y
-
-    private RaycastHit ledgeHit;
-
-    private float timeRemainingOnAnimation;
 
     [Header("Energy")]
     [SerializeField] private Energy energy;
-    private float dashEnergyCost = 5f;
 
     [Header("Ability Shaders")]
     [SerializeField] Material[] materials;
@@ -73,14 +73,15 @@ public class ThirdPersonMovement : MonoBehaviour
     [HideInInspector] public bool isTelekinesisActive { get; set; }
 
     //Changes during runtime
-    private float turnSmoothVelocity;
+    private RaycastHit ledgeHit;
+    private Vector3 velocity;
     private bool inAir = false;
     private bool isMoving = false;
-    private Vector3 velocity;
+    private float turnSmoothVelocity;
     private float dashCooldown;
     private float gravityTimer;
+    private float timeRemainingOnAnimation;
 
-    private DashEffects dashEffectsReference;
 
     private void Start()
     {
@@ -91,18 +92,18 @@ public class ThirdPersonMovement : MonoBehaviour
         else
             isTelekinesisActive = true;
 
-        dashEffectsReference = mainCamera.GetComponent<DashEffects>();
-
         playerState = State.nothing;
 
         Cursor.lockState = CursorLockMode.Locked; //prevents mouse from leaving screen
 
+        #region Emil renderer
         /////////////////////////////////////////////////////////////////
         //Emils grej
         rend = GetComponentInChildren<Renderer>();
         rend.enabled = true;
         rend.sharedMaterial = materials[0];
         ////////////////////////////////////////////////////////////////
+        #endregion
 
 
         if (mainCamera.transform == null)
@@ -132,7 +133,7 @@ public class ThirdPersonMovement : MonoBehaviour
                 slowmotionAllowed = !slowmotionAllowed;
             }
 
-            #region joche slowmotion
+            #region Joche slowmotion
             //ENDAST FÖR JOCHES PROTOTYP
             if (slowmotionAllowed)
             {
@@ -202,11 +203,6 @@ public class ThirdPersonMovement : MonoBehaviour
 
     }
 
-    public void ActivateRenderer(int index)
-    {
-        rend.sharedMaterial = materials[index]; //To switch shaders when using ability
-    }
-
     private void Movement()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
@@ -233,6 +229,7 @@ public class ThirdPersonMovement : MonoBehaviour
         }
     }
 
+    #region Ledgeclimb
     private void LedgeCheck()
     {
         if (!ledgeGrabInactive)
@@ -283,7 +280,7 @@ public class ThirdPersonMovement : MonoBehaviour
     private void LedgeClimb()
     {
         timeRemainingOnAnimation -= Time.deltaTime;
-        //(Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+
         if (timeRemainingOnAnimation < 0)
         {
             charAnims.SetTriggerFromString("StopClimb");
@@ -292,7 +289,9 @@ public class ThirdPersonMovement : MonoBehaviour
             playerState = State.nothing;
         }
     }
+    #endregion
 
+    #region Dash
     private void DashCheck()
     {
 
@@ -300,7 +299,7 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.LeftShift) && dashCooldown <= 0f)
             {
-                if (energy.CheckEnergy(dashEnergyCost))
+                if (energy.CheckEnergy(DASH_ENERGY_COST))
                 {
                     ActivateRenderer(1);
                     Dash();
@@ -315,14 +314,6 @@ public class ThirdPersonMovement : MonoBehaviour
         }
     }
 
-    private void StopDashing()
-    {
-        ActivateRenderer(0);
-        dashEffectsReference.SpeedUp();
-        playerState = State.nothing;
-        dashCooldown = 0.5f;
-    }
-
     private void Dash()
     {
         RaycastHit hit;
@@ -333,15 +324,24 @@ public class ThirdPersonMovement : MonoBehaviour
             }
             else
             {
-                if (energy.CheckEnergy(dashEnergyCost))
+                if (energy.CheckEnergy(DASH_ENERGY_COST))
                 {
                     playerState = State.dashing;
                     dashEffectsReference.SlowDown();
                     ControllerMove(transform.forward * DASH_MULTIPLIER * Time.deltaTime);
-                    energy.SpendEnergy(dashEnergyCost);
+                    energy.SpendEnergy(DASH_ENERGY_COST);
                 }
             }
     }
+
+    private void StopDashing()
+    {
+        ActivateRenderer(0);
+        dashEffectsReference.SpeedUp();
+        playerState = State.nothing;
+        dashCooldown = 0.5f;
+    }
+    #endregion
 
     private void Gravity()
     {
@@ -365,14 +365,6 @@ public class ThirdPersonMovement : MonoBehaviour
         }
         else
         {
-            //velocity.y += GRAVITY_VALUE * Time.deltaTime; //gravity in the air
-
-            //float gravity = Mathf.SmoothDamp(GRAVITY_VALUE, GRAVITY_JUMP_APEX, ref gravity, 1.5f);
-
-            //velocity.y = gravity;
-
-            //Debug.Log(gravity);
-
             if(gravityTimer > 0.65f)
             {
                 velocity.y += GRAVITY_JUMP_APEX * Time.deltaTime;
@@ -409,30 +401,16 @@ public class ThirdPersonMovement : MonoBehaviour
         return Physics.CheckSphere(groundCheck.position, GROUND_CHECK_RADIUS, groundMask);
     }
 
-    /*private void StopRunning() //Joche
-    {
-        if (controller.velocity.magnitude > 3)
-        {
-            if (!isMoving)
-            {
-                animator.SetTrigger("Start");
-            }
-            isMoving = true;
-        }
-        if (controller.velocity.magnitude < 3 && isMoving)
-        {
-            isMoving = false;
-            animator.SetTrigger("Stop");
-        }
-    }*/
-
-
-
     public void MoveTo(Vector3 position)
     {
         controller.enabled = false;
         gameObject.transform.position = position;
         controller.enabled = true;
+    }
+
+    public void ActivateRenderer(int index)
+    {
+        rend.sharedMaterial = materials[index]; //To switch shaders when using ability
     }
 
     public float GetVelocity()
@@ -455,3 +433,20 @@ public class ThirdPersonMovement : MonoBehaviour
         isMoving = newMoveBool;
     }
 }
+
+/*private void StopRunning() //Joche
+{
+    if (controller.velocity.magnitude > 3)
+    {
+        if (!isMoving)
+        {
+            animator.SetTrigger("Start");
+        }
+        isMoving = true;
+    }
+    if (controller.velocity.magnitude < 3 && isMoving)
+    {
+        isMoving = false;
+        animator.SetTrigger("Stop");
+    }
+}*/
