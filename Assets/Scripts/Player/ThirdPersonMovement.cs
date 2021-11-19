@@ -4,6 +4,7 @@ using UnityEngine;
 public class ThirdPersonMovement : MonoBehaviour
 {
 
+    //Player States
     public enum State { dashing, telekinesis, disabled, nothing, climbing }
     private State playerState;
 
@@ -19,9 +20,13 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float PLAYER_SPEED = 6f; //Do not change
     private const float JUMP_HEIGHT = 4f; //Do not change
 
+    //dash
+    private const float DASH_ENERGY_COST = 5f;
+
     //gravity
     private const float GRAVITY_VALUE = -9.81f; // do not change this -9.81f
     private const float GRAVITY_JUMP_APEX = -30f; //multiplies gravity force
+    private const float LEDGE_CHECK_RAY_LENGTH_MULTIPLIER = 1.5f;
 
     //ground check
     private const float GROUND_CHECK_RADIUS = 0.15f; // comparing ground check game object to floor
@@ -29,18 +34,20 @@ public class ThirdPersonMovement : MonoBehaviour
     //rotation
     private const float TURN_SMOOTH_TIME = 0.1f;
 
+
     [Header("Main camera")]
     [SerializeField] private Camera mainCamera;
+    [SerializeField]private DashEffects dashEffectsReference;
 
     [Header("Controller")]
     [SerializeField] private CharacterController controller;
-    private Animator animator;
 
     [Header("Ground check")]
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundMask;
 
     [Header("Ledge")]
+    [SerializeField] private CharAnims charAnims;
     [SerializeField] private LayerMask ledgeMask;
     [SerializeField] private LayerMask dashIgnoreLayer;
     [SerializeField] private GameObject ledgeDownCheck;
@@ -48,16 +55,9 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private AnimationClip climbAnimation;
     [SerializeField] private SkinnedMeshRenderer skinnedMeshRenderer;
 
-    //GetComponentInChildren<MeshFilter>().mesh.bounds.extents.y
-
-    private RaycastHit ledgeHit;
-    private float ledgeLengthRayMultiplier = 2f;
-
-    private float timeRemainingOnAnimation;
 
     [Header("Energy")]
     [SerializeField] private Energy energy;
-    private float dashEnergyCost = 5f;
 
     [Header("Ability Shaders")]
     [SerializeField] Material[] materials;
@@ -71,21 +71,17 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private bool slowmotionAllowed = false;
 
     [HideInInspector] public bool isTelekinesisActive { get; set; }
-    
-    //Added By Andreas
-    public bool InAir { get => inAir; set => inAir = value; }
-    public bool Moving { get => moving; set => moving = value; }
 
     //Changes during runtime
-    private float turnSmoothVelocity;
-    private bool inAir = false;
-    private bool moving = false;
+    private RaycastHit ledgeHit;
     private Vector3 velocity;
-    private float saveRotation;
+    private bool inAir = false;
+    private bool isMoving = false;
+    private float turnSmoothVelocity;
     private float dashCooldown;
     private float gravityTimer;
+    private float timeRemainingOnAnimation;
 
-    private DashEffects dashEffectsReference;
 
     private void Start()
     {
@@ -96,20 +92,19 @@ public class ThirdPersonMovement : MonoBehaviour
         else
             isTelekinesisActive = true;
 
-        dashEffectsReference = mainCamera.GetComponent<DashEffects>();
-
         playerState = State.nothing;
 
         Cursor.lockState = CursorLockMode.Locked; //prevents mouse from leaving screen
 
+        #region Emil renderer
         /////////////////////////////////////////////////////////////////
         //Emils grej
         rend = GetComponentInChildren<Renderer>();
         rend.enabled = true;
         rend.sharedMaterial = materials[0];
         ////////////////////////////////////////////////////////////////
+        #endregion
 
-        animator = GetComponentInChildren<Animator>();
 
         if (mainCamera.transform == null)
         {
@@ -138,7 +133,7 @@ public class ThirdPersonMovement : MonoBehaviour
                 slowmotionAllowed = !slowmotionAllowed;
             }
 
-            #region joche slowmotion
+            #region Joche slowmotion
             //ENDAST FÖR JOCHES PROTOTYP
             if (slowmotionAllowed)
             {
@@ -206,12 +201,6 @@ public class ThirdPersonMovement : MonoBehaviour
         if (!playerState.Equals(State.climbing))
             Gravity();
 
-        GetTurn();
-    }
-
-    public void ActivateRenderer(int index)
-    {
-        rend.sharedMaterial = materials[index]; //To switch shaders when using ability
     }
 
     private void Movement()
@@ -219,6 +208,7 @@ public class ThirdPersonMovement : MonoBehaviour
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
+        
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
         if (direction.magnitude >= 0.1f)
@@ -231,21 +221,23 @@ public class ThirdPersonMovement : MonoBehaviour
 
             ControllerMove(moveDirection * PLAYER_SPEED * Time.deltaTime);
         }
+        charAnims.SetAnimFloat("runY", direction.magnitude); //Joches grej
+
         if (CheckGround())
         {
-            StopRunning();
+            charAnims.CheckStopRunning();
         }
-        animator.SetFloat("runY", direction.magnitude); //Joches grej
     }
 
+    #region Ledgeclimb
     private void LedgeCheck()
     {
         if (!ledgeGrabInactive)
         {
             RaycastHit upHit;
 
-            if (Physics.Raycast(ledgeUpCheck.gameObject.transform.position, Vector3.up * ledgeLengthRayMultiplier,
-                out upHit, ledgeLengthRayMultiplier)) //if player is above obstacle, do not climb
+            if (Physics.Raycast(ledgeUpCheck.gameObject.transform.position, Vector3.up * LEDGE_CHECK_RAY_LENGTH_MULTIPLIER,
+                out upHit, LEDGE_CHECK_RAY_LENGTH_MULTIPLIER)) //if player is above obstacle, do not climb
             {
                 return;
             }
@@ -253,13 +245,13 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 RaycastHit downHit; //ray from ledge check game object
 
-                if (Physics.Raycast(ledgeDownCheck.gameObject.transform.position, Vector3.down * ledgeLengthRayMultiplier,
-                    out downHit, ledgeLengthRayMultiplier, ledgeMask)) //checks if target surface has "climb" layer
+                if (Physics.Raycast(ledgeDownCheck.gameObject.transform.position, Vector3.down * LEDGE_CHECK_RAY_LENGTH_MULTIPLIER,
+                    out downHit, LEDGE_CHECK_RAY_LENGTH_MULTIPLIER, ledgeMask)) //checks if target surface has "climb" layer
                 {
                     RaycastHit forwardHit;
 
-                    if (Physics.Raycast(transform.position, transform.forward * ledgeLengthRayMultiplier,
-                        out forwardHit, ledgeLengthRayMultiplier)) //checks distance from object so animation starts at correct the distance
+                    if (Physics.Raycast(transform.position, transform.forward * LEDGE_CHECK_RAY_LENGTH_MULTIPLIER,
+                        out forwardHit, LEDGE_CHECK_RAY_LENGTH_MULTIPLIER)) //checks distance from object so animation starts at correct the distance
                     {
 
                         MoveTo(new Vector3(forwardHit.point.x,
@@ -270,13 +262,13 @@ public class ThirdPersonMovement : MonoBehaviour
 
                         playerState = State.climbing;
 
-                        animator.SetTrigger("LedgeGrab");
+                        charAnims.SetTriggerFromString("LedgeGrab");
 
                         ledgeHit = downHit; //target position of climb
 
                         velocity = new Vector3(0, 0, 0); //removes all velocity during climb
 
-                        timeRemainingOnAnimation = climbAnimation.length - 0.15f; //0.8 - 0.15f adjusted to look better in game
+                        timeRemainingOnAnimation = climbAnimation.length; 
 
                         //Method LedgeClimb() starts in update if playerstate is climbing
                     }
@@ -291,14 +283,15 @@ public class ThirdPersonMovement : MonoBehaviour
 
         if (timeRemainingOnAnimation < 0)
         {
-            animator.SetTrigger("StopClimb");
+            charAnims.SetTriggerFromString("StopClimb");
 
             MoveTo(ledgeHit.point);
-
             playerState = State.nothing;
         }
     }
+    #endregion
 
+    #region Dash
     private void DashCheck()
     {
 
@@ -306,7 +299,7 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.LeftShift) && dashCooldown <= 0f)
             {
-                if (energy.CheckEnergy(dashEnergyCost))
+                if (energy.CheckEnergy(DASH_ENERGY_COST))
                 {
                     ActivateRenderer(1);
                     Dash();
@@ -321,14 +314,6 @@ public class ThirdPersonMovement : MonoBehaviour
         }
     }
 
-    private void StopDashing()
-    {
-        ActivateRenderer(0);
-        dashEffectsReference.SpeedUp();
-        playerState = State.nothing;
-        dashCooldown = 0.5f;
-    }
-
     private void Dash()
     {
         RaycastHit hit;
@@ -339,15 +324,24 @@ public class ThirdPersonMovement : MonoBehaviour
             }
             else
             {
-                if (energy.CheckEnergy(dashEnergyCost))
+                if (energy.CheckEnergy(DASH_ENERGY_COST))
                 {
                     playerState = State.dashing;
                     dashEffectsReference.SlowDown();
                     ControllerMove(transform.forward * DASH_MULTIPLIER * Time.deltaTime);
-                    energy.SpendEnergy(dashEnergyCost);
+                    energy.SpendEnergy(DASH_ENERGY_COST);
                 }
             }
     }
+
+    private void StopDashing()
+    {
+        ActivateRenderer(0);
+        dashEffectsReference.SpeedUp();
+        playerState = State.nothing;
+        dashCooldown = 0.5f;
+    }
+    #endregion
 
     private void Gravity()
     {
@@ -363,22 +357,14 @@ public class ThirdPersonMovement : MonoBehaviour
 
             gravityTimer = 0f;
 
-            if (InAir)
+            if (inAir)
             {
-                animator.SetTrigger("Land");
-                InAir = false;
+                charAnims.SetTriggerFromString("Land");
+                inAir = false;
             }
         }
         else
         {
-            //velocity.y += GRAVITY_VALUE * Time.deltaTime; //gravity in the air
-
-            //float gravity = Mathf.SmoothDamp(GRAVITY_VALUE, GRAVITY_JUMP_APEX, ref gravity, 1.5f);
-
-            //velocity.y = gravity;
-
-            //Debug.Log(gravity);
-
             if(gravityTimer > 0.65f)
             {
                 velocity.y += GRAVITY_JUMP_APEX * Time.deltaTime;
@@ -386,10 +372,10 @@ public class ThirdPersonMovement : MonoBehaviour
             else
                 velocity.y += GRAVITY_VALUE * Time.deltaTime;
 
-            animator.SetFloat("YSpeed", velocity.y);
+            charAnims.SetAnimFloat("YSpeed", velocity.y);
 
-            if (!InAir)
-                InAir = true;
+            if (!inAir)
+                inAir = true;
         }
 
         ControllerMove(velocity * Time.deltaTime); //gravity applied
@@ -399,8 +385,8 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         if (CheckGround() && Input.GetKeyDown(KeyCode.Space)) //Jump
         {
-            animator.SetTrigger("Jump");
-            InAir = true;
+            charAnims.SetTriggerFromString("Jump");
+            inAir = true;
             velocity.y = Mathf.Sqrt(JUMP_HEIGHT * -2f * GRAVITY_VALUE);
         }
     }
@@ -415,33 +401,52 @@ public class ThirdPersonMovement : MonoBehaviour
         return Physics.CheckSphere(groundCheck.position, GROUND_CHECK_RADIUS, groundMask);
     }
 
-    private void StopRunning() //Joche
-    {
-        if (controller.velocity.magnitude > 3)
-        {
-            if (!Moving)
-            {
-                animator.SetTrigger("Start");
-            }
-            Moving = true;
-        }
-        if (controller.velocity.magnitude < 3 && Moving)
-        {
-            Moving = false;
-            animator.SetTrigger("Stop");
-        }
-    }
-
-    private void GetTurn() //Joche
-    {
-        animator.SetFloat("runX", (saveRotation + 1000) - (transform.eulerAngles.y + 1000));
-        saveRotation = transform.eulerAngles.y;
-    }
-
     public void MoveTo(Vector3 position)
     {
         controller.enabled = false;
         gameObject.transform.position = position;
         controller.enabled = true;
     }
+
+    public void ActivateRenderer(int index)
+    {
+        rend.sharedMaterial = materials[index]; //To switch shaders when using ability
+    }
+
+    public float GetVelocity()
+    {
+        return controller.velocity.magnitude;
+    }
+
+    public State GetState()
+    {
+        return playerState;
+    }
+
+    public bool GetIsMoving()
+    {
+        return isMoving;
+    }
+
+    public void SetIsMoving(bool newMoveBool)
+    {
+        isMoving = newMoveBool;
+    }
 }
+
+/*private void StopRunning() //Joche
+{
+    if (controller.velocity.magnitude > 3)
+    {
+        if (!isMoving)
+        {
+            animator.SetTrigger("Start");
+        }
+        isMoving = true;
+    }
+    if (controller.velocity.magnitude < 3 && isMoving)
+    {
+        isMoving = false;
+        animator.SetTrigger("Stop");
+    }
+}*/

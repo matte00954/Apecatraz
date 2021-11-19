@@ -2,6 +2,10 @@
 //Author: William Örnquist
 using UnityEngine;
 using UnityEngine.VFX;
+using UnityEngine.Windows.Speech;
+using System;
+using System.Linq;
+using System.Collections.Generic;
 
 public class Telekinesis : MonoBehaviour
 {
@@ -17,10 +21,11 @@ public class Telekinesis : MonoBehaviour
     [Header("Telekinesis")]
     [SerializeField] private GameObject mainCamera;
     [SerializeField] private GameObject telekinesisOrigin;
+    [SerializeField] private bool voiceCommandsEnabled = false;
 
-    private float telkenesisOffset = 0f;
-    private float maxTelkenesisOffset = 3f;
-    private float minTelkenesisOffset = -1f;
+    private int telkenesisOffset = 0;
+    private int maxTelkenesisOffset = 3;
+    private int minTelkenesisOffset = -1;
 
 
     private float minDrag = 1f;
@@ -30,7 +35,7 @@ public class Telekinesis : MonoBehaviour
 
     private float moveForce = 10f;
 
-    private float pickupRange = 7f;
+    private float pickupRange = 10f;
 
     private float minRange = 1.5f;
     private float maxRange = 12f; //needs to be higher than pickuprange
@@ -50,16 +55,93 @@ public class Telekinesis : MonoBehaviour
     public VisualEffect thinking;
     ///
 
+
+
+    //Telekinesis prototype
+    private Dictionary<string, Action> keywordActions = new Dictionary<string, Action>();
+    private KeywordRecognizer keywordRecognizer;
+    //Telekinesis prototype
+
     void Start()
     {
-        carriedObject = null;
-        telkenesisOffset = 0f;
+
+        foreach (var device in Microphone.devices)
+        {
+            Debug.Log("Name: " + device);
+        }
+
+        if (voiceCommandsEnabled)
+        {
+            /// Voice commands
+            keywordActions.Add("Forward", VoiceForwardOne);
+            keywordActions.Add("Back", VoiceBackOne);
+
+            keywordActions.Add("Full forward", VoiceFullForward);
+            keywordActions.Add("Full back", VoiceFullBack);
+
+            keywordActions.Add("Pick", VoicePickUp);
+            keywordActions.Add("Pick up", VoicePickUp);
+
+            keywordActions.Add("Drop", VoiceDrop);
+
+            keywordRecognizer = new KeywordRecognizer(keywordActions.Keys.ToArray());
+            keywordRecognizer.OnPhraseRecognized += OnKeyWordsRecognized;
+            keywordRecognizer.Start();
+        }
+        /// Inking and typing settings, get to know you needs to be on
 
         ///
         thinking.Stop();
         carriedObjectOutline = null;
         ///
+
+        carriedObject = null;
+        telkenesisOffset = 0;
     }
+
+    #region Mattias Telekinesis prototype
+    private void OnKeyWordsRecognized(PhraseRecognizedEventArgs args)
+    {
+        Debug.Log("Keyword :" + args.text);
+        keywordActions[args.text].Invoke();
+    }
+
+    private void VoiceFullForward()
+    {
+        IncreaseTelekinesisOffset(Mathf.Abs(minTelkenesisOffset - maxTelkenesisOffset));
+    }
+
+    private void VoiceFullBack()
+    {
+        DecreaseTelekinesisOffset(Mathf.Abs(minTelkenesisOffset - maxTelkenesisOffset));
+    }
+
+    private void VoiceForwardOne()
+    {
+        IncreaseTelekinesisOffset(1);
+    }
+
+    private void VoiceBackOne()
+    {
+        DecreaseTelekinesisOffset(1);
+    }
+
+    private void VoicePickUp()
+    {
+        FindObject();
+    }
+
+    private void VoiceDrop()
+    {
+        DropObject();
+    }
+
+
+    // TODO
+    // Audio feedback everything voice command related
+    // Up,down,left,right
+
+    #endregion
 
     private void Update()
     {
@@ -79,6 +161,7 @@ public class Telekinesis : MonoBehaviour
             }
         }
     }
+
 
     private void FindObject()
     {
@@ -144,18 +227,27 @@ public class Telekinesis : MonoBehaviour
                 return;
             }
 
-            if (Input.mouseScrollDelta.y > 0 
-                && telkenesisOffset <= maxTelkenesisOffset)
+            if (Input.mouseScrollDelta.y > 0)
             {
-                telkenesisOffset += Input.mouseScrollDelta.y;
+                IncreaseTelekinesisOffset((int)Input.mouseScrollDelta.y);
             }
-
-            if (Input.mouseScrollDelta.y < 0 &&
-               (telkenesisOffset >= minTelkenesisOffset))
+            else if (Input.mouseScrollDelta.y < 0)
             {
-                telkenesisOffset -= -Input.mouseScrollDelta.y;
+                DecreaseTelekinesisOffset(-(int)Input.mouseScrollDelta.y);
             } 
         }
+    }
+
+    private void IncreaseTelekinesisOffset(int amount)
+    {
+        if (telkenesisOffset <= maxTelkenesisOffset)
+            telkenesisOffset += amount;
+    }
+
+    private void DecreaseTelekinesisOffset(int amount)
+    {
+        if (telkenesisOffset >= minTelkenesisOffset)
+            telkenesisOffset -= amount;
     }
 
     private void DropObject()
@@ -171,7 +263,7 @@ public class Telekinesis : MonoBehaviour
             carriedObject = null;
             thirdPersonMovement.PlayerState = ThirdPersonMovement.State.nothing;
 
-            telkenesisOffset = 0f;
+            telkenesisOffset = 0;
 
             //Stops vfx and objectOutline
             thinking.Stop();
