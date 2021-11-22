@@ -1,19 +1,16 @@
-//Author: William �rnquist
+// Author: William �rnquist
 using UnityEngine;
 using UnityEngine.AI;
 
 public class EnemyMovement : MonoBehaviour
 {
-    //'public' necessery to reference a specific state in other scripts (if they have a reference to EnemyMovement).
-    public enum GuardState { patrolling, waiting, investigating, dumbstruck, chasing, shooting } 
-    private GuardState currentState;
+    // Default spacing from agent destinations
+    private const float DefaultMinSpacing = 1f;
 
-    //Default spacing from agent destinations
-    private const float DEFAULT_MIN_SPACING = 1f;
-    //Default timer reset value
-    private const float TIMER_RESET_VALUE = 0f;
-    private const float DEFAULT_PATROL_SPEED = 3f;
-    private const float DEFAULT_ALERT_SPEED = 6f;
+    // Default timer reset value
+    private const float TimerResetValue = 0f;
+    private const float DefaultPatrolSpeed = 3f;
+    private const float DefaultAlertSpeed = 6f;
 
     [Header("References")]
     [SerializeField] private GameObject exclamationMark;
@@ -23,18 +20,19 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private AudioClip lostplayerClip;
     [SerializeField] private AudioClip mistakenClip;
     private AudioSource audioSource;
+    [SerializeField] private AudioClip[] chasingClips;
 
     [Header("Agent")]
     [SerializeField] private NavMeshAgent agent;
-    [SerializeField, Range(1f, 10f)] private float patrolSpeed = DEFAULT_PATROL_SPEED;
-    [SerializeField, Range(1f, 10f)] private float alertSpeed = DEFAULT_ALERT_SPEED;
+    [SerializeField, Range(1f, 10f)] private float patrolSpeed = DefaultPatrolSpeed;
+    [SerializeField, Range(1f, 10f)] private float alertSpeed = DefaultAlertSpeed;
 
     [SerializeField, Range(1f, 10f)]
-    private float patrolDestinationSpacing = DEFAULT_MIN_SPACING;
+    private float patrolDestinationSpacing = DefaultMinSpacing;
     [SerializeField, Range(1f, 10f)]
-    private float investigateDestinationSpacing = DEFAULT_MIN_SPACING;
+    private float investigateDestinationSpacing = DefaultMinSpacing;
     [SerializeField, Range(1f, 10f)]
-    private float chaseDestinationSpacing = DEFAULT_MIN_SPACING;
+    private float chaseDestinationSpacing = DefaultMinSpacing;
 
     [Header("Detection")]
     [SerializeField] private GameObject playerDetectionPoint;
@@ -50,6 +48,10 @@ public class EnemyMovement : MonoBehaviour
     private float lostDetectionDelay;
     [SerializeField, Range(0f, 5f), Tooltip("The amount of time the enemy stays dumbstruck in place before reacting.")]
     private float dumbstruckTime;
+    [SerializeField, Range(0f, 10f), Tooltip("The amount of time the enemy spends randomly searching around the last known location of the player.")]
+    private float searchTime;
+    [SerializeField, Range(1f, 30f), Tooltip("The maximum distance from the next search point.")]
+    private float searchPointRadius;
 
     [Header("Patrol variables")]
     [SerializeField, Tooltip("A stationary guard will stay and move back to one spot.")]
@@ -67,13 +69,38 @@ public class EnemyMovement : MonoBehaviour
     private int currentWaypointIndex;
     private float waitStateTimer;
     private float dumbStateTimer;
+    private float searchTimer;
     private float detectionTimer;
     private float detectionRange;
 
     private bool isPathInverted;
     private bool detectingPlayer;
+    private bool searchPointSet;
+    private GuardState currentState;
 
-    public void Start()
+    // 'public' necessery to reference a specific state in other scripts (if they have a reference to EnemyMovement).
+    public enum GuardState { patrolling, waiting, investigating, searching, dumbstruck, chasing, shooting }
+
+    // Gets & sets
+    public Vector3 HeadPosition { get => headTransform.position; }
+    public Vector3 PlayerDetectionPosition { get => playerDetectionPoint.transform.position; }
+    public NavMeshAgent Agent { get => agent; }
+    public bool DetectingPlayer { get => detectingPlayer; }
+    public GuardState CurrentState { get => currentState; set => currentState = value; }
+
+    public void RotateSelfToPlayer()
+    {
+        Vector3 direction = (PlayerDetectionPosition - transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 3f);
+    }
+
+    public void RefreshDetectionDelay()
+    {
+        detectionTimer = 0f;
+    }
+
+    private void Awake()
     {
         audioSource = gameObject.GetComponent<AudioSource>();
         detectionRange = fieldOfViewCollider.bounds.size.z;
@@ -81,7 +108,7 @@ public class EnemyMovement : MonoBehaviour
         audioSource.clip = walkClip;
         audioSource.loop = true;
 
-        if (isStationary)
+        if (this.isStationary)
             Debug.Log(gameObject.name + " is set to stationary.");
         else if (agent == null)
             Debug.LogError("The nav mesh agent component is not attached to " + gameObject.name + ".");
@@ -97,7 +124,7 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
-    void Update()
+    private void Update()
     {
         UpdateDetectionRays();
         UpdateState();
@@ -114,6 +141,7 @@ public class EnemyMovement : MonoBehaviour
                     NextWaypoint();
                     StartWaiting();
                 }
+
                 break;
             case GuardState.waiting:
                 if (waitStateTimer < totalWaitTime)
@@ -125,34 +153,38 @@ public class EnemyMovement : MonoBehaviour
 
                     ResumePatrol();
                 }
+
                 break;
             case GuardState.investigating:
                 if (agent.remainingDistance <= investigateDestinationSpacing)
                     StartWaiting();
+
                 break;
-            case GuardState.dumbstruck: //While dumbstruck is active, the enemy will stand still and rotate towards the player until the dumbstruck timer runs out.
+            case GuardState.dumbstruck: // While dumbstruck is active, the enemy will stand still and rotate towards the player until the dumbstruck timer runs out.
                 if (dumbStateTimer < dumbstruckTime) 
                 {
                     dumbStateTimer += Time.deltaTime;
                     RotateSelfToPlayer();
                 }
-                else if (detectingPlayer) //This runs once when enemy sees player at the end of dumbstruck time which transitions from 'dumbstruck' to 'chasing'.
+                else if (detectingPlayer) // This runs once when enemy sees player at the end of dumbstruck time which transitions from 'dumbstruck' to 'chasing'.
                 {
                     exclamationMark.SetActive(true);
                     audioSource.Stop();
                     audioSource.PlayOneShot(alertClip);
-                    dumbStateTimer = TIMER_RESET_VALUE;
+                    dumbStateTimer = TimerResetValue;
                     currentState = GuardState.chasing;
                     agent.speed = alertSpeed;
                 }
-                else //This runs once when enemy does not see the player at the end of dumbstruck time which transitions from 'dumbstruck' to 'waiting'.
+                else // This runs once when enemy does not see the player at the end of dumbstruck time which transitions from 'dumbstruck' to 'waiting'.
                 {
                     audioSource.PlayOneShot(mistakenClip);
-                    dumbStateTimer = TIMER_RESET_VALUE;
+                    dumbStateTimer = TimerResetValue;
                     StartWaiting();
                 }
+
                 break;
             case GuardState.chasing:
+                
                 if (detectionTimer < lostDetectionDelay)
                 {
                     agent.SetDestination(playerDetectionPoint.transform.position);
@@ -160,17 +192,30 @@ public class EnemyMovement : MonoBehaviour
                 }
 
                 if (detectingPlayer)
-                    detectionTimer = TIMER_RESET_VALUE;
+                    detectionTimer = TimerResetValue;
                 else if (agent.remainingDistance <= chaseDestinationSpacing && detectionTimer >= lostDetectionDelay)
                 {
                     exclamationMark.SetActive(false);
-                    audioSource.PlayOneShot(lostplayerClip);
-                    StartWaiting();
+                    StartSearching(alertSpeed);
                 }
+
                 break;
             case GuardState.shooting:
                 if (agent.remainingDistance >= 1f)
                     agent.SetDestination(transform.position);
+                break;
+
+            case GuardState.searching:
+                if (agent.remainingDistance <= 1f)
+                    agent.SetDestination(GetRandomSearchPosition(searchPointRadius));
+                if (searchTimer <= searchTime)
+                    searchTimer += Time.deltaTime;
+                else
+                {
+                    StartWaiting();
+                    audioSource.PlayOneShot(lostplayerClip);
+                }
+
                 break;
             default:
                 Debug.LogError("currentState is NULL!");
@@ -178,19 +223,33 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Enemy starts waiting in place for X seconds set from totalWaitTime.
+    /// </summary>
     private void StartWaiting()
     {
         currentState = GuardState.waiting;
         agent.SetDestination(transform.position);
-        waitStateTimer = TIMER_RESET_VALUE;
+        waitStateTimer = TimerResetValue;
         agent.speed = patrolSpeed;
+    }
+
+    /// <summary>
+    /// Enemy starts searching in random directions.
+    /// </summary>
+    /// <param name="agentSpeed">Agent's speed while searching.</param>
+    private void StartSearching(float agentSpeed)
+    {
+        searchTimer = TimerResetValue;
+        currentState = GuardState.searching;
+        agent.speed = agentSpeed;
+        //// Enemy lost player sound
     }
 
     private void UpdateDetectionRays()
     {
         detectingPlayer = false;
-        if (!isBlind && Physics.Raycast(headTransform.position, (playerDetectionPoint.transform.position - headTransform.position).normalized,
-            out RaycastHit sightHit, detectionRange, detectionMask))
+        if (!isBlind && Physics.Raycast(headTransform.position, (playerDetectionPoint.transform.position - headTransform.position).normalized, out RaycastHit sightHit, detectionRange, detectionMask))
             if (sightHit.collider.gameObject.CompareTag("Player") && fieldOfViewCollider.bounds.Contains(playerDetectionPoint.transform.position))
             {
                 detectingPlayer = true;
@@ -210,8 +269,20 @@ public class EnemyMovement : MonoBehaviour
         else if (currentState != GuardState.dumbstruck && currentState != GuardState.shooting)
         {
             currentState = GuardState.chasing;
-            detectionTimer = TIMER_RESET_VALUE;
+            detectionTimer = TimerResetValue;
         }
+    }
+
+    /// <summary>
+    /// Returns a random NavMesh position within a set radius from the enemy.
+    /// </summary>
+    private Vector3 GetRandomSearchPosition(float searchRadius)
+    {
+        Vector3 randomDirection = Random.insideUnitSphere * searchRadius;
+        randomDirection += transform.position;
+        NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, searchPointRadius, 1);
+        searchPointSet = true;
+        return hit.position;
     }
 
     private void NextWaypoint()
@@ -224,7 +295,7 @@ public class EnemyMovement : MonoBehaviour
                 currentWaypointIndex = 0;
             else if (!isCircling && currentWaypointIndex >= waypoints.Length)
             {
-                //Since the order is now in reverse, we decrement to 1 index lower than the last index as our next waypoint.
+                // Since the order is now in reverse, we decrement to 1 index lower than the last index as our next waypoint.
                 currentWaypointIndex = waypoints.Length - 2;
                 isPathInverted = true;
             }
@@ -235,7 +306,7 @@ public class EnemyMovement : MonoBehaviour
 
             if (currentWaypointIndex < 0)
             {
-                //Since index 0 is already reached at this point, next index will be 1. (resetting to 0 will make the guard wait twice as long)
+                // Since index 0 is already reached at this point, next index will be 1. (resetting to 0 will make the guard wait twice as long)
                 currentWaypointIndex = 1;
                 isPathInverted = false;
             }
@@ -246,18 +317,6 @@ public class EnemyMovement : MonoBehaviour
     {
         audioSource.Play();
         agent.SetDestination(waypoints[currentWaypointIndex].transform.position);
-    }
-
-    public void RotateSelfToPlayer()
-    {
-        Vector3 direction = (PlayerDetectionPosition - transform.position).normalized;
-        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 3f);
-    }
-
-    public void RefreshDetectionDelay()
-    {
-        detectionTimer = 0f;
     }
 
     private void OnTriggerStay(Collider other)
@@ -280,12 +339,4 @@ public class EnemyMovement : MonoBehaviour
             Gizmos.DrawRay(headTransform.position, (playerDetectionPoint.transform.position - headTransform.position).normalized * detectionRange);
         }
     }
-
-    //Gets & sets
-    public Vector3 HeadPosition { get => headTransform.position; }
-    public Vector3 PlayerDetectionPosition { get => playerDetectionPoint.transform.position; }
-    public NavMeshAgent Agent { get => agent; }
-    public bool DetectingPlayer { get => detectingPlayer; }
-    public GuardState CurrentState { get => currentState; set => currentState = value; }
-    
 }
