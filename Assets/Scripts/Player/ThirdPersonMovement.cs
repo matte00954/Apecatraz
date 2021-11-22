@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class ThirdPersonMovement : MonoBehaviour
 {
-
     //Player States
     public enum State { dashing, telekinesis, disabled, nothing, climbing }
     private State playerState;
@@ -20,7 +19,7 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float START_PLAYER_SPEED = 250f; //Do not change
     private const float MAX_PLAYER_SPEED = 500f; //Do not change
     private const float JUMP_HEIGHT = 17.5f; //Do not change
-    private const float JUMP_FORWARD_FORCE = 10f; //Do not change
+    private const float JUMP_FORWARD_FORCE = 100f; //Do not change
 
     //dash
     private const float DASH_ENERGY_COST = 5f;
@@ -311,10 +310,17 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 charAnims.SetTriggerFromString("Jump");
                 inAir = true;
-                rb.AddForce(0, JUMP_HEIGHT, 0, ForceMode.Impulse);
-                if (!Physics.Raycast(headRaycastOrigin.position, transform.forward, 1.5f, ~playerLayer))
+
+                if (Physics.Raycast(headRaycastOrigin.position, headRaycastOrigin.forward, 1.5f , ~playerLayer))
                 {
-                    rb.AddForce(transform.forward * JUMP_FORWARD_FORCE, ForceMode.Impulse);
+                    rb.AddForce(0, JUMP_HEIGHT, 0, ForceMode.Impulse);
+                    Debug.Log("Regular jump");
+                }
+                else
+                {
+                    Debug.Log("Forward jump");
+                    rb.AddForce(0, JUMP_HEIGHT, 0, ForceMode.Impulse);
+                    rb.AddForce(rb.transform.forward * JUMP_FORWARD_FORCE);
                 }
             }
         }
@@ -352,12 +358,7 @@ public class ThirdPersonMovement : MonoBehaviour
         }
     }
 
-    private void PlayerAcceleration()
-    {
-        playerSpeed += Mathf.MoveTowards(START_PLAYER_SPEED, MAX_PLAYER_SPEED, 50f);
-    }
-
-    private void CheckFloorRotation()
+    private void CheckFloorRotation() //NOT USED!!!
     {
         RaycastHit floorRotation;
 
@@ -373,7 +374,7 @@ public class ThirdPersonMovement : MonoBehaviour
         }
     }
 
-    private void ResetDrag() //probably not needed
+    private void ResetDrag() //probably not needed, NOT USED!!!
     {
         if (rb.angularDrag != defaultAngularDrag)
         {
