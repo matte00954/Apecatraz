@@ -1,4 +1,4 @@
-//Author: William �rnquist
+// Author: William �rnquist
 using UnityEngine;
 
 public class GuardRanged : MonoBehaviour
@@ -30,9 +30,9 @@ public class GuardRanged : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     } 
 
-    void Update()
+    private void Update()
     {
-        //Starts charging the weapon when the following conditions are meet.
+        // Starts charging the weapon when the following conditions are meet.
         if (Vector3.Distance(enemyMovement.HeadPosition, enemyMovement.PlayerDetectionPosition) <= attackRangeMax 
             && enemyMovement.DetectingPlayer && chargeTimer >= attackChargeTime && !isCharging
             && enemyMovement.CurrentState != EnemyMovement.GuardState.dumbstruck)
@@ -43,7 +43,8 @@ public class GuardRanged : MonoBehaviour
             audioSource.PlayOneShot(chargingClip);
         }
 
-        if (isCharging && chargeTimer < attackChargeTime) //Rotates towards the player while counting down the charge timer.
+        // Rotates towards the player while counting down the charge timer.
+        if (isCharging && chargeTimer < attackChargeTime) 
         {
             enemyMovement.RotateSelfToPlayer();
             chargeTimer += Time.deltaTime;

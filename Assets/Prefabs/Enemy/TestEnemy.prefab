@@ -80,6 +80,8 @@ MonoBehaviour:
   isDeaf: 0
   lostDetectionDelay: 1
   dumbstruckTime: 2
+  searchTime: 6
+  searchPointRadius: 0
   isStationary: 0
   isCircling: 0
   totalWaitTime: 2
@@ -99,10 +101,10 @@ MonoBehaviour:
   netProjectilePrefab: {fileID: 9099105687734081422, guid: 3d7a74aa0488f0c41a07b15be25abefa, type: 3}
   firePositionObject: {fileID: 6257888999375119178}
   playerMovementPredictionObject: {fileID: 0}
-  chargingClip: {fileID: 8300000, guid: 5db87b1175214ce48a8e49d46985ed94, type: 3}
-  shootClip: {fileID: 8300000, guid: a28499edc2e06144884b7ec85f7f3d2c, type: 3}
+  chargingClip: {fileID: 8300000, guid: 853fcf0613a52c147b0e1c3cee110914, type: 3}
+  shootClip: {fileID: 8300000, guid: 7c694cc54c9cd664c83b27def85aee56, type: 3}
   attackRangeMax: 15
-  attackChargeTime: 3
+  attackChargeTime: 1.8
 --- !u!136 &3235691328590164844
 CapsuleCollider:
   m_ObjectHideFlags: 0
