@@ -65,10 +65,10 @@ public class Telekinesis : MonoBehaviour
     void Start()
     {
 
-        foreach (var device in Microphone.devices)
+        /*foreach (var device in Microphone.devices)
         {
             Debug.Log("Name: " + device);
-        }
+        }*/
 
         if (voiceCommandsEnabled)
         {
@@ -100,6 +100,7 @@ public class Telekinesis : MonoBehaviour
     }
 
     #region Mattias Telekinesis prototype
+
     private void OnKeyWordsRecognized(PhraseRecognizedEventArgs args)
     {
         Debug.Log("Keyword :" + args.text);
@@ -296,7 +297,8 @@ public class Telekinesis : MonoBehaviour
         //Gizmos.DrawRay(transform.position, transform.TransformDirection(Vector3.forward));
         //For testing
     }
-
+    #region Andreas Outline code
+    //NOT USED
     /// This is how a outline is created
     Renderer CreateOutline(Material outlineMat, float scaleFactor, Color color, GameObject hit)
     {
@@ -337,4 +339,5 @@ public class Telekinesis : MonoBehaviour
             }
         }
     }
+    #endregion
 }
