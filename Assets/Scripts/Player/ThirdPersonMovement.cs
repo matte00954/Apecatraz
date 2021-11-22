@@ -10,8 +10,6 @@ public class ThirdPersonMovement : MonoBehaviour
     public State PlayerState { get => playerState; set => playerState = value; }
 
     //teleport
-    //private const float DASH_DISTANCE_MULTIPLIER = 0.75f; //per frame
-    //private const float TELEPORT_DISTANCE_CHECK = 1f;
     private const float DASH_DISTANCE_CHECK = 1f;
     private const float DASH_FORCE = 50f;
 
@@ -42,7 +40,6 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private DashEffects dashEffectsReference;
 
     [Header("Controller")]
-    //[SerializeField] private CharacterController controller;
     [SerializeField] private Rigidbody rb;
 
     [Header("Ground check")]
@@ -79,11 +76,6 @@ public class ThirdPersonMovement : MonoBehaviour
 
     [HideInInspector] public bool isTelekinesisActive { get; set; }
 
-
-    //Rigidbody
-    private float defaultDrag;
-    private float defaultAngularDrag;
-
     //Changes during runtime
     private RaycastHit ledgeHit;
     private bool inAir = false;
@@ -94,17 +86,10 @@ public class ThirdPersonMovement : MonoBehaviour
     private float dashTimer;
     private float timeRemainingOnAnimation;
 
-    // INPUT NEEDS TO BE IN UPDATE, MOVEMENT IN FIXED
-    // INPUT NEEDS TO BE IN UPDATE, MOVEMENT IN FIXED
-    // INPUT NEEDS TO BE IN UPDATE, MOVEMENT IN FIXED
-    // INPUT NEEDS TO BE IN UPDATE, MOVEMENT IN FIXED
-
-    //ALL CLIMBABLE OBJECTS NEED A TRIGGER WITH CLIMB LAYER
+    //ALL CLIMBABLE OBJECTS NEEDS A TRIGGER WITH CLIMB LAYER
 
     private void Start()
     {
-        defaultDrag = rb.drag;
-        defaultAngularDrag = rb.angularDrag;
 
         dashTimer = 0.2f;
 
@@ -133,10 +118,6 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             Debug.LogError("Camera not assigned to movement script, rotation will not work");
         }
-        /*if (controller == null)
-        {
-            Debug.LogError("Controller not assigned to movement script, movement will not work");
-        }*/
     }
 
     // Update is called once per frame
@@ -231,19 +212,6 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             rb.useGravity = true;
         }
-
-        /*if (!playerState.Equals(State.climbing) && !playerState.Equals(State.dashing))
-        {
-            rb.useGravity = false;
-
-        }
-        else
-        {
-            rb.useGravity = true;
-        }*/
-
-        /*if (!playerState.Equals(State.dashing) && !playerState.Equals(State.climbing))
-            Gravity();*/
 
     }
 
@@ -355,34 +323,6 @@ public class ThirdPersonMovement : MonoBehaviour
         if (CheckGround(frontFeetGroundCheck) || CheckGround(backFeetGroundCheck))
         {
             charAnims.CheckStopRunning();
-        }
-    }
-
-    private void CheckFloorRotation() //NOT USED!!!
-    {
-        RaycastHit floorRotation;
-
-        if (Physics.Raycast(backFeetGroundCheck.transform.position, Vector3.down * 1f,
-                   out floorRotation, 1f, groundMask)) //Uses ledge check ray var, because length works here too
-        {
-            if (floorRotation.transform.rotation != Quaternion.identity)
-            {
-                rb.freezeRotation = false;
-                rb.rotation = floorRotation.transform.rotation;
-                rb.freezeRotation = true;
-            }
-        }
-    }
-
-    private void ResetDrag() //probably not needed, NOT USED!!!
-    {
-        if (rb.angularDrag != defaultAngularDrag)
-        {
-            rb.angularDrag = defaultAngularDrag;
-        }
-        if (rb.drag != defaultDrag)
-        {
-            rb.drag = defaultDrag;
         }
     }
 
@@ -519,48 +459,6 @@ public class ThirdPersonMovement : MonoBehaviour
     }
     #endregion
 
-    /*private void Gravity()
-    {
-
-        if (CheckGround()) //On ground gravity
-        {
-
-            if (inAir)
-            {
-                charAnims.SetTriggerFromString("Land");
-                inAir = false;
-            }
-        }
-        else
-        {
-            if(rb.velocity.y > 0f)
-            {
-                rb.AddForce(Vector3.down * GRAVITY_JUMP_APEX);
-            }
-            else
-                rb.AddForce(Vector3.down * GRAVITY_VALUE);
-
-            charAnims.SetAnimFloat("YSpeed", rb.velocity.y);
-
-            if (!inAir)
-                inAir = true;
-        }
-    }*/
-
-
-    /*private void Jump()
-    {
-        if (Input.GetKeyDown(KeyCode.Space)) //Jump
-        {
-            if (CheckGround())
-            {
-                charAnims.SetTriggerFromString("Jump");
-                inAir = true;
-                rb.AddForce(rb.velocity.x, JUMP_HEIGHT, rb.velocity.z, ForceMode.Impulse);
-            }
-        }
-    }*/
-
     private bool CheckGround(Transform groundcheck)
     {
         return Physics.CheckSphere(groundcheck.position, GROUND_CHECK_RADIUS, groundMask);
@@ -596,6 +494,22 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         isMoving = newMoveBool;
     }
+    private void CheckFloorRotation() //NOT USED!!!
+    {
+        RaycastHit floorRotation;
+
+        if (Physics.Raycast(backFeetGroundCheck.transform.position, Vector3.down * 1f,
+                   out floorRotation, 1f, groundMask)) //Uses ledge check ray var, because length works here too
+        {
+            if (floorRotation.transform.rotation != Quaternion.identity)
+            {
+                rb.freezeRotation = false;
+                rb.rotation = floorRotation.transform.rotation;
+                rb.freezeRotation = true;
+            }
+        }
+    }
+
 }
 
 /*private void StopRunning() //Joche
