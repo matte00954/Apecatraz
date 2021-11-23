@@ -16,8 +16,7 @@ public class ThirdPersonMovement : MonoBehaviour
     //movement
     private const float START_PLAYER_SPEED = 250f; //Do not change
     private const float MAX_PLAYER_SPEED = 500f; //Do not change
-    private const float JUMP_HEIGHT = 17.5f; //Do not change
-    private const float JUMP_FORWARD_FORCE = 100f; //Do not change
+    private const float JUMP_HEIGHT = 20f; //Do not change
 
     //dash
     private const float DASH_ENERGY_COST = 5f;
@@ -78,6 +77,8 @@ public class ThirdPersonMovement : MonoBehaviour
 
     //Changes during runtime
     private RaycastHit ledgeHit;
+    private Vector3 movementOnSlope;
+    private Vector3 slopeHitNormal;
     private bool inAir = false;
     private bool isMoving = false;
     private float playerSpeed;
@@ -260,8 +261,15 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 if (CheckGround(frontFeetGroundCheck) || CheckGround(backFeetGroundCheck))
                 {
-                    if (rb.velocity.z < MAX_PLAYER_SPEED || rb.velocity.x < MAX_PLAYER_SPEED)
-                        rb.velocity = playerSpeed * Time.fixedDeltaTime * moveDirection; //On ground
+                    /*if (OnSlope())
+                    {
+                        Debug.Log("SLOPE");
+                        movementOnSlope = Vector3.ProjectOnPlane(moveDirection, slopeHitNormal);
+                        SwitchRotationBasedOnFloor();
+                        rb.velocity = playerSpeed * Time.fixedDeltaTime * movementOnSlope; //On ground and slope
+                    }*/
+
+                    rb.velocity = playerSpeed * Time.fixedDeltaTime * moveDirection; //On ground
                 }
                 else
                     rb.AddForce(MAX_PLAYER_SPEED * Time.fixedDeltaTime * moveDirection); //In air
@@ -276,19 +284,15 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             if (CheckGround(backFeetGroundCheck))
             {
-                charAnims.SetTriggerFromString("Jump");
-                inAir = true;
 
-                if (Physics.Raycast(headRaycastOrigin.position, headRaycastOrigin.forward, 1.5f , ~playerLayer))
+                rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+                
+                rb.AddForce(transform.up * JUMP_HEIGHT, ForceMode.Impulse);
+
+                if(rb.velocity.y != 0)
                 {
-                    rb.AddForce(0, JUMP_HEIGHT, 0, ForceMode.Impulse);
-                    Debug.Log("Regular jump");
-                }
-                else
-                {
-                    Debug.Log("Forward jump");
-                    rb.AddForce(0, JUMP_HEIGHT, 0, ForceMode.Impulse);
-                    rb.AddForce(rb.transform.forward * JUMP_FORWARD_FORCE);
+                    charAnims.SetTriggerFromString("Jump");
+                    inAir = true;
                 }
             }
         }
@@ -324,6 +328,20 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             charAnims.CheckStopRunning();
         }
+    }
+
+    private bool OnSlope()
+    {
+        RaycastHit slopeHit;
+
+        if (Physics.Raycast(frontFeetGroundCheck.position, Vector3.down, out slopeHit, 0.5f, groundMask) ||
+            Physics.Raycast(backFeetGroundCheck.position, Vector3.down, out slopeHit, 0.5f, groundMask))
+        {
+            slopeHitNormal = slopeHit.normal;
+            return slopeHit.normal != Vector3.up;
+        }
+        else
+            return false;
     }
 
     #region Ledgeclimb
@@ -494,22 +512,6 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         isMoving = newMoveBool;
     }
-    private void CheckFloorRotation() //NOT USED!!!
-    {
-        RaycastHit floorRotation;
-
-        if (Physics.Raycast(backFeetGroundCheck.transform.position, Vector3.down * 1f,
-                   out floorRotation, 1f, groundMask)) //Uses ledge check ray var, because length works here too
-        {
-            if (floorRotation.transform.rotation != Quaternion.identity)
-            {
-                rb.freezeRotation = false;
-                rb.rotation = floorRotation.transform.rotation;
-                rb.freezeRotation = true;
-            }
-        }
-    }
-
 }
 
 /*private void StopRunning() //Joche
