@@ -40,6 +40,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - FoamCutoff: 1.14
+    - FoamScale: 100
+    - FoamSpeed: 1
+    - FoamWeight: 1
+    - NoiseScale: 20
     - RefractionScale: 1
     - RefractionSpeed: 0.1
     - RefractionStrength: 0.01
@@ -92,8 +97,9 @@ Material:
     - _ZTestTransparent: 4
     - _ZWrite: 1
     m_Colors:
-    - Depths: {r: 0, g: 0.009493378, b: 0.75471693, a: 1}
-    - Shallows: {r: 0.0896224, g: 0.6449453, b: 1, a: 1}
+    - Depths: {r: 0.19157171, g: 0.19989483, b: 0.990566, a: 0.78431374}
+    - FoamColor: {r: 1, g: 1, b: 1, a: 0.7843137}
+    - Shallows: {r: 0.08962234, g: 0.6449453, b: 1, a: 0.5882353}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
