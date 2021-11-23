@@ -144,7 +144,7 @@ public class Telekinesis : MonoBehaviour
 
     #endregion
 
-    private void Update()
+    private void FixedUpdate()
     {
         //Enable for outline of objects.
         //FindObjectOutline();

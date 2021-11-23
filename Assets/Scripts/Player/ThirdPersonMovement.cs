@@ -79,8 +79,15 @@ public class ThirdPersonMovement : MonoBehaviour
     private RaycastHit ledgeHit;
     private Vector3 movementOnSlope;
     private Vector3 slopeHitNormal;
+
     private bool isMoving = false;
     private bool gravityAnimation;
+    private bool backFeetOnGround;
+    private bool frontFeetOnGround;
+    private bool jump;
+
+    private float horizontal;
+    private float vertical;
     private float playerSpeed;
     private float turnSmoothVelocity;
     private float dashCooldown;
@@ -126,6 +133,28 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         if (!InGameMenuManager.gameIsPaused)
         {
+
+            backFeetOnGround = Physics.CheckSphere(backFeetGroundCheck.position, GROUND_CHECK_RADIUS, ~playerLayer);
+            frontFeetOnGround = Physics.CheckSphere(frontFeetGroundCheck.position, GROUND_CHECK_RADIUS, ~playerLayer);
+
+            horizontal = Input.GetAxisRaw("Horizontal");
+            vertical = Input.GetAxisRaw("Vertical");
+
+            jump = Physics.Raycast(backFeetGroundCheck.position, Vector3.down, 1.5f, ~playerLayer) && Input.GetKeyDown(KeyCode.Space);
+
+            if (frontFeetOnGround || backFeetOnGround)
+            {
+                charAnims.CheckStopRunning();
+            }
+
+            if (gravityAnimation) //On ground
+            {
+                if (frontFeetOnGround || backFeetOnGround)
+                {
+                    charAnims.SetTriggerFromString("Land");
+                    gravityAnimation = false;
+                }
+            }
 
             if (Time.timeScale != 1 && !slowmotionAllowed) //to unpause game
             {
@@ -218,10 +247,6 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Movement()
     {
-
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-
         Vector3 direction = new Vector3(horizontal, 0f, vertical);
 
         if (horizontal == 0 && vertical == 0)
@@ -243,7 +268,7 @@ public class ThirdPersonMovement : MonoBehaviour
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + mainCamera.transform.eulerAngles.y; //first find target angle
             float angle;
 
-            if (!CheckGround(backFeetGroundCheck) && !CheckGround(frontFeetGroundCheck))
+            if (!backFeetOnGround && !frontFeetOnGround)
             {
                 angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TURN_SMOOTH_TIME_IN_AIR); //adjust angle for smoothing
             }
@@ -256,54 +281,35 @@ public class ThirdPersonMovement : MonoBehaviour
 
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward; //adjust direction to camera rotation/direction
 
-            if (horizontal != 0 || vertical != 0 &&
-                !Physics.Raycast(headRaycastOrigin.position, headRaycastOrigin.transform.forward * 0.2f, 0.25f, ~playerLayer)) //cant add velocity if something is in the way
+            if (horizontal != 0 || vertical != 0)
             {
-                if (CheckGround(frontFeetGroundCheck) || CheckGround(backFeetGroundCheck))
+                if (!jump && !Physics.Raycast(headRaycastOrigin.position, headRaycastOrigin.transform.forward * 0.2f, 0.25f, ~playerLayer)) //cant add velocity if something is in the way
                 {
-                    /*if (OnSlope())
+                    if (backFeetOnGround && frontFeetOnGround)
                     {
-                        Debug.Log("SLOPE");
-                        movementOnSlope = Vector3.ProjectOnPlane(moveDirection, slopeHitNormal);
-                        SwitchRotationBasedOnFloor();
-                        rb.velocity = playerSpeed * Time.fixedDeltaTime * movementOnSlope; //On ground and slope
-                    }*/
+                        /*if (OnSlope())
+                        {
+                            Debug.Log("SLOPE");
+                            movementOnSlope = Vector3.ProjectOnPlane(moveDirection, slopeHitNormal);
+                            SwitchRotationBasedOnFloor();
+                            rb.velocity = playerSpeed * Time.fixedDeltaTime * movementOnSlope; //On ground and slope
+                        }*/
 
-                    rb.velocity = playerSpeed * Time.fixedDeltaTime * moveDirection; //On ground
+                        rb.velocity = playerSpeed * Time.fixedDeltaTime * moveDirection; //On ground
+                    }
+                    else
+                        rb.AddForce(MAX_PLAYER_SPEED * Time.fixedDeltaTime * moveDirection); //In air
                 }
-                else
-                    rb.AddForce(MAX_PLAYER_SPEED * Time.fixedDeltaTime * moveDirection); //In air
             }
         }
-        else
+        /*else
         {
             rb.velocity = new Vector3(0, rb.velocity.y, 0);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space)) //Jump
-        {
-            if (CheckGround(backFeetGroundCheck))
-            {
-
-                rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-
-                rb.AddForce(transform.up * JUMP_HEIGHT, ForceMode.Impulse);
-
-                charAnims.SetTriggerFromString("Jump");
-            }
-        }
+        }*/
 
         //gravity
-        if (gravityAnimation) //On ground
-        {
-            if (CheckGround(frontFeetGroundCheck) || CheckGround(backFeetGroundCheck))
-            {
-                charAnims.SetTriggerFromString("Land");
-                gravityAnimation = false;
-            }
-        }
 
-        if (!CheckGround(frontFeetGroundCheck) && !CheckGround(backFeetGroundCheck))  //In air
+        if (!frontFeetOnGround && !backFeetOnGround && !jump)  //In air
         {
             if (rb.velocity.y > 0f)
             {
@@ -319,9 +325,15 @@ public class ThirdPersonMovement : MonoBehaviour
 
         charAnims.SetAnimFloat("runY", direction.magnitude); //Joches grej
 
-        if (CheckGround(frontFeetGroundCheck) || CheckGround(backFeetGroundCheck))
+        if (jump) //Jump
         {
-            charAnims.CheckStopRunning();
+            //rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+
+            rb.AddForce(Vector3.up * JUMP_HEIGHT, ForceMode.Impulse);
+
+            charAnims.SetTriggerFromString("Jump");
+
+            jump = false;
         }
     }
 
@@ -479,6 +491,12 @@ public class ThirdPersonMovement : MonoBehaviour
     private bool CheckGround(Transform groundcheck)
     {
         return Physics.CheckSphere(groundcheck.position, GROUND_CHECK_RADIUS, groundMask);
+    }
+
+    private void OnDrawGizmos()
+    {
+        //backFeetOnGround = Physics.CheckSphere(backFeetGroundCheck.position, GROUND_CHECK_RADIUS, ~playerLayer);
+        //frontFeetOnGround = Physics.CheckSphere(frontFeetGroundCheck.position, GROUND_CHECK_RADIUS, ~playerLayer);
     }
 
     public void MoveTo(Vector3 position)
