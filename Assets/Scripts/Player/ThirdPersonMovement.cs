@@ -27,7 +27,7 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float LEDGE_CHECK_RAY_LENGTH_MULTIPLIER = 1.5f;
 
     //ground check
-    private const float GROUND_CHECK_RADIUS = 0.10f; // comparing ground check game object to floor
+    private const float GROUND_CHECK_RADIUS = 0.2f; // comparing ground check game object to floor
 
     //rotation
     private const float TURN_SMOOTH_TIME = 0.1f;
