@@ -289,11 +289,8 @@ public class ThirdPersonMovement : MonoBehaviour
 
                 rb.AddForce(transform.up * JUMP_HEIGHT, ForceMode.Impulse);
 
-                if (rb.velocity.y != 0)
-                {
-                    charAnims.SetTriggerFromString("Jump");
-                    inAir = true;
-                }
+                charAnims.SetTriggerFromString("Jump");
+                inAir = true;
             }
         }
 
