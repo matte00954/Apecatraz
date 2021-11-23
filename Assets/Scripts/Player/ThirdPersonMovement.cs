@@ -79,8 +79,8 @@ public class ThirdPersonMovement : MonoBehaviour
     private RaycastHit ledgeHit;
     private Vector3 movementOnSlope;
     private Vector3 slopeHitNormal;
-    private bool inAir = false;
     private bool isMoving = false;
+    private bool gravityAnimation;
     private float playerSpeed;
     private float turnSmoothVelocity;
     private float dashCooldown;
@@ -233,17 +233,17 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             if (playerSpeed < MAX_PLAYER_SPEED)
             {
-                playerSpeed += Time.fixedDeltaTime * 200f;
+                playerSpeed += Time.fixedDeltaTime * 200f; //acceleration
             }
             else if (playerSpeed > MAX_PLAYER_SPEED)
             {
-                playerSpeed = MAX_PLAYER_SPEED;
+                playerSpeed = MAX_PLAYER_SPEED; //make sure playerspeed does not exceed max speed
             }
 
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + mainCamera.transform.eulerAngles.y; //first find target angle
             float angle;
 
-            if (inAir)
+            if (!CheckGround(backFeetGroundCheck) && !CheckGround(frontFeetGroundCheck))
             {
                 angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TURN_SMOOTH_TIME_IN_AIR); //adjust angle for smoothing
             }
@@ -290,21 +290,20 @@ public class ThirdPersonMovement : MonoBehaviour
                 rb.AddForce(transform.up * JUMP_HEIGHT, ForceMode.Impulse);
 
                 charAnims.SetTriggerFromString("Jump");
-                inAir = true;
             }
         }
 
         //gravity
-        if (CheckGround(frontFeetGroundCheck) || CheckGround(backFeetGroundCheck)) //On ground gravity
+        if (gravityAnimation) //On ground
         {
-
-            if (inAir)
+            if (CheckGround(frontFeetGroundCheck) || CheckGround(backFeetGroundCheck))
             {
                 charAnims.SetTriggerFromString("Land");
-                inAir = false;
+                gravityAnimation = false;
             }
         }
-        else //In air
+
+        if (!CheckGround(frontFeetGroundCheck) && !CheckGround(backFeetGroundCheck))  //In air
         {
             if (rb.velocity.y > 0f)
             {
@@ -313,10 +312,9 @@ public class ThirdPersonMovement : MonoBehaviour
             else
                 rb.AddForce(Vector3.down * GRAVITY_VALUE);
 
-            charAnims.SetAnimFloat("YSpeed", rb.velocity.y);
+            gravityAnimation = true;
 
-            if (!inAir)
-                inAir = true;
+            charAnims.SetAnimFloat("YSpeed", rb.velocity.y);
         }
 
         charAnims.SetAnimFloat("runY", direction.magnitude); //Joches grej
