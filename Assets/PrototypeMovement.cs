@@ -67,7 +67,7 @@ public class PrototypeMovement : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-            StateCheck();
+        StateCheck();
     }
 
     private void StateCheck() //this is in update
@@ -82,7 +82,7 @@ public class PrototypeMovement : MonoBehaviour
                 Debug.LogError("Player state is null");
                 break;
         }
-        
+
         Gravity();
 
         GetTurn();

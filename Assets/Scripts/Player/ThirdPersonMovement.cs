@@ -138,11 +138,11 @@ public class ThirdPersonMovement : MonoBehaviour
             }
 
             #region Joche slowmotion
-            //ENDAST FÖR JOCHES PROTOTYP
+            //ENDAST Fï¿½R JOCHES PROTOTYP
             if (slowmotionAllowed)
             {
 
-                if (PlayerState.Equals(State.dashing) && Time.timeScale != 0.2f) //ENDAST FÖR JOCHES PROTOTYP
+                if (PlayerState.Equals(State.dashing) && Time.timeScale != 0.2f) //ENDAST Fï¿½R JOCHES PROTOTYP
                 {
                     Time.timeScale = 0.2f;
                 }
@@ -151,7 +151,7 @@ public class ThirdPersonMovement : MonoBehaviour
                     Time.timeScale = 1f;
                 }
             }
-            //ENDAST FÖR JOCHES PROTOTYP
+            //ENDAST Fï¿½R JOCHES PROTOTYP
             #endregion
         }
 
@@ -184,7 +184,7 @@ public class ThirdPersonMovement : MonoBehaviour
             case State.telekinesis:
                 Movement();
                 break;
-            case State.disabled: // disabled = captured/död
+            case State.disabled: // disabled = captured/dï¿½d
                 //spela death anim
                 //reset spel
                 break;
@@ -206,7 +206,7 @@ public class ThirdPersonMovement : MonoBehaviour
         }
 
         if (!playerState.Equals(State.dashing))
-            if(dashCooldown >= 0f)
+            if (dashCooldown >= 0f)
                 dashCooldown -= Time.fixedDeltaTime;
 
         if (!playerState.Equals(State.dashing) && !playerState.Equals(State.climbing) && !rb.useGravity)
@@ -286,10 +286,10 @@ public class ThirdPersonMovement : MonoBehaviour
             {
 
                 rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-                
+
                 rb.AddForce(transform.up * JUMP_HEIGHT, ForceMode.Impulse);
 
-                if(rb.velocity.y != 0)
+                if (rb.velocity.y != 0)
                 {
                     charAnims.SetTriggerFromString("Jump");
                     inAir = true;
@@ -425,10 +425,13 @@ public class ThirdPersonMovement : MonoBehaviour
                 if (energy.CheckEnergy(DASH_ENERGY_COST))
                 {
                     ActivateRenderer(1);
+                    energy.ActivateEnergyRegen(false);
                     Dash();
                 }
                 else
+                {
                     StopDashing(false);
+                }
             }
             else if (playerState.Equals(State.dashing))
             {
@@ -473,6 +476,7 @@ public class ThirdPersonMovement : MonoBehaviour
             playerState = State.nothing;
             dashCooldown = 1f;
             dashTimer = 0.2f;
+            energy.ActivateEnergyRegen(true);
         }
     }
     #endregion
