@@ -1,5 +1,5 @@
 //Author: Mattias Larsson
-//Author: William Örnquist
+//Author: William ï¿½rnquist
 using UnityEngine;
 using UnityEngine.VFX;
 using UnityEngine.Windows.Speech;
@@ -51,7 +51,7 @@ public class Telekinesis : MonoBehaviour
     private Renderer outlineRenderer;
     private GameObject carriedObjectOutline;
 
-    public Canvas interactiveIcon;    
+    public Canvas interactiveIcon;
     public VisualEffect thinking;
     ///
 
@@ -65,10 +65,10 @@ public class Telekinesis : MonoBehaviour
     void Start()
     {
 
-        foreach (var device in Microphone.devices)
+        /*foreach (var device in Microphone.devices)
         {
             Debug.Log("Name: " + device);
-        }
+        }*/
 
         if (voiceCommandsEnabled)
         {
@@ -100,6 +100,7 @@ public class Telekinesis : MonoBehaviour
     }
 
     #region Mattias Telekinesis prototype
+
     private void OnKeyWordsRecognized(PhraseRecognizedEventArgs args)
     {
         Debug.Log("Keyword :" + args.text);
@@ -202,14 +203,15 @@ public class Telekinesis : MonoBehaviour
 
     private void MoveObject()
     {
-        if(Vector3.Distance(carriedObject.transform.position, cameraTelekinesisTarget.position) > 0.1f)
+        energy.ActivateEnergyRegen(false);
+        if (Vector3.Distance(carriedObject.transform.position, cameraTelekinesisTarget.position) > 0.1f)
         {
             Vector3 moveDirection = cameraTelekinesisTarget.position - carriedObject.transform.position + (cameraTelekinesisTarget.forward * telkenesisOffset);
             carriedObject.GetComponent<Rigidbody>().AddForce(moveDirection * moveForce);
 
             energy.SpendEnergy(telekinesisEnergyCost);
 
-            if(!energy.CheckEnergy(telekinesisEnergyCost))
+            if (!energy.CheckEnergy(telekinesisEnergyCost))
             {
                 DropObject();
                 return;
@@ -221,7 +223,7 @@ public class Telekinesis : MonoBehaviour
                 return;
             }
 
-            if(Vector3.Distance(transform.position, carriedObject.transform.position) < minRange)
+            if (Vector3.Distance(transform.position, carriedObject.transform.position) < minRange)
             {
                 DropObject();
                 return;
@@ -234,7 +236,7 @@ public class Telekinesis : MonoBehaviour
             else if (Input.mouseScrollDelta.y < 0)
             {
                 DecreaseTelekinesisOffset(-(int)Input.mouseScrollDelta.y);
-            } 
+            }
         }
     }
 
@@ -252,7 +254,7 @@ public class Telekinesis : MonoBehaviour
 
     private void DropObject()
     {
-        if(carriedObject != null)
+        if (carriedObject != null)
         {
             thirdPersonMovement.ActivateRenderer(0); // 0 = default shader
             Rigidbody carriedRigidbody = carriedObject.GetComponent<Rigidbody>();
@@ -268,6 +270,7 @@ public class Telekinesis : MonoBehaviour
             //Stops vfx and objectOutline
             thinking.Stop();
             Destroy(carriedObjectOutline);
+            energy.ActivateEnergyRegen(true);
         }
         else
             Debug.LogError("carriedObject is null");
@@ -296,7 +299,8 @@ public class Telekinesis : MonoBehaviour
         //Gizmos.DrawRay(transform.position, transform.TransformDirection(Vector3.forward));
         //For testing
     }
-
+    #region Andreas Outline code
+    //NOT USED
     /// This is how a outline is created
     Renderer CreateOutline(Material outlineMat, float scaleFactor, Color color, GameObject hit)
     {
@@ -337,4 +341,5 @@ public class Telekinesis : MonoBehaviour
             }
         }
     }
+    #endregion
 }

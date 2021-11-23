@@ -23,31 +23,14 @@ public class Energy : MonoBehaviour
             float rechargeDelta = (maxEnergy / rechargeTime) * Time.deltaTime;
 
             //Set current energy to be the current energy amount plus the recharge amount, clamped to maxEnergy, so
-            //you can't over charge.funger
+            //you can't over charge.
 
             currentEnergy = Mathf.Clamp(currentEnergy + rechargeDelta, 0f, maxEnergy);
 
-            //Set the energy label text. We use Mathf.Approximatly() here instead of == because
-            //of complications arising from float point precision. You should look that up.
-
-            energyMeter.value = currentEnergy;
-
-            /*if ((int)currentEnergy < (int)maxEnergy)
-            {
-                energyMeter.value = currentEnergy;
-            } 
-            else
-            {
-
-            }*/
 
 
-            /*if (Mathf.Approximately(currentEnergy, maxEnergy))
-                Debug.Log("Energy: FULL");
-            else
-                Debug.Log("Energy: " + currentEnergy);
-                */
         }
+        energyMeter.value = currentEnergy;
 
     }
 
