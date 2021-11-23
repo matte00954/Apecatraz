@@ -22,12 +22,12 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float DASH_ENERGY_COST = 5f;
 
     //gravity
-    private const float GRAVITY_VALUE = 20f;
-    private const float GRAVITY_JUMP_APEX = 40f;
+    private const float GRAVITY_VALUE = 2f;
+    private const float GRAVITY_JUMP_APEX = 4f;
     private const float LEDGE_CHECK_RAY_LENGTH_MULTIPLIER = 1.5f;
 
     //ground check
-    private const float GROUND_CHECK_RADIUS = 0.2f; // comparing ground check game object to floor
+    private const float GROUND_CHECK_RADIUS = 0.3f; // comparing ground check game object to floor
 
     //rotation
     private const float TURN_SMOOTH_TIME = 0.1f;
@@ -140,7 +140,10 @@ public class ThirdPersonMovement : MonoBehaviour
             horizontal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Vertical");
 
-            jump = Physics.Raycast(backFeetGroundCheck.position, Vector3.down, 1.5f, ~playerLayer) && Input.GetKeyDown(KeyCode.Space);
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                jump = Physics.Raycast(backFeetGroundCheck.position, Vector3.down, 1.2f, ~playerLayer) && Input.GetKey(KeyCode.Space);
+            }
 
             if (frontFeetOnGround || backFeetOnGround)
             {
@@ -270,11 +273,11 @@ public class ThirdPersonMovement : MonoBehaviour
 
             if (!backFeetOnGround && !frontFeetOnGround)
             {
-                angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TURN_SMOOTH_TIME_IN_AIR); //adjust angle for smoothing
+                angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TURN_SMOOTH_TIME_IN_AIR); //adjust angle for smoothing in air
             }
             else
             {
-                angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TURN_SMOOTH_TIME); //adjust angle for smoothing
+                angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TURN_SMOOTH_TIME); //adjust angle for smoothing on ground
             }
 
             transform.rotation = Quaternion.Euler(0f, angle, 0f); //adjusted angle used here for rotation
@@ -283,9 +286,9 @@ public class ThirdPersonMovement : MonoBehaviour
 
             if (horizontal != 0 || vertical != 0)
             {
-                if (!jump && !Physics.Raycast(headRaycastOrigin.position, headRaycastOrigin.transform.forward * 0.2f, 0.25f, ~playerLayer)) //cant add velocity if something is in the way
+                if (!jump && !Physics.Raycast(headRaycastOrigin.position, headRaycastOrigin.transform.forward, 0.4f, ~playerLayer)) //cant add velocity if something is in the way
                 {
-                    if (backFeetOnGround && frontFeetOnGround)
+                    if (backFeetOnGround || frontFeetOnGround)
                     {
                         /*if (OnSlope())
                         {
@@ -302,21 +305,20 @@ public class ThirdPersonMovement : MonoBehaviour
                 }
             }
         }
-        /*else
+        else
         {
             rb.velocity = new Vector3(0, rb.velocity.y, 0);
-        }*/
+        }
 
         //gravity
-
         if (!frontFeetOnGround && !backFeetOnGround && !jump)  //In air
         {
             if (rb.velocity.y > 0f)
             {
-                rb.AddForce(Vector3.down * GRAVITY_JUMP_APEX);
+                rb.AddForce(Physics.gravity * GRAVITY_JUMP_APEX);
             }
             else
-                rb.AddForce(Vector3.down * GRAVITY_VALUE);
+                rb.AddForce(Physics.gravity * GRAVITY_VALUE);
 
             gravityAnimation = true;
 
@@ -327,9 +329,8 @@ public class ThirdPersonMovement : MonoBehaviour
 
         if (jump) //Jump
         {
-            //rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
 
-            rb.AddForce(Vector3.up * JUMP_HEIGHT, ForceMode.Impulse);
+            rb.velocity = new Vector3 (rb.velocity.x, JUMP_HEIGHT, rb.velocity.z);
 
             charAnims.SetTriggerFromString("Jump");
 
