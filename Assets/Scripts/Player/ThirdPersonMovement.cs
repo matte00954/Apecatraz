@@ -22,12 +22,12 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float DASH_ENERGY_COST = 5f;
 
     //gravity
-    private const float GRAVITY_VALUE = 20f;
-    private const float GRAVITY_JUMP_APEX = 40f;
+    private const float GRAVITY_VALUE = 2f;
+    private const float GRAVITY_JUMP_APEX = 4f;
     private const float LEDGE_CHECK_RAY_LENGTH_MULTIPLIER = 1.5f;
 
     //ground check
-    private const float GROUND_CHECK_RADIUS = 0.10f; // comparing ground check game object to floor
+    private const float GROUND_CHECK_RADIUS = 0.3f; // comparing ground check game object to floor
 
     //rotation
     private const float TURN_SMOOTH_TIME = 0.1f;
@@ -79,8 +79,15 @@ public class ThirdPersonMovement : MonoBehaviour
     private RaycastHit ledgeHit;
     private Vector3 movementOnSlope;
     private Vector3 slopeHitNormal;
-    private bool inAir = false;
+
     private bool isMoving = false;
+    private bool gravityAnimation;
+    private bool backFeetOnGround;
+    private bool frontFeetOnGround;
+    private bool jump;
+
+    private float horizontal;
+    private float vertical;
     private float playerSpeed;
     private float turnSmoothVelocity;
     private float dashCooldown;
@@ -127,6 +134,31 @@ public class ThirdPersonMovement : MonoBehaviour
         if (!InGameMenuManager.gameIsPaused)
         {
 
+            backFeetOnGround = Physics.CheckSphere(backFeetGroundCheck.position, GROUND_CHECK_RADIUS, ~playerLayer);
+            frontFeetOnGround = Physics.CheckSphere(frontFeetGroundCheck.position, GROUND_CHECK_RADIUS, ~playerLayer);
+
+            horizontal = Input.GetAxisRaw("Horizontal");
+            vertical = Input.GetAxisRaw("Vertical");
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                jump = Physics.Raycast(backFeetGroundCheck.position, Vector3.down, 1.2f, ~playerLayer) && Input.GetKey(KeyCode.Space);
+            }
+
+            if (frontFeetOnGround || backFeetOnGround)
+            {
+                charAnims.CheckStopRunning();
+            }
+
+            if (gravityAnimation) //On ground
+            {
+                if (frontFeetOnGround || backFeetOnGround)
+                {
+                    charAnims.SetTriggerFromString("Land");
+                    gravityAnimation = false;
+                }
+            }
+
             if (Time.timeScale != 1 && !slowmotionAllowed) //to unpause game
             {
                 Time.timeScale = 1;
@@ -138,11 +170,11 @@ public class ThirdPersonMovement : MonoBehaviour
             }
 
             #region Joche slowmotion
-            //ENDAST FÖR JOCHES PROTOTYP
+            //ENDAST Fï¿½R JOCHES PROTOTYP
             if (slowmotionAllowed)
             {
 
-                if (PlayerState.Equals(State.dashing) && Time.timeScale != 0.2f) //ENDAST FÖR JOCHES PROTOTYP
+                if (PlayerState.Equals(State.dashing) && Time.timeScale != 0.2f) //ENDAST Fï¿½R JOCHES PROTOTYP
                 {
                     Time.timeScale = 0.2f;
                 }
@@ -151,7 +183,7 @@ public class ThirdPersonMovement : MonoBehaviour
                     Time.timeScale = 1f;
                 }
             }
-            //ENDAST FÖR JOCHES PROTOTYP
+            //ENDAST Fï¿½R JOCHES PROTOTYP
             #endregion
         }
 
@@ -184,7 +216,7 @@ public class ThirdPersonMovement : MonoBehaviour
             case State.telekinesis:
                 Movement();
                 break;
-            case State.disabled: // disabled = captured/död
+            case State.disabled: // disabled = captured/dï¿½d
                 //spela death anim
                 //reset spel
                 break;
@@ -206,7 +238,7 @@ public class ThirdPersonMovement : MonoBehaviour
         }
 
         if (!playerState.Equals(State.dashing))
-            if(dashCooldown >= 0f)
+            if (dashCooldown >= 0f)
                 dashCooldown -= Time.fixedDeltaTime;
 
         if (!playerState.Equals(State.dashing) && !playerState.Equals(State.climbing) && !rb.useGravity)
@@ -218,10 +250,6 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Movement()
     {
-
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-
         Vector3 direction = new Vector3(horizontal, 0f, vertical);
 
         if (horizontal == 0 && vertical == 0)
@@ -233,46 +261,48 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             if (playerSpeed < MAX_PLAYER_SPEED)
             {
-                playerSpeed += Time.fixedDeltaTime * 200f;
+                playerSpeed += Time.fixedDeltaTime * 200f; //acceleration
             }
             else if (playerSpeed > MAX_PLAYER_SPEED)
             {
-                playerSpeed = MAX_PLAYER_SPEED;
+                playerSpeed = MAX_PLAYER_SPEED; //make sure playerspeed does not exceed max speed
             }
 
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + mainCamera.transform.eulerAngles.y; //first find target angle
             float angle;
 
-            if (inAir)
+            if (!backFeetOnGround && !frontFeetOnGround)
             {
-                angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TURN_SMOOTH_TIME_IN_AIR); //adjust angle for smoothing
+                angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TURN_SMOOTH_TIME_IN_AIR); //adjust angle for smoothing in air
             }
             else
             {
-                angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TURN_SMOOTH_TIME); //adjust angle for smoothing
+                angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TURN_SMOOTH_TIME); //adjust angle for smoothing on ground
             }
 
             transform.rotation = Quaternion.Euler(0f, angle, 0f); //adjusted angle used here for rotation
 
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward; //adjust direction to camera rotation/direction
 
-            if (horizontal != 0 || vertical != 0 &&
-                !Physics.Raycast(headRaycastOrigin.position, headRaycastOrigin.transform.forward * 0.2f, 0.25f, ~playerLayer)) //cant add velocity if something is in the way
+            if (horizontal != 0 || vertical != 0)
             {
-                if (CheckGround(frontFeetGroundCheck) || CheckGround(backFeetGroundCheck))
+                if (!jump && !Physics.Raycast(headRaycastOrigin.position, headRaycastOrigin.transform.forward, 0.4f, ~playerLayer)) //cant add velocity if something is in the way
                 {
-                    /*if (OnSlope())
+                    if (backFeetOnGround || frontFeetOnGround)
                     {
-                        Debug.Log("SLOPE");
-                        movementOnSlope = Vector3.ProjectOnPlane(moveDirection, slopeHitNormal);
-                        SwitchRotationBasedOnFloor();
-                        rb.velocity = playerSpeed * Time.fixedDeltaTime * movementOnSlope; //On ground and slope
-                    }*/
+                        /*if (OnSlope())
+                        {
+                            Debug.Log("SLOPE");
+                            movementOnSlope = Vector3.ProjectOnPlane(moveDirection, slopeHitNormal);
+                            SwitchRotationBasedOnFloor();
+                            rb.velocity = playerSpeed * Time.fixedDeltaTime * movementOnSlope; //On ground and slope
+                        }*/
 
-                    rb.velocity = playerSpeed * Time.fixedDeltaTime * moveDirection; //On ground
+                        rb.velocity = playerSpeed * Time.fixedDeltaTime * moveDirection; //On ground
+                    }
+                    else
+                        rb.AddForce(MAX_PLAYER_SPEED * Time.fixedDeltaTime * moveDirection); //In air
                 }
-                else
-                    rb.AddForce(MAX_PLAYER_SPEED * Time.fixedDeltaTime * moveDirection); //In air
             }
         }
         else
@@ -280,53 +310,31 @@ public class ThirdPersonMovement : MonoBehaviour
             rb.velocity = new Vector3(0, rb.velocity.y, 0);
         }
 
-        if (Input.GetKeyDown(KeyCode.Space)) //Jump
-        {
-            if (CheckGround(backFeetGroundCheck))
-            {
-
-                rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-                
-                rb.AddForce(transform.up * JUMP_HEIGHT, ForceMode.Impulse);
-
-                if(rb.velocity.y != 0)
-                {
-                    charAnims.SetTriggerFromString("Jump");
-                    inAir = true;
-                }
-            }
-        }
-
         //gravity
-        if (CheckGround(frontFeetGroundCheck) || CheckGround(backFeetGroundCheck)) //On ground gravity
-        {
-
-            if (inAir)
-            {
-                charAnims.SetTriggerFromString("Land");
-                inAir = false;
-            }
-        }
-        else //In air
+        if (!frontFeetOnGround && !backFeetOnGround && !jump)  //In air
         {
             if (rb.velocity.y > 0f)
             {
-                rb.AddForce(Vector3.down * GRAVITY_JUMP_APEX);
+                rb.AddForce(Physics.gravity * GRAVITY_JUMP_APEX);
             }
             else
-                rb.AddForce(Vector3.down * GRAVITY_VALUE);
+                rb.AddForce(Physics.gravity * GRAVITY_VALUE);
+
+            gravityAnimation = true;
 
             charAnims.SetAnimFloat("YSpeed", rb.velocity.y);
-
-            if (!inAir)
-                inAir = true;
         }
 
         charAnims.SetAnimFloat("runY", direction.magnitude); //Joches grej
 
-        if (CheckGround(frontFeetGroundCheck) || CheckGround(backFeetGroundCheck))
+        if (jump) //Jump
         {
-            charAnims.CheckStopRunning();
+
+            rb.velocity = new Vector3 (rb.velocity.x, JUMP_HEIGHT, rb.velocity.z);
+
+            charAnims.SetTriggerFromString("Jump");
+
+            jump = false;
         }
     }
 
@@ -425,10 +433,13 @@ public class ThirdPersonMovement : MonoBehaviour
                 if (energy.CheckEnergy(DASH_ENERGY_COST))
                 {
                     ActivateRenderer(1);
+                    energy.ActivateEnergyRegen(false);
                     Dash();
                 }
                 else
+                {
                     StopDashing(false);
+                }
             }
             else if (playerState.Equals(State.dashing))
             {
@@ -473,6 +484,7 @@ public class ThirdPersonMovement : MonoBehaviour
             playerState = State.nothing;
             dashCooldown = 1f;
             dashTimer = 0.2f;
+            energy.ActivateEnergyRegen(true);
         }
     }
     #endregion
@@ -480,6 +492,12 @@ public class ThirdPersonMovement : MonoBehaviour
     private bool CheckGround(Transform groundcheck)
     {
         return Physics.CheckSphere(groundcheck.position, GROUND_CHECK_RADIUS, groundMask);
+    }
+
+    private void OnDrawGizmos()
+    {
+        //backFeetOnGround = Physics.CheckSphere(backFeetGroundCheck.position, GROUND_CHECK_RADIUS, ~playerLayer);
+        //frontFeetOnGround = Physics.CheckSphere(frontFeetGroundCheck.position, GROUND_CHECK_RADIUS, ~playerLayer);
     }
 
     public void MoveTo(Vector3 position)
