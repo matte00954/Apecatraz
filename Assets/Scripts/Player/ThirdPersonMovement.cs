@@ -67,9 +67,9 @@ public class ThirdPersonMovement : MonoBehaviour
     private Renderer rend;
 
     [Header("ONLY FOR PROTOTYPES")]
-    [SerializeField] private bool dashInactive = false;
-    [SerializeField] private bool ledgeGrabInactive = false;
-    [SerializeField] private bool telekinesInactive = false;
+    [SerializeField] private bool dashAllowed = true;
+    [SerializeField] private bool ledgeGrabAllowed = true;
+    [SerializeField] private bool telekinesAllowed = true;
     [SerializeField] private bool godMode = false; //no effect atm
     [SerializeField] private bool slowmotionAllowed = false;
 
@@ -101,7 +101,18 @@ public class ThirdPersonMovement : MonoBehaviour
 
         dashTimer = 0.2f;
 
-        if (telekinesInactive)
+        if(!dashAllowed)
+            Debug.Log("Dash not allowed!");
+        if (!ledgeGrabAllowed)
+            Debug.Log("Ledge climbing not allowed!");
+        if (!telekinesAllowed)
+            Debug.Log("Telekinesis not allowed!");
+        if (godMode)
+            Debug.Log("God mode on!");
+        if (slowmotionAllowed)
+            Debug.Log("Slow motion allowed, SHOULD ONLY BE ALLOWED IN PROTOTYPE!!!");
+
+        if (!telekinesAllowed)
         {
             isTelekinesisActive = false;
         }
@@ -355,7 +366,7 @@ public class ThirdPersonMovement : MonoBehaviour
     #region Ledgeclimb
     private void LedgeCheck()
     {
-        if (!ledgeGrabInactive)
+        if (ledgeGrabAllowed)
         {
             RaycastHit upHit;
 
@@ -426,7 +437,7 @@ public class ThirdPersonMovement : MonoBehaviour
     private void DashCheck()
     {
 
-        if (!dashInactive)
+        if (dashAllowed)
         {
             if (Input.GetKey(KeyCode.LeftShift) && dashCooldown <= 0f)
             {
