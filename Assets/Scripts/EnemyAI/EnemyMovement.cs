@@ -12,6 +12,8 @@ public class EnemyMovement : MonoBehaviour
     private const float DefaultPatrolSpeed = 3f;
     private const float DefaultAlertSpeed = 6f;
 
+    private const float StationaryLookAtPositionMagnitude = 5f;
+
     [Header("References")]
     [SerializeField] private GameObject exclamationMark;
     [SerializeField] private AudioClip walkClip;
@@ -21,6 +23,7 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private AudioClip mistakenClip;
     private AudioSource audioSource;
     [SerializeField] private AudioClip[] chasingClips;
+    [SerializeField] private EnemyAnims enemyAnim;
 
     [Header("Agent")]
     [SerializeField] private NavMeshAgent agent;
@@ -60,11 +63,12 @@ public class EnemyMovement : MonoBehaviour
     private bool isCircling;
     [SerializeField, Tooltip("The amount of time the guard should wait after reaching a waypoint.")]
     private float totalWaitTime;
-    
     [SerializeField, Tooltip("An array of waypoint objects the guard should follow in order.")]
     private GameObject[] waypoints;
 
     private Vector3 lastKnownPlayerDestination;
+    private Vector3 stationaryPosition;
+    private Vector3 stationaryLookAtPosition;
 
     private int currentWaypointIndex;
     private float waitStateTimer;
@@ -88,12 +92,21 @@ public class EnemyMovement : MonoBehaviour
     public bool DetectingPlayer { get => detectingPlayer; }
     public GuardState CurrentState { get => currentState; set => currentState = value; }
 
-    public void RotateSelfToPlayer()
+    /// <summary>
+    /// Rotates the enemy towards the specified position.
+    /// </summary>
+    /// <param name="pos">Position</param>
+    public void RotateSelfToPosition(Vector3 pos)
     {
-        Vector3 direction = (PlayerDetectionPosition - transform.position).normalized;
+        Vector3 direction = (pos - transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 3f);
     }
+
+    /// <summary>
+    /// Rotates the enemy towards the player's position.
+    /// </summary>
+    public void RotateSelfToPlayer() => RotateSelfToPosition(PlayerDetectionPosition);
 
     public void RefreshDetectionDelay()
     {
@@ -108,16 +121,19 @@ public class EnemyMovement : MonoBehaviour
         audioSource.clip = walkClip;
         audioSource.loop = true;
 
-        if (this.isStationary)
-            Debug.Log(gameObject.name + " is set to stationary.");
-        else if (agent == null)
-            Debug.LogError("The nav mesh agent component is not attached to " + gameObject.name + ".");
-        else if (waypoints == null || waypoints.Length <= 1)
+        if (waypoints.Length <= 1 && !isStationary)
         {
-            Debug.LogError("Insufficient waypoints for basic patrolling behaviour. Setting 'isStationary' to TRUE");
+            Debug.LogWarning("Insufficient waypoints for basic patrolling behaviour. Setting " + gameObject.name + " 'isStationary' to TRUE");
             isStationary = true;
         }
-        else
+
+        if (isStationary)
+        {
+            stationaryPosition = transform.position;
+            stationaryLookAtPosition = stationaryPosition + (transform.forward * StationaryLookAtPositionMagnitude);
+            currentState = GuardState.waiting;
+        }
+        else if (waypoints.Length > 1)
         {
             currentWaypointIndex = 0;
             currentState = GuardState.patrolling;
@@ -146,13 +162,17 @@ public class EnemyMovement : MonoBehaviour
             case GuardState.waiting:
                 if (waitStateTimer < totalWaitTime)
                     waitStateTimer += Time.deltaTime;
-                else
+                else if (!isStationary)
                 {
                     waitStateTimer = 0f;
                     currentState = GuardState.patrolling;
 
                     ResumePatrol();
                 }
+                else if ((transform.position - stationaryPosition).magnitude >= 1f)
+                    agent.SetDestination(stationaryPosition);
+                else
+                    RotateSelfToPosition(stationaryLookAtPosition);
 
                 break;
             case GuardState.investigating:
@@ -164,7 +184,7 @@ public class EnemyMovement : MonoBehaviour
                 if (dumbStateTimer < dumbstruckTime) 
                 {
                     dumbStateTimer += Time.deltaTime;
-                    RotateSelfToPlayer();
+                    RotateSelfToPosition(PlayerDetectionPosition);
                 }
                 else if (detectingPlayer) // This runs once when enemy sees player at the end of dumbstruck time which transitions from 'dumbstruck' to 'chasing'.
                 {
@@ -221,6 +241,13 @@ public class EnemyMovement : MonoBehaviour
                 Debug.LogError("currentState is NULL!");
                 break;
         }
+
+        if (agent.velocity.magnitude >= 1f)
+        {
+            enemyAnim.SetMove(1);
+        }
+        else
+            enemyAnim.SetMove(0);
     }
 
     /// <summary>

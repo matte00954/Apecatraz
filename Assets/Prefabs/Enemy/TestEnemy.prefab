@@ -94,6 +94,7 @@ MonoBehaviour:
   lostplayerClip: {fileID: 8300000, guid: 98244e7d2d837364a889efc9014feffe, type: 3}
   mistakenClip: {fileID: 8300000, guid: 98244e7d2d837364a889efc9014feffe, type: 3}
   chasingClips: []
+  enemyAnim: {fileID: 8624596441752712569}
   agent: {fileID: 3235691328590164832}
   patrolSpeed: 3
   alertSpeed: 6
@@ -114,7 +115,7 @@ MonoBehaviour:
   lostDetectionDelay: 1
   dumbstruckTime: 2
   searchTime: 6
-  searchPointRadius: 0
+  searchPointRadius: 3
   isStationary: 0
   isCircling: 0
   totalWaitTime: 2
