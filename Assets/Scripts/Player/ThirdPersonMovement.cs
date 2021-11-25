@@ -11,19 +11,18 @@ public class ThirdPersonMovement : MonoBehaviour
 
     //teleport
     private const float DASH_DISTANCE_CHECK = 1f;
-    private const float DASH_FORCE = 50f;
+    private const float DASH_FORCE = 25f;
 
     //movement
-    private const float START_PLAYER_SPEED = 250f; //Do not change
-    private const float MAX_PLAYER_SPEED = 500f; //Do not change
-    private const float JUMP_HEIGHT = 20f; //Do not change
+    private const float MAX_PLAYER_SPEED = 15f; //Do not change
+    private const float JUMP_HEIGHT = 30f; //Do not change
 
     //dash
     private const float DASH_ENERGY_COST = 5f;
-
+        
     //gravity
-    private const float GRAVITY_VALUE = 2f;
-    private const float GRAVITY_JUMP_APEX = 4f;
+    private const float GRAVITY_VALUE = 3f;
+    private const float GRAVITY_JUMP_APEX = 5f;
     private const float LEDGE_CHECK_RAY_LENGTH_MULTIPLIER = 1.5f;
 
     //ground check
@@ -31,7 +30,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     //rotation
     private const float TURN_SMOOTH_TIME = 0.1f;
-    private const float TURN_SMOOTH_TIME_IN_AIR = 0.4f;
+    private const float TURN_SMOOTH_TIME_IN_AIR = 0.25f;
 
 
     [Header("Main camera")]
@@ -93,11 +92,14 @@ public class ThirdPersonMovement : MonoBehaviour
     private float dashCooldown;
     private float dashTimer;
     private float timeRemainingOnAnimation;
+    private float defaultDrag;
 
     //ALL CLIMBABLE OBJECTS NEEDS A TRIGGER WITH CLIMB LAYER
 
     private void Start()
     {
+
+        defaultDrag = rb.drag;
 
         dashTimer = 0.2f;
 
@@ -145,29 +147,15 @@ public class ThirdPersonMovement : MonoBehaviour
         if (!InGameMenuManager.gameIsPaused)
         {
 
-            backFeetOnGround = Physics.CheckSphere(backFeetGroundCheck.position, GROUND_CHECK_RADIUS, ~playerLayer);
-            frontFeetOnGround = Physics.CheckSphere(frontFeetGroundCheck.position, GROUND_CHECK_RADIUS, ~playerLayer);
+            backFeetOnGround = Physics.CheckSphere(backFeetGroundCheck.position, GROUND_CHECK_RADIUS, groundMask);
+            frontFeetOnGround = Physics.CheckSphere(frontFeetGroundCheck.position, GROUND_CHECK_RADIUS, groundMask);
 
             horizontal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Vertical");
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                jump = Physics.Raycast(backFeetGroundCheck.position, Vector3.down, 1.2f, ~playerLayer) && Input.GetKey(KeyCode.Space);
-            }
-
-            if (frontFeetOnGround || backFeetOnGround)
-            {
-                charAnims.CheckStopRunning();
-            }
-
-            if (gravityAnimation) //On ground
-            {
-                if (frontFeetOnGround || backFeetOnGround)
-                {
-                    charAnims.SetTriggerFromString("Land");
-                    gravityAnimation = false;
-                }
+                jump = Physics.Raycast(backFeetGroundCheck.position, Vector3.down, 1.2f, groundMask) && Input.GetKey(KeyCode.Space);
             }
 
             if (Time.timeScale != 1 && !slowmotionAllowed) //to unpause game
@@ -244,40 +232,33 @@ public class ThirdPersonMovement : MonoBehaviour
                 break;
         }
 
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-        }
-
         if (!playerState.Equals(State.dashing))
             if (dashCooldown >= 0f)
                 dashCooldown -= Time.fixedDeltaTime;
 
-        if (!playerState.Equals(State.dashing) && !playerState.Equals(State.climbing) && !rb.useGravity)
+        if (Input.GetKeyDown(KeyCode.L))
         {
-            rb.useGravity = true;
+            Debug.Log("IN AIR = " + (!frontFeetOnGround && !backFeetOnGround));
         }
-
     }
 
     private void Movement()
     {
         Vector3 direction = new Vector3(horizontal, 0f, vertical);
 
+        charAnims.SetAnimFloat("runY", direction.magnitude); //Joches grej
+
+        if (rb.drag != defaultDrag && frontFeetOnGround && backFeetOnGround)
+        {
+            rb.drag = defaultDrag;
+        }
+
         if (horizontal == 0 && vertical == 0)
         {
-            playerSpeed = START_PLAYER_SPEED;
         }
 
         if (direction.magnitude >= 0.1f)
         {
-            if (playerSpeed < MAX_PLAYER_SPEED)
-            {
-                playerSpeed += Time.fixedDeltaTime * 200f; //acceleration
-            }
-            else if (playerSpeed > MAX_PLAYER_SPEED)
-            {
-                playerSpeed = MAX_PLAYER_SPEED; //make sure playerspeed does not exceed max speed
-            }
 
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + mainCamera.transform.eulerAngles.y; //first find target angle
             float angle;
@@ -291,57 +272,76 @@ public class ThirdPersonMovement : MonoBehaviour
                 angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TURN_SMOOTH_TIME); //adjust angle for smoothing on ground
             }
 
-            transform.rotation = Quaternion.Euler(0f, angle, 0f); //adjusted angle used here for rotation
+            rb.MoveRotation(Quaternion.Euler(0f, angle, 0f));
+
+            //transform.rotation = Quaternion.Euler(0f, angle, 0f); //adjusted angle used here for rotation
 
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward; //adjust direction to camera rotation/direction
 
             if (horizontal != 0 || vertical != 0)
             {
-                if (!jump && !Physics.Raycast(headRaycastOrigin.position, headRaycastOrigin.transform.forward, 0.4f, ~playerLayer)) //cant add velocity if something is in the way
+                if (backFeetOnGround || frontFeetOnGround)
                 {
-                    if (backFeetOnGround || frontFeetOnGround)
-                    {
-                        /*if (OnSlope())
-                        {
-                            Debug.Log("SLOPE");
-                            movementOnSlope = Vector3.ProjectOnPlane(moveDirection, slopeHitNormal);
-                            SwitchRotationBasedOnFloor();
-                            rb.velocity = playerSpeed * Time.fixedDeltaTime * movementOnSlope; //On ground and slope
-                        }*/
 
-                        rb.velocity = playerSpeed * Time.fixedDeltaTime * moveDirection; //On ground
+                    /*if (OnSlope())
+                    {
+                        Debug.Log("SLOPE");
+                        movementOnSlope = Vector3.ProjectOnPlane(moveDirection, slopeHitNormal);
+                        SwitchRotationBasedOnFloor();
+                        rb.velocity = playerSpeed * Time.fixedDeltaTime * movementOnSlope; //On ground and slope
+                    }*/
+                    if (rb.velocity.magnitude > MAX_PLAYER_SPEED)
+                    {
+                        rb.AddForce(-moveDirection, ForceMode.Impulse);
+                        //rb.velocity = rb.velocity.normalized * MAX_PLAYER_SPEED;
+                        //rb.velocity += Mathf.Clamp(moveDirection, rb.velocity.magnitude, );
+                        //playerSpeed * Time.fixedDeltaTime * moveDirection; //On ground
                     }
                     else
-                        rb.AddForce(MAX_PLAYER_SPEED * Time.fixedDeltaTime * moveDirection); //In air
+                        rb.AddForce(moveDirection, ForceMode.Impulse);
+                    //rb.velocity += moveDirection * Time.fixedDeltaTime;
+                    //+= playerSpeed * Time.fixedDeltaTime * moveDirection; //On ground
                 }
+                else
+                    rb.AddForce(MAX_PLAYER_SPEED * moveDirection); //In air
             }
         }
-        else
+
+        if (frontFeetOnGround || backFeetOnGround)
         {
-            rb.velocity = new Vector3(0, rb.velocity.y, 0);
+            charAnims.CheckStopRunning();
         }
 
         //gravity
-        if (!frontFeetOnGround && !backFeetOnGround && !jump)  //In air
+        if (!frontFeetOnGround && !backFeetOnGround)  //In air
         {
+            if(rb.drag != 1f)
+                rb.drag = 1f;
+
             if (rb.velocity.y > 0f)
             {
-                rb.AddForce(Physics.gravity * GRAVITY_JUMP_APEX);
+                rb.AddForce(Physics.gravity * GRAVITY_JUMP_APEX, ForceMode.Acceleration);
             }
             else
-                rb.AddForce(Physics.gravity * GRAVITY_VALUE);
+                rb.AddForce(Physics.gravity * GRAVITY_VALUE, ForceMode.Acceleration);
 
-            gravityAnimation = true;
+            if(!gravityAnimation)
+                gravityAnimation = true;
 
             charAnims.SetAnimFloat("YSpeed", rb.velocity.y);
         }
 
-        charAnims.SetAnimFloat("runY", direction.magnitude); //Joches grej
+
+        if (frontFeetOnGround || backFeetOnGround)
+        {
+            charAnims.SetTriggerFromString("Land");
+            gravityAnimation = false;
+        }
 
         if (jump) //Jump
         {
 
-            rb.velocity = new Vector3 (rb.velocity.x, JUMP_HEIGHT, rb.velocity.z);
+            rb.AddForce(new Vector3(0, JUMP_HEIGHT, 0), ForceMode.Impulse);
 
             charAnims.SetTriggerFromString("Jump");
 
@@ -391,7 +391,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
                         playerCollider.enabled = false;
 
-                        rb.velocity = Vector3.zero;
+                        rb.velocity = Vector3.zero; 
 
                         MoveTo(new Vector3(forwardHit.point.x,
                             downHit.point.y - skinnedMeshRenderer.bounds.extents.y,
@@ -466,6 +466,8 @@ public class ThirdPersonMovement : MonoBehaviour
         if (rb.useGravity)
             rb.useGravity = false;
 
+        rb.drag = 0f;
+
         RaycastHit hit;
 
         if (Physics.SphereCast(frontFeetGroundCheck.position, 0.1f, transform.forward, out hit, DASH_DISTANCE_CHECK, ~playerLayer) || !energy.CheckEnergy(DASH_ENERGY_COST))
@@ -491,7 +493,8 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             ActivateRenderer(0);
             dashEffectsReference.SpeedUp();
-            rb.velocity = new Vector3(0, 0, 0);
+            rb.useGravity = true;
+            rb.drag = 1f;
             playerState = State.nothing;
             dashCooldown = 1f;
             dashTimer = 0.2f;
