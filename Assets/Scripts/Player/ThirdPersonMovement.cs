@@ -147,8 +147,8 @@ public class ThirdPersonMovement : MonoBehaviour
         if (!InGameMenuManager.gameIsPaused)
         {
 
-            backFeetOnGround = Physics.CheckSphere(backFeetGroundCheck.position, GROUND_CHECK_RADIUS, groundMask);
-            frontFeetOnGround = Physics.CheckSphere(frontFeetGroundCheck.position, GROUND_CHECK_RADIUS, groundMask);
+            backFeetOnGround = Physics.Raycast(backFeetGroundCheck.position, Vector3.down, 0.2f, groundMask);
+            frontFeetOnGround = Physics.Raycast(frontFeetGroundCheck.position, Vector3.down, 0.2f, groundMask);
 
             horizontal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Vertical");
@@ -246,7 +246,7 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         Vector3 direction = new Vector3(horizontal, 0f, vertical);
 
-        charAnims.SetAnimFloat("runY", direction.magnitude); //Joches grej
+        charAnims.SetAnimFloat("runY", rb.velocity.magnitude); //Joches grej
 
         if (rb.drag != defaultDrag && frontFeetOnGround && backFeetOnGround)
         {
@@ -292,16 +292,19 @@ public class ThirdPersonMovement : MonoBehaviour
                         SwitchRotationBasedOnFloor();
                         rb.velocity = playerSpeed * Time.fixedDeltaTime * movementOnSlope; //On ground and slope
                     }*/
+
+
+
                     if (rb.velocity.magnitude > MAX_PLAYER_SPEED)
                     {
-                        Debug.Log("COUNTER FORCE " + -moveDirection);
+                        Debug.Log("COUNTER FORCE " + - moveDirection);  
                         rb.AddForce(-moveDirection, ForceMode.Impulse);
                         //rb.velocity = rb.velocity.normalized * MAX_PLAYER_SPEED;
                         //rb.velocity += Mathf.Clamp(moveDirection, rb.velocity.magnitude, );
                         //playerSpeed * Time.fixedDeltaTime * moveDirection; //On ground
                     }
                     else
-                        rb.AddForce(moveDirection, ForceMode.Impulse);
+                        rb.AddForce(moveDirection * 2f, ForceMode.Impulse);
                     //rb.velocity += moveDirection * Time.fixedDeltaTime;
                     //+= playerSpeed * Time.fixedDeltaTime * moveDirection; //On ground
                 }
@@ -334,7 +337,8 @@ public class ThirdPersonMovement : MonoBehaviour
             charAnims.SetAnimFloat("YSpeed", rb.velocity.y);
         }
 
-        if (frontFeetOnGround || backFeetOnGround && landAnimationReady)
+        if (frontFeetOnGround && landAnimationReady 
+            || backFeetOnGround && landAnimationReady)
         {
             charAnims.SetTriggerFromString("Land");
             landAnimationReady = false;
@@ -464,6 +468,8 @@ public class ThirdPersonMovement : MonoBehaviour
     private void Dash()
     {
         energy.SpendEnergy(DASH_ENERGY_COST);
+
+        rb.velocity = Vector3.zero;
 
         if (rb.useGravity)
             rb.useGravity = false;
