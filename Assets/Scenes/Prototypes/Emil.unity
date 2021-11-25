@@ -223,7 +223,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 60256164}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7023267086055483431}
+        m_TargetAssemblyTypeName: ColorSwap, Assembly-CSharp
+        m_MethodName: AssignColors
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &60256164
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -870,7 +882,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 344463246}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7023267086055483431}
+        m_TargetAssemblyTypeName: ColorSwap, Assembly-CSharp
+        m_MethodName: AssignColors
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &344463246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3466,7 +3490,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1131468946}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7023267086055483431}
+        m_TargetAssemblyTypeName: ColorSwap, Assembly-CSharp
+        m_MethodName: AssignColors
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 4
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1131468946
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5054,7 +5090,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1731210420}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7023267086055483431}
+        m_TargetAssemblyTypeName: ColorSwap, Assembly-CSharp
+        m_MethodName: AssignColors
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1731210420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5271,7 +5319,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1796428741}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7023267086055483431}
+        m_TargetAssemblyTypeName: ColorSwap, Assembly-CSharp
+        m_MethodName: AssignColors
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1796428741
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10301,9 +10361,9 @@ MonoBehaviour:
   materials:
   - {fileID: 2100000, guid: 517cf3c7715016a45be7243915734ac5, type: 2}
   - {fileID: 2100000, guid: e75f10c6188d0fa49ad30288534c25ea, type: 2}
-  dashInactive: 0
-  ledgeGrabInactive: 0
-  telekinesInactive: 0
+  dashAllowed: 1
+  ledgeGrabAllowed: 1
+  telekinesAllowed: 1
   godMode: 0
   slowmotionAllowed: 0
 --- !u!65 &5321045696720537759
@@ -18140,12 +18200,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7023267086055483428}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e89b08c171251e1448f4b0438e17636a, type: 3}
+  m_Script: {fileID: 11500000, guid: 559de59d9f14bcb40b8114ebbd4b568f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fontAsset:
-  - {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  - {fileID: 11400000, guid: 54b3a4ed61d5f454fa2e1b1fd24f147f, type: 2}
+  mat1: {fileID: 2100000, guid: 095025c2fb70d414c8c6f5401c676440, type: 2}
+  mat2: {fileID: 2100000, guid: e75f10c6188d0fa49ad30288534c25ea, type: 2}
 --- !u!222 &7023267086055506772
 CanvasRenderer:
   m_ObjectHideFlags: 0

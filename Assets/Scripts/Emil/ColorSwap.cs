@@ -6,7 +6,6 @@ using UnityEngine;
 public class ColorSwap : MonoBehaviour
 {
     private Color[] colors;
-    private int index;
 
     public Material mat1;
     public Material mat2;
@@ -16,21 +15,19 @@ public class ColorSwap : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
-        index = 0;
         colors = new Color[5];
 
         colors[0] = Color.blue;
-        colors[1] = Color.yellow;
-        colors[2] = Color.red;
-        colors[3] = Color.green;
+        colors[1] = Color.red;
+        colors[2] = Color.green;
+        colors[3] = Color.yellow;
         colors[4] = Color.magenta;
-        AssignColors();
+        AssignColors(0);
 
     }
 
     // Update is called once per frame
-    void Update()
+  /*  void Update()
     {
         if (Input.GetKeyDown(KeyCode.T))
         {
@@ -48,12 +45,12 @@ public class ColorSwap : MonoBehaviour
             }
         }
         
-    }
+    }*/
 
-    private void AssignColors()
+    public void AssignColors(int colorNumber)
     {
-        mat1.SetColor("GradientNoiseColor", colors[index]);
-        mat2.SetColor("GradientNoiseColor", colors[index]);
+        mat1.SetColor("GradientNoiseColor", colors[colorNumber]);
+        mat2.SetColor("GradientNoiseColor", colors[colorNumber]);
     }
 
 }
