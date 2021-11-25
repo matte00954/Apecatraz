@@ -11,14 +11,14 @@ public class ThirdPersonMovement : MonoBehaviour
 
     //teleport
     private const float DASH_DISTANCE_CHECK = 1f;
-    private const float DASH_FORCE = 25f;
+    private const float DASH_FORCE = 20f;
 
     //movement
-    private const float MAX_PLAYER_SPEED = 15f; //Do not change
+    private const float MAX_PLAYER_SPEED = 10f; //Do not change
     private const float JUMP_HEIGHT = 30f; //Do not change
 
     //dash
-    private const float DASH_ENERGY_COST = 5f;
+    private const float DASH_ENERGY_COST = 4f;
         
     //gravity
     private const float GRAVITY_VALUE = 3f;
@@ -282,6 +282,8 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 if (backFeetOnGround || frontFeetOnGround)
                 {
+                    
+                    //float difference = Mathf.Abs(rb.velocity.magnitude - MAX_PLAYER_SPEED);
 
                     /*if (OnSlope())
                     {
@@ -292,6 +294,7 @@ public class ThirdPersonMovement : MonoBehaviour
                     }*/
                     if (rb.velocity.magnitude > MAX_PLAYER_SPEED)
                     {
+                        Debug.Log("COUNTER FORCE " + -moveDirection);
                         rb.AddForce(-moveDirection, ForceMode.Impulse);
                         //rb.velocity = rb.velocity.normalized * MAX_PLAYER_SPEED;
                         //rb.velocity += Mathf.Clamp(moveDirection, rb.velocity.magnitude, );
@@ -493,7 +496,7 @@ public class ThirdPersonMovement : MonoBehaviour
             ActivateRenderer(0);
             dashEffectsReference.SpeedUp();
             rb.useGravity = true;
-            rb.drag = 1f;
+            rb.drag = defaultDrag;
             playerState = State.nothing;
             dashCooldown = 1f;
             dashTimer = 0.2f;
