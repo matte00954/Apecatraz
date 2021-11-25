@@ -12,9 +12,7 @@ public class VentTeleport : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-            other.GetComponent<CharacterController>().enabled = false;
             other.transform.position = exitLocation.position;
-            other.GetComponent<CharacterController>().enabled = true;
             onEnter.Invoke();
         }
     }
