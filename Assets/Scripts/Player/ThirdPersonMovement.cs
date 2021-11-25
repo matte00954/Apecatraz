@@ -11,14 +11,14 @@ public class ThirdPersonMovement : MonoBehaviour
 
     //teleport
     private const float DASH_DISTANCE_CHECK = 1f;
-    private const float DASH_FORCE = 20f;
+    private const float DASH_FORCE = 15f;
 
     //movement
     private const float MAX_PLAYER_SPEED = 10f; //Do not change
     private const float JUMP_HEIGHT = 30f; //Do not change
 
     //dash
-    private const float DASH_ENERGY_COST = 4f;
+    private const float DASH_ENERGY_COST = 5f;
         
     //gravity
     private const float GRAVITY_VALUE = 3f;
