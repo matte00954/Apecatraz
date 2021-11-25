@@ -80,7 +80,7 @@ public class ThirdPersonMovement : MonoBehaviour
     private Vector3 slopeHitNormal;
 
     private bool isMoving = false;
-    private bool gravityAnimation;
+    private bool landAnimationReady;
     private bool backFeetOnGround;
     private bool frontFeetOnGround;
     private bool jump;
@@ -325,17 +325,16 @@ public class ThirdPersonMovement : MonoBehaviour
             else
                 rb.AddForce(Physics.gravity * GRAVITY_VALUE, ForceMode.Acceleration);
 
-            if(!gravityAnimation)
-                gravityAnimation = true;
+            if(!landAnimationReady)
+                landAnimationReady = true;
 
             charAnims.SetAnimFloat("YSpeed", rb.velocity.y);
         }
 
-
-        if (frontFeetOnGround || backFeetOnGround)
+        if (frontFeetOnGround || backFeetOnGround && landAnimationReady)
         {
             charAnims.SetTriggerFromString("Land");
-            gravityAnimation = false;
+            landAnimationReady = false;
         }
 
         if (jump) //Jump
