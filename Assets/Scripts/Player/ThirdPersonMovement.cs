@@ -22,7 +22,7 @@ public class ThirdPersonMovement : MonoBehaviour
         
     //gravity
     private const float GRAVITY_VALUE = 3f;
-    private const float GRAVITY_JUMP_APEX = 5f;
+    private const float GRAVITY_JUMP_APEX = 3.5f;
     private const float LEDGE_CHECK_RAY_LENGTH_MULTIPLIER = 1.5f;
 
     //ground check
@@ -39,6 +39,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     [Header("Controller")]
     [SerializeField] private Rigidbody rb;
+    [SerializeField] private PhysicMaterial pm;
 
     [Header("Ground check")]
     [SerializeField] private Transform frontFeetGroundCheck;
@@ -53,7 +54,7 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private GameObject ledgeUpCheck;
     [SerializeField] private AnimationClip climbAnimation;
     [SerializeField] private SkinnedMeshRenderer skinnedMeshRenderer;
-    [SerializeField] private Collider playerCollider;
+    //[SerializeField] private Collider playerCollider;
 
     [Header("Energy")]
     [SerializeField] private Energy energy;
@@ -93,12 +94,13 @@ public class ThirdPersonMovement : MonoBehaviour
     private float dashTimer;
     private float timeRemainingOnAnimation;
     private float defaultDrag;
+    private float deafaltDynamicFriction;
 
     //ALL CLIMBABLE OBJECTS NEEDS A TRIGGER WITH CLIMB LAYER
 
     private void Start()
     {
-
+        deafaltDynamicFriction = pm.dynamicFriction;
         defaultDrag = rb.drag;
 
         dashTimer = 0.2f;
@@ -282,7 +284,7 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 if (backFeetOnGround || frontFeetOnGround)
                 {
-                    
+
                     //float difference = Mathf.Abs(rb.velocity.magnitude - MAX_PLAYER_SPEED);
 
                     /*if (OnSlope())
@@ -293,9 +295,7 @@ public class ThirdPersonMovement : MonoBehaviour
                         rb.velocity = playerSpeed * Time.fixedDeltaTime * movementOnSlope; //On ground and slope
                     }*/
 
-
-
-                    if (rb.velocity.magnitude > MAX_PLAYER_SPEED)
+                    /*if (rb.velocity.magnitude > MAX_PLAYER_SPEED)
                     {
                         Debug.Log("COUNTER FORCE " + - moveDirection);  
                         rb.AddForce(-moveDirection, ForceMode.Impulse);
@@ -303,8 +303,11 @@ public class ThirdPersonMovement : MonoBehaviour
                         //rb.velocity += Mathf.Clamp(moveDirection, rb.velocity.magnitude, );
                         //playerSpeed * Time.fixedDeltaTime * moveDirection; //On ground
                     }
-                    else
+                    else*/
+                    if (rb.velocity.magnitude < MAX_PLAYER_SPEED)
+                    {
                         rb.AddForce(moveDirection * 2f, ForceMode.Impulse);
+                    }
                     //rb.velocity += moveDirection * Time.fixedDeltaTime;
                     //+= playerSpeed * Time.fixedDeltaTime * moveDirection; //On ground
                 }
@@ -395,7 +398,6 @@ public class ThirdPersonMovement : MonoBehaviour
                     {
                         rb.useGravity = false;
 
-                        playerCollider.enabled = false;
 
                         rb.velocity = Vector3.zero; 
 
@@ -432,8 +434,6 @@ public class ThirdPersonMovement : MonoBehaviour
 
             playerState = State.nothing;
 
-            playerCollider.enabled = true;
-
             rb.useGravity = true;
         }
     }
@@ -469,7 +469,8 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         energy.SpendEnergy(DASH_ENERGY_COST);
 
-        rb.velocity = Vector3.zero;
+        if(pm.dynamicFriction != 0)
+            pm.dynamicFriction = 0f;
 
         if (rb.useGravity)
             rb.useGravity = false;
@@ -478,7 +479,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
         RaycastHit hit;
 
-        if (Physics.SphereCast(frontFeetGroundCheck.position, 0.1f, transform.forward, out hit, DASH_DISTANCE_CHECK, ~playerLayer) || !energy.CheckEnergy(DASH_ENERGY_COST))
+        if (Physics.Raycast(headRaycastOrigin.position, frontFeetGroundCheck.forward, out hit, DASH_DISTANCE_CHECK, ~playerLayer) || !energy.CheckEnergy(DASH_ENERGY_COST))
         {
             StopDashing(true);
         }
@@ -502,6 +503,7 @@ public class ThirdPersonMovement : MonoBehaviour
             ActivateRenderer(0);
             dashEffectsReference.SpeedUp();
             rb.useGravity = true;
+            pm.dynamicFriction = deafaltDynamicFriction;
             rb.drag = defaultDrag;
             playerState = State.nothing;
             dashCooldown = 1f;
