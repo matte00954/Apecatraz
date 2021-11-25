@@ -36,7 +36,9 @@ public class DashEffects : MonoBehaviour
     private bool dashing;
 
     private bool effects;
-    private GameObject helpUI;
+
+    [SerializeField] private GameObject helpUI;
+    [SerializeField] private bool jochePrototyp;
     // Start is called before the first frame update
 
     void Start()
@@ -61,20 +63,17 @@ public class DashEffects : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            slowmotion = !slowmotion;
-        }
-        if (Input.GetKeyDown(KeyCode.U))
+        
+
+        if (Input.GetKeyDown(KeyCode.U) && jochePrototyp)
         {
             effects = !effects;
         }
-        if (Input.GetKeyDown(KeyCode.I))
+        if (Input.GetKeyDown(KeyCode.I) && jochePrototyp)
         {
             helpUI.active = !helpUI.active;
         }
-        */
+        
 
         if (changeTimer > 0)
         {
