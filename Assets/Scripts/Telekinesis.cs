@@ -144,6 +144,16 @@ public class Telekinesis : MonoBehaviour
 
     #endregion
 
+
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            FindObject();
+        }
+    }
+
     private void FixedUpdate()
     {
         //Enable for outline of objects.
@@ -151,11 +161,6 @@ public class Telekinesis : MonoBehaviour
 
         if (thirdPersonMovement.isTelekinesisActive)
         {
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                FindObject();
-            }
-
             if (carriedObject != null)
             {
                 MoveObject();
