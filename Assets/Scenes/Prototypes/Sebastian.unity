@@ -162,6 +162,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5772917}
     m_Modifications:
+    - target: {fileID: 1214807736, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3060639519279776857, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8.12
@@ -1653,6 +1657,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 639043993}
     m_Modifications:
+    - target: {fileID: 1214807736, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3060639519279776857, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalPosition.x
       value: 32.81
@@ -5760,9 +5768,25 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1976750320}
     - target: {fileID: 5321045694983690832, guid: 95ce8613eb505b94f908a1cad6d4af0a, type: 3}
+      propertyPath: pm
+      value: 
+      objectReference: {fileID: 13400000, guid: 99e8872c4189be24ebc321e1bf8888d3, type: 2}
+    - target: {fileID: 5321045694983690832, guid: 95ce8613eb505b94f908a1cad6d4af0a, type: 3}
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 977680335}
+    - target: {fileID: 5321045694983690832, guid: 95ce8613eb505b94f908a1cad6d4af0a, type: 3}
+      propertyPath: dashAllowed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5321045694983690832, guid: 95ce8613eb505b94f908a1cad6d4af0a, type: 3}
+      propertyPath: ledgeGrabAllowed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5321045694983690832, guid: 95ce8613eb505b94f908a1cad6d4af0a, type: 3}
+      propertyPath: telekinesAllowed
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5321045694983690832, guid: 95ce8613eb505b94f908a1cad6d4af0a, type: 3}
       propertyPath: dashEffectsReference
       value: 
@@ -12150,6 +12174,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 481524075}
     m_Modifications:
+    - target: {fileID: 1214807736, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3060639519279776857, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalPosition.x
       value: 18.23
@@ -18692,6 +18720,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 639043993}
     m_Modifications:
+    - target: {fileID: 1214807736, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3060639519279776857, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalPosition.x
       value: 32.016
@@ -49625,6 +49657,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2094853750}
     m_Modifications:
+    - target: {fileID: 1214807736, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3060639519279776857, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalPosition.x
       value: 17.35
@@ -54106,6 +54142,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5772917}
     m_Modifications:
+    - target: {fileID: 1214807736, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3060639519279776857, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalPosition.x
       value: 9.1
@@ -72823,7 +72863,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1516737514}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -33.9, y: -0.95, z: 48.52}
+  m_LocalPosition: {x: -33.9, y: -0.95, z: 48.37}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 0}

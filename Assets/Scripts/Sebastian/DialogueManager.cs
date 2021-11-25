@@ -11,17 +11,31 @@ public class DialogueManager : MonoBehaviour
     public Animator animator;
 
     private Queue<string> sentences;
+
+    public static bool isActive;
+
+    
     
     void Start()
     {
         sentences = new Queue<string>();
     }
 
-   public void StartDialogue (Dialogue dialogue)
+    private void Update()
+    {
+        if(Input.GetMouseButtonDown(0))
+        {
+            DisplayNextSentence();
+        }
+    }
+
+    public void StartDialogue (Dialogue dialogue)
     {
         Debug.Log("Starting conversation with " + dialogue.name);
 
         animator.SetBool("IsOpen", true);
+
+        isActive = true;
 
         nameText.text = dialogue.name;
 
@@ -63,6 +77,7 @@ public class DialogueManager : MonoBehaviour
     {
         Debug.Log("End of conversation");
         animator.SetBool("IsOpen", false);
+        isActive = false;
     }
 
 }
