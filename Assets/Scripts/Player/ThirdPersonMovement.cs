@@ -11,7 +11,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     //teleport
     private const float DASH_DISTANCE_CHECK = 1f;
-    private const float DASH_FORCE = 15f;
+    private const float DASH_FORCE = 40f;
 
     //movement
     private const float MAX_PLAYER_SPEED = 10f; //Do not change
@@ -21,8 +21,8 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float DASH_ENERGY_COST = 5f;
         
     //gravity
-    private const float GRAVITY_VALUE = 3f;
-    private const float GRAVITY_JUMP_APEX = 3.5f;
+    private const float GRAVITY_VALUE = 4f;
+    private const float GRAVITY_JUMP_APEX = 4.5f;
     private const float LEDGE_CHECK_RAY_LENGTH_MULTIPLIER = 1.5f;
 
     //ground check
@@ -85,6 +85,7 @@ public class ThirdPersonMovement : MonoBehaviour
     private bool backFeetOnGround;
     private bool frontFeetOnGround;
     private bool jump;
+    private bool resetVelocity;
 
     private float horizontal;
     private float vertical;
@@ -102,6 +103,7 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         deafaltDynamicFriction = pm.dynamicFriction;
         defaultDrag = rb.drag;
+        resetVelocity = true;
 
         dashTimer = 0.2f;
 
@@ -312,7 +314,7 @@ public class ThirdPersonMovement : MonoBehaviour
                     //+= playerSpeed * Time.fixedDeltaTime * moveDirection; //On ground
                 }
                 else
-                    rb.AddForce(MAX_PLAYER_SPEED * moveDirection); //In air
+                    rb.AddForce(moveDirection / 2f, ForceMode.Impulse); //In air
             }
         }
 
@@ -351,6 +353,9 @@ public class ThirdPersonMovement : MonoBehaviour
         {
 
             rb.AddForce(new Vector3(0, JUMP_HEIGHT, 0), ForceMode.Impulse);
+
+            if(!Physics.Raycast(frontFeetGroundCheck.transform.position, transform.forward, 0.4f, ~playerLayer))
+                rb.AddForce(transform.forward * 5f, ForceMode.Impulse);
 
             charAnims.SetTriggerFromString("Jump");
 
@@ -469,6 +474,12 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         energy.SpendEnergy(DASH_ENERGY_COST);
 
+        if (resetVelocity)
+        {
+            rb.velocity = Vector3.zero;
+            resetVelocity = false;
+        }
+
         if(pm.dynamicFriction != 0)
             pm.dynamicFriction = 0f;
 
@@ -477,9 +488,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
         rb.drag = 0f;
 
-        RaycastHit hit;
-
-        if (Physics.Raycast(headRaycastOrigin.position, frontFeetGroundCheck.forward, out hit, DASH_DISTANCE_CHECK, ~playerLayer) || !energy.CheckEnergy(DASH_ENERGY_COST))
+        if (Physics.SphereCast(headRaycastOrigin.position, 0.65f, Vector3.zero, out _, ~playerLayer) || !energy.CheckEnergy(DASH_ENERGY_COST))
         {
             StopDashing(true);
         }
@@ -503,6 +512,7 @@ public class ThirdPersonMovement : MonoBehaviour
             ActivateRenderer(0);
             dashEffectsReference.SpeedUp();
             rb.useGravity = true;
+            resetVelocity = true;
             pm.dynamicFriction = deafaltDynamicFriction;
             rb.drag = defaultDrag;
             playerState = State.nothing;
