@@ -7,7 +7,8 @@ public class Quest : MonoBehaviour
     [SerializeField]
     private GameObject[] missions;
     private int currentMissionID;
-    
+    public Animator animator;
+
 
     public void NextMission()
     {
@@ -22,6 +23,17 @@ public class Quest : MonoBehaviour
     private void Awake()
     {
         currentMissionID = 0;
+    }
+
+    public void ActivateMission()
+    {
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            animator.SetBool("IsACtive", true);
+        }
+
+        
+      
     }
 
 }
