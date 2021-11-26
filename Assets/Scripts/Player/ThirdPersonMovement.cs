@@ -155,9 +155,9 @@ public class ThirdPersonMovement : MonoBehaviour
             horizontal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Vertical");
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetButtonDown("Jump"))//KeyCode.Space))
             {
-                jump = Physics.Raycast(backFeetGroundCheck.position, Vector3.down, 1.2f, groundMask) && Input.GetKey(KeyCode.Space);
+                jump = Physics.Raycast(backFeetGroundCheck.position, Vector3.down, 1.2f, groundMask) && Input.GetButtonDown("Jump");
             }
 
             if (Time.timeScale != 1 && !slowmotionAllowed) //to unpause game
@@ -445,7 +445,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
         if (dashAllowed)
         {
-            if (Input.GetKey(KeyCode.LeftShift) && dashCooldown <= 0f)
+            if (Input.GetButton("Fire1") && dashCooldown <= 0f)
             {
                 if (energy.CheckEnergy(DASH_ENERGY_COST))
                 {

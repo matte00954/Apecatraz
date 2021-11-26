@@ -148,7 +148,7 @@ public class Telekinesis : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetButtonDown("Fire2"))
         {
             FindObject();
         }
