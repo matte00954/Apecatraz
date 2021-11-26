@@ -32,16 +32,16 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown("i"))
         {
-            RespawnAtLatestCheckpoint();
+            RespawnAtCheckpointX(1);
         }
 
         if (Input.GetKeyDown("o"))
         {
-            RespawnAtCheckpointX(1);
+            RespawnAtCheckpointX(2);
         }
         if(Input.GetKeyDown("p"))
         {
-            RespawnAtCheckpointX(2);
+            RespawnAtCheckpointX(3);
         }
     }
 
