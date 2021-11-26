@@ -201,7 +201,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.7472727, y: 1}
+    m_SensorSize: {x: 1.5504886, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -1014,7 +1014,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.7472727, y: 1}
+    m_SensorSize: {x: 1.5504886, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -2408,7 +2408,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.7472727, y: 1}
+    m_SensorSize: {x: 1.5504886, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -2760,6 +2760,13 @@ MonoBehaviour:
     Say: "Full
     back" box to the closest range
 
+
+
+    Press "1" to move box forward
+
+    Press
+    "2"  to move box back
+
 '
 --- !u!222 &1352049596
 CanvasRenderer:
@@ -3108,18 +3115,38 @@ PrefabInstance:
       propertyPath: energyMeter
       value: 
       objectReference: {fileID: 160732594}
+    - target: {fileID: 2638028919231352875, guid: 95ce8613eb505b94f908a1cad6d4af0a, type: 3}
+      propertyPath: infiniteEnergy
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5321045694983690832, guid: 95ce8613eb505b94f908a1cad6d4af0a, type: 3}
+      propertyPath: pm
+      value: 
+      objectReference: {fileID: 13400000, guid: 99e8872c4189be24ebc321e1bf8888d3, type: 2}
     - target: {fileID: 5321045694983690832, guid: 95ce8613eb505b94f908a1cad6d4af0a, type: 3}
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 8116902947180118899}
     - target: {fileID: 5321045694983690832, guid: 95ce8613eb505b94f908a1cad6d4af0a, type: 3}
+      propertyPath: dashAllowed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5321045694983690832, guid: 95ce8613eb505b94f908a1cad6d4af0a, type: 3}
       propertyPath: dashInactive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5321045694983690832, guid: 95ce8613eb505b94f908a1cad6d4af0a, type: 3}
+      propertyPath: ledgeGrabAllowed
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5321045694983690832, guid: 95ce8613eb505b94f908a1cad6d4af0a, type: 3}
       propertyPath: ledgeGrabInactive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5321045694983690832, guid: 95ce8613eb505b94f908a1cad6d4af0a, type: 3}
+      propertyPath: dashEffectsReference
+      value: 
+      objectReference: {fileID: 8116902947180118903}
     - target: {fileID: 5321045694983690834, guid: 95ce8613eb505b94f908a1cad6d4af0a, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -3590,7 +3617,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.7472727, y: 1}
+    m_SensorSize: {x: 1.5504886, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -3613,7 +3640,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1675549521}
-  m_LocalRotation: {x: 0.08749784, y: 0.90891904, z: -0.24287185, w: 0.32745025}
+  m_LocalRotation: {x: 0.08749784, y: 0.908919, z: -0.24287184, w: 0.32745028}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -3621,6 +3648,27 @@ Transform:
   m_Father: {fileID: 27157343}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1720049689 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5321045694983690839, guid: 95ce8613eb505b94f908a1cad6d4af0a, type: 3}
+  m_PrefabInstance: {fileID: 1431882061}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1720049697 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5321045694983690832, guid: 95ce8613eb505b94f908a1cad6d4af0a, type: 3}
+  m_PrefabInstance: {fileID: 1431882061}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720049689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65908062a0c5f1541b663151c64cbe6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!198 &1790920478 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 5885782190190627502, guid: 95ce8613eb505b94f908a1cad6d4af0a, type: 3}
+  m_PrefabInstance: {fileID: 1431882061}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1890993098
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8718,6 +8766,7 @@ GameObject:
   - component: {fileID: 8116902947180118901}
   - component: {fileID: 8116902947180118902}
   - component: {fileID: 1920307652}
+  - component: {fileID: 8116902947180118903}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -8783,7 +8832,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8116902947180118897}
-  m_LocalRotation: {x: 0.08749787, y: 0.908919, z: -0.24287185, w: 0.32745022}
+  m_LocalRotation: {x: 0.087497845, y: 0.908919, z: -0.24287184, w: 0.32745025}
   m_LocalPosition: {x: -5.1020246, y: 9.383298, z: 6.295188}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -8939,3 +8988,25 @@ MonoBehaviour:
       enableFptlForForwardOpaque: 0
       enableBigTilePrepass: 0
       isFptlEnabled: 0
+--- !u!114 &8116902947180118903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8116902947180118897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acf93d6a9f94eb148821c27ba9eeed7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thirdPersonMovement: {fileID: 1720049697}
+  monkey: {fileID: 1720049689}
+  ball: {fileID: 1720049689}
+  particle1: {fileID: 1790920478}
+  slowDownClip: {fileID: 8300000, guid: c151469f624f3b54ab56cf9368091dbd, type: 3}
+  speedUpClip: {fileID: 8300000, guid: 7899e7cfc28d3384394ced8933cb78e5, type: 3}
+  fadeSpeed: 0
+  volume: {fileID: 1720049689}
+  helpUI: {fileID: 1720049689}
+  jochePrototyp: 0

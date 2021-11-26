@@ -242,6 +242,15 @@ public class Telekinesis : MonoBehaviour
             {
                 DecreaseTelekinesisOffset(-(int)Input.mouseScrollDelta.y);
             }
+            else if (Input.GetKey(KeyCode.Alpha1))
+            {
+                IncreaseTelekinesisOffset(1);
+            }
+            else if (Input.GetKey(KeyCode.Alpha2))
+            {
+                DecreaseTelekinesisOffset(1);
+            }
+
         }
     }
 
