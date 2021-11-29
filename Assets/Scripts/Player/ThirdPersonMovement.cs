@@ -11,12 +11,12 @@ public class ThirdPersonMovement : MonoBehaviour
 
     //teleport
     private const float DASH_DISTANCE_CHECK = 1f;
-    private const float DASH_FORCE = 40f;
+    private const float DASH_FORCE = 25f;
 
     //movement
     private const float MAX_PLAYER_SPEED = 8f; //Do not change
     private const float PLAYER_SPEED_DIVIDER_IN_AIR = 5f; //Do not change
-    private const float JUMP_HEIGHT = 30f; //Do not change
+    private const float JUMP_HEIGHT = 25f; //Do not change
 
     //dash
     private const float DASH_ENERGY_COST = 5f;
@@ -437,7 +437,7 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 charAnims.SetTriggerFromString("StopClimb");
 
-                MoveTo(ledgeHit.point);
+                MoveTo(ledgeHit.point + new Vector3(0,0.4f,0));
 
                 playerState = State.nothing;
 
@@ -492,8 +492,9 @@ public class ThirdPersonMovement : MonoBehaviour
             rb.useGravity = false;
 
         rb.drag = 0f;
+        RaycastHit spherecast;
 
-        if (Physics.SphereCast(headRaycastOrigin.position, 0.65f, Vector3.zero, out _, ~playerLayer) || !energy.CheckEnergy(DASH_ENERGY_COST))
+        if (Physics.SphereCast(headRaycastOrigin.position, DASH_DISTANCE_CHECK, Vector3.zero, out spherecast, ~playerLayer) || !energy.CheckEnergy(DASH_ENERGY_COST))
         {
             StopDashing(true);
         }
@@ -502,7 +503,9 @@ public class ThirdPersonMovement : MonoBehaviour
             if (energy.CheckEnergy(DASH_ENERGY_COST) && !playerState.Equals(State.dashing))
             {
                 playerState = State.dashing;
-                rb.AddForce(transform.forward * DASH_FORCE, ForceMode.Impulse);
+                if(rb.velocity != transform.forward * DASH_FORCE)
+                    rb.velocity = transform.forward * DASH_FORCE;
+                //rb.AddForce(transform.forward * DASH_FORCE, ForceMode.Impulse);
                 //constant force results in constant accelaration, zero force results constant velocity
             }
         }
