@@ -14,7 +14,8 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float DASH_FORCE = 40f;
 
     //movement
-    private const float MAX_PLAYER_SPEED = 10f; //Do not change
+    private const float MAX_PLAYER_SPEED = 8f; //Do not change
+    private const float PLAYER_SPEED_DIVIDER_IN_AIR = 5f; //Do not change
     private const float JUMP_HEIGHT = 30f; //Do not change
 
     //dash
@@ -287,7 +288,7 @@ public class ThirdPersonMovement : MonoBehaviour
                 if (backFeetOnGround || frontFeetOnGround)
                 {
 
-                    //float difference = Mathf.Abs(rb.velocity.magnitude - MAX_PLAYER_SPEED);
+                    float difference = Mathf.Abs(rb.velocity.magnitude - MAX_PLAYER_SPEED);
 
                     /*if (OnSlope())
                     {
@@ -308,13 +309,13 @@ public class ThirdPersonMovement : MonoBehaviour
                     else*/
                     if (rb.velocity.magnitude < MAX_PLAYER_SPEED)
                     {
-                        rb.AddForce(moveDirection * 2f, ForceMode.Impulse);
+                        rb.AddForce(moveDirection * difference, ForceMode.Impulse);
                     }
                     //rb.velocity += moveDirection * Time.fixedDeltaTime;
                     //+= playerSpeed * Time.fixedDeltaTime * moveDirection; //On ground
                 }
                 else
-                    rb.AddForce(moveDirection / 2f, ForceMode.Impulse); //In air
+                    rb.AddForce(moveDirection / PLAYER_SPEED_DIVIDER_IN_AIR, ForceMode.Impulse); //In air
             }
         }
 
@@ -403,7 +404,6 @@ public class ThirdPersonMovement : MonoBehaviour
                     {
                         rb.useGravity = false;
 
-
                         rb.velocity = Vector3.zero; 
 
                         MoveTo(new Vector3(forwardHit.point.x,
@@ -429,18 +429,23 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void LedgeClimb()
     {
-        timeRemainingOnAnimation -= Time.fixedDeltaTime;
-
-        if (timeRemainingOnAnimation < 0)
+        if (!rb.useGravity) //to make sure this only happens once
         {
-            charAnims.SetTriggerFromString("StopClimb");
+            timeRemainingOnAnimation -= Time.fixedDeltaTime;
 
-            MoveTo(ledgeHit.point);
+            if (timeRemainingOnAnimation < 0)
+            {
+                charAnims.SetTriggerFromString("StopClimb");
 
-            playerState = State.nothing;
+                MoveTo(ledgeHit.point);
 
-            rb.useGravity = true;
+                playerState = State.nothing;
+
+                rb.useGravity = true;
+            }
         }
+        else
+            Debug.LogError("Clim");
     }
     #endregion
 
