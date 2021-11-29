@@ -90,14 +90,12 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private float horizontal;
     private float vertical;
-    private float playerSpeed;
     private float turnSmoothVelocity;
     private float dashCooldown;
     private float dashTimer;
     private float timeRemainingOnAnimation;
     private float defaultDrag;
     private float deafaltDynamicFriction;
-
     //ALL CLIMBABLE OBJECTS NEEDS A TRIGGER WITH CLIMB LAYER
 
     private void Start()
@@ -444,8 +442,6 @@ public class ThirdPersonMovement : MonoBehaviour
                 rb.useGravity = true;
             }
         }
-        else
-            Debug.LogError("Clim");
     }
     #endregion
 
