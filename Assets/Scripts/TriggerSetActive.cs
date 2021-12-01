@@ -14,7 +14,7 @@ public class TriggerSetActive : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Player"))
+        if(other.gameObject.CompareTag("Player") && start == false)
             start = true;
     }
 
@@ -22,9 +22,10 @@ public class TriggerSetActive : MonoBehaviour
     {
         timer = delayBetween;
     }
+
     private void Update()
     {
-        if (i <= toActivate.Length && start)
+        if (i <= toActivate.Length - 1 && start)
         {
             timer -= Time.deltaTime;
             if (timer <= 0f)
@@ -32,10 +33,6 @@ public class TriggerSetActive : MonoBehaviour
                 toActivate[i].SetActive(true);
                 i++;
                 ResetTimer();
-                if(i >= toActivate.Length)
-                {
-                    start = false;
-                }
             }
         }
     }
