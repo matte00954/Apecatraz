@@ -45,12 +45,15 @@ public class ThirdPersonMovement : MonoBehaviour
     [Header("Ground check")]
     [SerializeField] private Transform frontFeetGroundCheck;
     [SerializeField] private Transform backFeetGroundCheck;
+
+    [Header("Layer masks")]
+    [SerializeField] private LayerMask playerLayer;
+    [SerializeField] private LayerMask ledgeMask;
     [SerializeField] private LayerMask groundMask;
+    [SerializeField] private LayerMask dashObstacles;
 
     [Header("Ledge")]
     [SerializeField] private CharAnims charAnims;
-    [SerializeField] private LayerMask ledgeMask;
-    [SerializeField] private LayerMask playerLayer;
     [SerializeField] private GameObject ledgeDownCheck;
     [SerializeField] private GameObject ledgeUpCheck;
     [SerializeField] private AnimationClip climbAnimation;
@@ -72,7 +75,7 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private bool dashAllowed = true;
     [SerializeField] private bool ledgeGrabAllowed = true;
     [SerializeField] private bool telekinesAllowed = true;
-    [SerializeField] private bool godMode = false; //no effect atm
+    [SerializeField] private bool godMode = false; //only effects slowmotion atm
     [SerializeField] private bool slowmotionAllowed = false;
 
     [HideInInspector] public bool isTelekinesisActive { get; set; }
@@ -157,7 +160,7 @@ public class ThirdPersonMovement : MonoBehaviour
             horizontal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Vertical");
 
-            if (Input.GetButtonDown("Jump"))//KeyCode.Space))
+            if (Input.GetButtonDown("Jump") && !playerState.Equals(State.climbing)) //ser till att man inte kan få ett superhopp samtidigt som man klättrar
             {
                 jump = Physics.Raycast(backFeetGroundCheck.position, Vector3.down, 1.2f, groundMask) && Input.GetButtonDown("Jump");
             }
@@ -219,7 +222,7 @@ public class ThirdPersonMovement : MonoBehaviour
             case State.telekinesis:
                 Movement();
                 break;
-            case State.disabled: // disabled = captured/d�d
+            case State.disabled: // disabled = captured/rekt
                 //spela death anim
                 //reset spel
                 break;
@@ -349,7 +352,7 @@ public class ThirdPersonMovement : MonoBehaviour
             landAnimationReady = false;
         }
 
-        if (jump) //Jump
+        if (jump)
         {
 
             rb.AddForce(new Vector3(0, JUMP_HEIGHT, 0), ForceMode.Impulse);
@@ -359,7 +362,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
             charAnims.SetTriggerFromString("Jump");
 
-            jump = false;
+            jump = false; //jump input set in update, otherwise too delayed
         }
     }
 
@@ -401,7 +404,7 @@ public class ThirdPersonMovement : MonoBehaviour
                     if (Physics.Raycast(frontFeetGroundCheck.transform.position, transform.forward * LEDGE_CHECK_RAY_LENGTH_MULTIPLIER,
                         out forwardHit, LEDGE_CHECK_RAY_LENGTH_MULTIPLIER)) //checks distance from object so animation starts at correct the distance
                     {
-                        rb.useGravity = false;
+                        rb.useGravity = false; //otherwise player might float under object
 
                         rb.velocity = Vector3.zero; 
 
@@ -428,7 +431,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void LedgeClimb()
     {
-        if (!rb.useGravity) //to make sure this only happens once
+        if (!rb.useGravity) //to make sure this only happens once, since this is set false in ledgecheck
         {
             timeRemainingOnAnimation -= Time.fixedDeltaTime;
 
@@ -436,7 +439,7 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 charAnims.SetTriggerFromString("StopClimb");
 
-                MoveTo(ledgeHit.point + new Vector3(0,0.4f,0));
+                MoveTo(ledgeHit.point + new Vector3(0,0.4f,0)); //adds marigin to make sure to not climb inside object instead of on top
 
                 playerState = State.nothing;
 
@@ -491,7 +494,7 @@ public class ThirdPersonMovement : MonoBehaviour
         rb.drag = 0f;
         RaycastHit spherecast;
 
-        if (Physics.SphereCast(headRaycastOrigin.position, DASH_DISTANCE_CHECK, Vector3.zero, out spherecast, ~playerLayer) || !energy.CheckEnergy(DASH_ENERGY_COST))
+        if (Physics.SphereCast(headRaycastOrigin.position, DASH_DISTANCE_CHECK, Vector3.zero, out spherecast, dashObstacles) || !energy.CheckEnergy(DASH_ENERGY_COST))
         {
             StopDashing(true);
         }
