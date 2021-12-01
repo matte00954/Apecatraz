@@ -60,8 +60,9 @@ public class ThirdPersonMovement : MonoBehaviour
     [Header("Energy")]
     [SerializeField] private Energy energy;
 
-    [Header("Head raycast origin")]
+    [Header("Raycast transforms")]
     [SerializeField] private Transform headRaycastOrigin;
+    [SerializeField] private Transform midRaycast;
 
     [Header("Ability Shaders")]
     [SerializeField] Material[] materials;
@@ -353,7 +354,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
             rb.AddForce(new Vector3(0, JUMP_HEIGHT, 0), ForceMode.Impulse);
 
-            if(!Physics.Raycast(frontFeetGroundCheck.transform.position, transform.forward, 0.4f, ~playerLayer))
+            if(!Physics.Raycast(midRaycast.transform.position, transform.forward, 1f, groundMask))
                 rb.AddForce(transform.forward * 5f, ForceMode.Impulse);
 
             charAnims.SetTriggerFromString("Jump");
