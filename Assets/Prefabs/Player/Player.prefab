@@ -5065,29 +5065,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 0}
   dashEffectsReference: {fileID: 0}
-  controller: {fileID: 1762694613964198748}
-  groundCheck: {fileID: 1762694614227774981}
-  groundMask:
+  rb: {fileID: 0}
+  pm: {fileID: 0}
+  frontFeetGroundCheck: {fileID: 0}
+  backFeetGroundCheck: {fileID: 0}
+  playerLayer:
     serializedVersion: 2
-    m_Bits: 6153
-  charAnims: {fileID: 0}
+    m_Bits: 0
   ledgeMask:
     serializedVersion: 2
     m_Bits: 4096
-  dashIgnoreLayer:
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 6153
+  dashObstacles:
     serializedVersion: 2
     m_Bits: 0
+  charAnims: {fileID: 0}
   ledgeDownCheck: {fileID: 30882857776937913}
   ledgeUpCheck: {fileID: 5349138436048165457}
   climbAnimation: {fileID: -8211997847921910680, guid: 1b2d75bd5e7877241bd9de762d21df29, type: 3}
   skinnedMeshRenderer: {fileID: 0}
   energy: {fileID: 8444907791314147622}
+  headRaycastOrigin: {fileID: 0}
+  midRaycast: {fileID: 0}
   materials:
   - {fileID: 2100000, guid: 517cf3c7715016a45be7243915734ac5, type: 2}
   - {fileID: 2100000, guid: e75f10c6188d0fa49ad30288534c25ea, type: 2}
-  dashInactive: 0
-  ledgeGrabInactive: 0
-  telekinesInactive: 0
+  dashAllowed: 1
+  ledgeGrabAllowed: 1
+  telekinesAllowed: 1
   godMode: 0
   slowmotionAllowed: 0
 --- !u!114 &8444907791314147622
