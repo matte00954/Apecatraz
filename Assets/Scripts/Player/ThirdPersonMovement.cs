@@ -16,14 +16,14 @@ public class ThirdPersonMovement : MonoBehaviour
     //movement
     private const float MAX_PLAYER_SPEED = 8f; //Do not change
     private const float PLAYER_SPEED_DIVIDER_IN_AIR = 5f; //Do not change
-    private const float JUMP_HEIGHT = 25f; //Do not change
+    private const float JUMP_HEIGHT = 22f; //Do not change
 
     //dash
     private const float DASH_ENERGY_COST = 5f;
         
     //gravity
-    private const float GRAVITY_VALUE = 4f;
-    private const float GRAVITY_JUMP_APEX = 4.5f;
+    private const float GRAVITY_VALUE = 2f;
+    private const float GRAVITY_JUMP_APEX = 3f;
     private const float LEDGE_CHECK_RAY_LENGTH_MULTIPLIER = 1.5f;
 
     //ground check
