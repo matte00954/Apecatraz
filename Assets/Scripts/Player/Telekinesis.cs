@@ -1,16 +1,16 @@
-//Author: Mattias Larsson
-//Author: William �rnquist
+// Author: Mattias Larsson
+// Author: William �rnquist
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.VFX;
 using UnityEngine.Windows.Speech;
-using System;
-using System.Linq;
-using System.Collections.Generic;
 
 public class Telekinesis : MonoBehaviour
 {
     [Header("Game Object references")]
-    [SerializeField] ThirdPersonMovement thirdPersonMovement;
+    [SerializeField] private ThirdPersonMovement thirdPersonMovement;
     [SerializeField] private Transform cameraTelekinesisTarget;
     [SerializeField] private LayerMask canBeCarriedLayer;
 
@@ -24,9 +24,8 @@ public class Telekinesis : MonoBehaviour
     [SerializeField] private bool voiceCommandsEnabled = false;
 
     private int telkenesisOffset = 0;
-    private int maxTelkenesisOffset = 3;
-    private int minTelkenesisOffset = -1;
-
+    private int maxTelekenesisOffset = 3;
+    private int minTelekenesisOffset = -1;
 
     private float minDrag = 1f;
     private float maxDrag = 4f;
@@ -34,16 +33,14 @@ public class Telekinesis : MonoBehaviour
     private GameObject carriedObject;
 
     private float moveForce = 25f;
-
     private float pickupRange = 10f;
-
     private float minRange = 1.5f;
-    private float maxRange = 12f; //needs to be higher than pickuprange
+    private float maxRange = 12f; // needs to be higher than pickuprange
 
     private bool silenced;
 
     /// Added by Andreas 2021-11-11
-    //Render for the carriedObject
+    //// Render for the carriedObject
     [SerializeField] private Material outlineMaterial;
     [SerializeField] private float outlineScaleFactor;
     [SerializeField] private Color outlineColor;
@@ -51,20 +48,17 @@ public class Telekinesis : MonoBehaviour
     private Renderer outlineRenderer;
     private GameObject carriedObjectOutline;
 
-    public Canvas interactiveIcon;
-    public VisualEffect thinking;
-    ///
+    [SerializeField] private Canvas interactiveIcon;
+    [SerializeField] private VisualEffect thinking;
 
-
-
-    //Telekinesis prototype
+    // Telekinesis prototype
     private Dictionary<string, Action> keywordActions = new Dictionary<string, Action>();
     private KeywordRecognizer keywordRecognizer;
-    //Telekinesis prototype
 
-    void Start()
+    ////private List<GameObject> collisionContacts = new List<GameObject>();
+
+    private void Start()
     {
-
         /*foreach (var device in Microphone.devices)
         {
             Debug.Log("Name: " + device);
@@ -88,12 +82,10 @@ public class Telekinesis : MonoBehaviour
             keywordRecognizer.OnPhraseRecognized += OnKeyWordsRecognized;
             keywordRecognizer.Start();
         }
-        /// Inking and typing settings, get to know you needs to be on
 
-        ///
+        /// Inking and typing settings, get to know you needs to be on
         thinking.Stop();
         carriedObjectOutline = null;
-        ///
 
         carriedObject = null;
         telkenesisOffset = 0;
@@ -109,12 +101,12 @@ public class Telekinesis : MonoBehaviour
 
     private void VoiceFullForward()
     {
-        IncreaseTelekinesisOffset(Mathf.Abs(minTelkenesisOffset - maxTelkenesisOffset));
+        IncreaseTelekinesisOffset(Mathf.Abs(minTelekenesisOffset - maxTelekenesisOffset));
     }
 
     private void VoiceFullBack()
     {
-        DecreaseTelekinesisOffset(Mathf.Abs(minTelkenesisOffset - maxTelkenesisOffset));
+        DecreaseTelekinesisOffset(Mathf.Abs(minTelekenesisOffset - maxTelekenesisOffset));
     }
 
     private void VoiceForwardOne()
@@ -137,15 +129,10 @@ public class Telekinesis : MonoBehaviour
         DropObject();
     }
 
-
     // TODO
     // Audio feedback everything voice command related
     // Up,down,left,right
-
     #endregion
-
-
-
     private void Update()
     {
         if (Input.GetButtonDown("Fire2"))
@@ -156,9 +143,8 @@ public class Telekinesis : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //Enable for outline of objects.
-        //FindObjectOutline();
-
+        // Enable for outline of objects.
+        // FindObjectOutline();
         if (thirdPersonMovement.isTelekinesisActive)
         {
             if (carriedObject != null)
@@ -168,10 +154,8 @@ public class Telekinesis : MonoBehaviour
         }
     }
 
-
     private void FindObject()
     {
-
         if (carriedObject == null && !silenced && energy.CheckEnergy(telekinesisEnergyCost))
         {
             RaycastHit hit;
@@ -179,11 +163,12 @@ public class Telekinesis : MonoBehaviour
             if (Physics.Raycast(telekinesisOrigin.transform.position, /*transform.TransformDirection(Vector3.forward)*/ mainCamera.transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
             {
                 PickupObject(hit.transform.gameObject);
-                //Debug.Log("hit " + hit.transform.gameObject);
-                thirdPersonMovement.ActivateRenderer(1); // 1 = Ability shader
+
+                ////Debug.Log("hit " + hit.transform.gameObject);
+                thirdPersonMovement.ActivateRenderer(1); //// 1 = Ability shader
                 thirdPersonMovement.PlayerState = ThirdPersonMovement.State.telekinesis;
 
-                //Makes the VFX play
+                // Makes the VFX play
                 thinking.Play();
             }
         }
@@ -198,10 +183,10 @@ public class Telekinesis : MonoBehaviour
             Rigidbody objectRigidbody = pickObject.GetComponent<Rigidbody>();
             objectRigidbody.useGravity = false;
             objectRigidbody.freezeRotation = true;
-            objectRigidbody.drag = maxDrag; //Makes object move slower when holding
+            objectRigidbody.drag = maxDrag; // Makes object move slower when holding
             carriedObject = pickObject;
 
-            //Destroy Icon
+            // Destroy Icon
             Destroy(carriedObjectOutline);
         }
     }
@@ -216,19 +201,10 @@ public class Telekinesis : MonoBehaviour
 
             energy.SpendEnergy(telekinesisEnergyCost);
 
-            if (!energy.CheckEnergy(telekinesisEnergyCost))
-            {
-                DropObject();
-                return;
-            }
-
-            if (Vector3.Distance(transform.position, carriedObject.transform.position) > maxRange)
-            {
-                DropObject();
-                return;
-            }
-
-            if (Vector3.Distance(transform.position, carriedObject.transform.position) < minRange)
+            if (!energy.CheckEnergy(telekinesisEnergyCost)
+                || Vector3.Distance(transform.position, carriedObject.transform.position) > maxRange
+                || Vector3.Distance(transform.position, carriedObject.transform.position) < minRange
+                /*|| collisionContacts.Contains(carriedObject)*/)
             {
                 DropObject();
                 return;
@@ -250,19 +226,18 @@ public class Telekinesis : MonoBehaviour
             {
                 DecreaseTelekinesisOffset(1);
             }
-
         }
     }
 
     private void IncreaseTelekinesisOffset(int amount)
     {
-        if (telkenesisOffset <= maxTelkenesisOffset)
+        if (telkenesisOffset <= maxTelekenesisOffset)
             telkenesisOffset += amount;
     }
 
     private void DecreaseTelekinesisOffset(int amount)
     {
-        if (telkenesisOffset >= minTelkenesisOffset)
+        if (telkenesisOffset >= minTelekenesisOffset)
             telkenesisOffset -= amount;
     }
 
@@ -281,7 +256,7 @@ public class Telekinesis : MonoBehaviour
 
             telkenesisOffset = 0;
 
-            //Stops vfx and objectOutline
+            // Stops vfx and objectOutline
             thinking.Stop();
             Destroy(carriedObjectOutline);
             energy.ActivateEnergyRegen(true);
@@ -308,23 +283,49 @@ public class Telekinesis : MonoBehaviour
         }
     }
 
+    private void OnCollisionStay(Collision collision)
+    {
+        if (carriedObject != null)
+        {
+            if (collision.gameObject.Equals(carriedObject))
+            {
+                DropObject();
+            }
+        }
+    }
+
+    /*
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("Contact added to list");
+        collisionContacts.Add(collision.gameObject);
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        Debug.Log("Contact removed from list");
+        collisionContacts.Remove(collision.gameObject);
+    }
+    */
+
     private void OnDrawGizmos()
     {
-        //Gizmos.DrawRay(transform.position, transform.TransformDirection(Vector3.forward));
-        //For testing
+        // Gizmos.DrawRay(transform.position, transform.TransformDirection(Vector3.forward));
+        // For testing
     }
     #region Andreas Outline code
-    //NOT USED
+    // NOT USED
+
     /// This is how a outline is created
-    Renderer CreateOutline(Material outlineMat, float scaleFactor, Color color, GameObject hit)
+    private Renderer CreateOutline(Material outlineMat, float scaleFactor, Color color, GameObject hit)
     {
         GameObject outlineObject = Instantiate(hit.gameObject, hit.transform.position, hit.transform.rotation, hit.transform);
 
         carriedObjectOutline = outlineObject;
         Debug.Log(carriedObjectOutline);
-        //Renderer previousRend;
+        //// Renderer previousRend;
 
-        Canvas newIcon = Instantiate(interactiveIcon, hit.transform.position + (Vector3.up), (hit.transform.rotation.normalized), carriedObjectOutline.transform);
+        Canvas newIcon = Instantiate(interactiveIcon, hit.transform.position + Vector3.up, hit.transform.rotation.normalized, carriedObjectOutline.transform);
 
         Renderer rend = outlineObject.GetComponent<Renderer>();
 
@@ -335,10 +336,11 @@ public class Telekinesis : MonoBehaviour
 
         Destroy(outlineObject.GetComponent<Rigidbody>());
         Destroy(outlineObject.GetComponent<Collider>());
-        //rend.enabled = false;
+        //// rend.enabled = false;
 
         return rend;
     }
+
     private void FindObjectOutline()
     {
         if (carriedObjectOutline == null && !silenced && energy.CheckEnergy(telekinesisEnergyCost))
@@ -347,7 +349,7 @@ public class Telekinesis : MonoBehaviour
 
             if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
             {
-                //Outline the object that would be hit curently
+                // Outline the object that would be hit curently
                 if (carriedObject == null)
                 {
                     CreateOutline(outlineMaterial, outlineScaleFactor, outlineColor, hit.transform.gameObject);
