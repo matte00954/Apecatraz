@@ -4,7 +4,7 @@ using UnityEngine;
 public class ThirdPersonMovement : MonoBehaviour
 {
     //Player States
-    public enum State { dashing, telekinesis, disabled, nothing, climbing }
+    public enum State { dashing, telekinesis, disabled, nothing, climbing, hiding }
     private State playerState;
 
     public State PlayerState { get => playerState; set => playerState = value; }
@@ -20,7 +20,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     //dash
     private const float DASH_ENERGY_COST = 5f;
-        
+
     //gravity
     private const float GRAVITY_VALUE = 2f;
     private const float GRAVITY_JUMP_APEX = 3f;
@@ -110,7 +110,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
         dashTimer = 0.2f;
 
-        if(!dashAllowed)
+        if (!dashAllowed)
             Debug.Log("Dash not allowed!");
         if (!ledgeGrabAllowed)
             Debug.Log("Ledge climbing not allowed!");
@@ -234,6 +234,9 @@ public class ThirdPersonMovement : MonoBehaviour
                 LedgeCheck();
                 DashCheck();
                 break;
+            case State.hiding:
+
+                break;
             default:
                 Debug.LogError("Player state is null");
                 break;
@@ -329,7 +332,7 @@ public class ThirdPersonMovement : MonoBehaviour
         //gravity
         if (!frontFeetOnGround && !backFeetOnGround)  //In air
         {
-            if(rb.drag != 1f)
+            if (rb.drag != 1f)
                 rb.drag = 1f;
 
             if (rb.velocity.y > 0f)
@@ -339,13 +342,13 @@ public class ThirdPersonMovement : MonoBehaviour
             else
                 rb.AddForce(Physics.gravity * GRAVITY_VALUE, ForceMode.Acceleration);
 
-            if(!landAnimationReady)
+            if (!landAnimationReady)
                 landAnimationReady = true;
 
             charAnims.SetAnimFloat("YSpeed", rb.velocity.y);
         }
 
-        if (frontFeetOnGround && landAnimationReady 
+        if (frontFeetOnGround && landAnimationReady
             || backFeetOnGround && landAnimationReady)
         {
             charAnims.SetTriggerFromString("Land");
@@ -357,7 +360,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
             rb.AddForce(new Vector3(0, JUMP_HEIGHT, 0), ForceMode.Impulse);
 
-            if(!Physics.Raycast(midRaycast.transform.position, transform.forward, 1f, groundMask))
+            if (!Physics.Raycast(midRaycast.transform.position, transform.forward, 1f, groundMask))
                 rb.AddForce(transform.forward * 5f, ForceMode.Impulse);
 
             charAnims.SetTriggerFromString("Jump");
@@ -406,7 +409,7 @@ public class ThirdPersonMovement : MonoBehaviour
                     {
                         rb.useGravity = false; //otherwise player might float under object
 
-                        rb.velocity = Vector3.zero; 
+                        rb.velocity = Vector3.zero;
 
                         MoveTo(new Vector3(forwardHit.point.x,
                             downHit.point.y - skinnedMeshRenderer.bounds.extents.y,
@@ -439,7 +442,7 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 charAnims.SetTriggerFromString("StopClimb");
 
-                MoveTo(ledgeHit.point + new Vector3(0,0.4f,0)); //adds marigin to make sure to not climb inside object instead of on top
+                MoveTo(ledgeHit.point + new Vector3(0, 0.4f, 0)); //adds marigin to make sure to not climb inside object instead of on top
 
                 playerState = State.nothing;
 
@@ -485,7 +488,7 @@ public class ThirdPersonMovement : MonoBehaviour
             resetVelocity = false;
         }
 
-        if(pm.dynamicFriction != 0)
+        if (pm.dynamicFriction != 0)
             pm.dynamicFriction = 0f;
 
         if (rb.useGravity)
@@ -503,7 +506,7 @@ public class ThirdPersonMovement : MonoBehaviour
             if (energy.CheckEnergy(DASH_ENERGY_COST) && !playerState.Equals(State.dashing))
             {
                 playerState = State.dashing;
-                if(rb.velocity != transform.forward * DASH_FORCE)
+                if (rb.velocity != transform.forward * DASH_FORCE)
                     rb.velocity = transform.forward * DASH_FORCE;
                 //rb.AddForce(transform.forward * DASH_FORCE, ForceMode.Impulse);
                 //constant force results in constant accelaration, zero force results constant velocity
@@ -547,6 +550,13 @@ public class ThirdPersonMovement : MonoBehaviour
         rb.velocity = Vector3.zero;
         rb.position = position;
     }
+
+    public void ToggleRigidbodyCollisions(bool toggle)
+    {
+        rb.detectCollisions = toggle;
+        rb.useGravity = toggle;
+    }
+
 
     public void ActivateRenderer(int index)
     {

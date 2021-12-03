@@ -13,6 +13,7 @@ public class VentTeleport : MonoBehaviour
         if(other.CompareTag("Player"))
         {
             other.transform.position = exitLocation.position;
+            other.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
             onEnter.Invoke();
         }
     }
