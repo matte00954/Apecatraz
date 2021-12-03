@@ -30,18 +30,23 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown("i"))
+        if (thirdPersonMovement.GetGodMode() == true)
         {
-            RespawnAtCheckpointX(1);
-        }
 
-        if (Input.GetKeyDown("o"))
-        {
-            RespawnAtCheckpointX(2);
-        }
-        if(Input.GetKeyDown("p"))
-        {
-            RespawnAtCheckpointX(3);
+            if (Input.GetKeyDown("i"))
+            {
+                RespawnAtCheckpointX(1);
+            }
+
+            if (Input.GetKeyDown("o"))
+            {
+                RespawnAtCheckpointX(2);
+            }
+            if (Input.GetKeyDown("p"))
+            {
+                RespawnAtCheckpointX(0);
+            }
+
         }
     }
 
