@@ -1462,6 +1462,7 @@ GameObject:
   - component: {fileID: 5321045694983690833}
   - component: {fileID: 5896154082591643461}
   - component: {fileID: 5321045694983690844}
+  - component: {fileID: 8615403523504092069}
   m_Layer: 7
   m_Name: Player2
   m_TagString: Player
@@ -1512,16 +1513,19 @@ MonoBehaviour:
   pm: {fileID: 0}
   frontFeetGroundCheck: {fileID: 6496614434037952117}
   backFeetGroundCheck: {fileID: 5321045694717437704}
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 6153
-  charAnims: {fileID: 5321045694983690835}
-  ledgeMask:
-    serializedVersion: 2
-    m_Bits: 4096
   playerLayer:
     serializedVersion: 2
     m_Bits: 32934
+  ledgeMask:
+    serializedVersion: 2
+    m_Bits: 4096
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 6153
+  dashObstacles:
+    serializedVersion: 2
+    m_Bits: 0
+  charAnims: {fileID: 5321045694983690835}
   ledgeDownCheck: {fileID: 5891773173451076276}
   ledgeUpCheck: {fileID: 1987647258618843996}
   climbAnimation: {fileID: -8211997847921910680, guid: 1b2d75bd5e7877241bd9de762d21df29, type: 3}
@@ -1646,6 +1650,21 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 2
+--- !u!114 &8615403523504092069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5321045694983690839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e42c114229d15040a1d7d646bd5ff94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trashCanTextUI: {fileID: 0}
+  thirdPersonMovement: {fileID: 0}
+  exitLocation: {fileID: 0}
 --- !u!1 &5328992075731690637
 GameObject:
   m_ObjectHideFlags: 0
