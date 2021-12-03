@@ -2372,7 +2372,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.3333334, y: 1}
+    m_SensorSize: {x: 1.7777778, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -2502,7 +2502,10 @@ VisualEffect:
     m_Vector3f:
       m_Array: []
     m_Vector4f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: 0.7490196, y: 0.5411765, z: 0.07058824, w: 1}
+        m_Name: Color1
+        m_Overridden: 1
     m_Uint:
       m_Array: []
     m_Int:
@@ -2570,7 +2573,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.3333334, y: 1}
+    m_SensorSize: {x: 1.7777778, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -2790,7 +2793,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.3333334, y: 1}
+    m_SensorSize: {x: 1.7777778, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -2899,7 +2902,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.3333334, y: 1}
+    m_SensorSize: {x: 1.7777778, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -3876,32 +3879,36 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52a3a8d106924164e9bda383687fa058, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.75309426
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52a3a8d106924164e9bda383687fa058, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.13096897
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52a3a8d106924164e9bda383687fa058, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.635211
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52a3a8d106924164e9bda383687fa058, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.110468164
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52a3a8d106924164e9bda383687fa058, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 19.731
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52a3a8d106924164e9bda383687fa058, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -80.293
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 52a3a8d106924164e9bda383687fa058, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 52a3a8d106924164e9bda383687fa058, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 67b4267aa2b12fd4b9f8b0988869055b, type: 2}
     - target: {fileID: 919132149155446097, guid: 52a3a8d106924164e9bda383687fa058, type: 3}
       propertyPath: m_Name
       value: Banana
@@ -3913,6 +3920,36 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 52a3a8d106924164e9bda383687fa058, type: 3}
   m_PrefabInstance: {fileID: 1281333545}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1281333547 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 52a3a8d106924164e9bda383687fa058, type: 3}
+  m_PrefabInstance: {fileID: 1281333545}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1281333548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1281333547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5509943c4590bf9479d5b2edeaf42a57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!135 &1281333549
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1281333547}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5533405
+  m_Center: {x: -0.32718226, y: 0.1271062, z: -0.016493442}
 --- !u!1 &1367401356
 GameObject:
   m_ObjectHideFlags: 0
