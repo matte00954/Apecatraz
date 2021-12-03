@@ -360,9 +360,6 @@ public class ThirdPersonMovement : MonoBehaviour
 
             rb.AddForce(new Vector3(0, JUMP_HEIGHT, 0), ForceMode.Impulse);
 
-            if (!Physics.Raycast(midRaycast.transform.position, transform.forward, 1f, groundMask))
-                rb.AddForce(transform.forward * 5f, ForceMode.Impulse);
-
             charAnims.SetTriggerFromString("Jump");
 
             jump = false; //jump input set in update, otherwise too delayed
