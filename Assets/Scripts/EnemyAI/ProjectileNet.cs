@@ -31,10 +31,10 @@ public class ProjectileNet : MonoBehaviour
             isActive = false;
             Destroy(this.gameObject, 2f);
         }
-        else if(other.gameObject.layer == LayerMask.NameToLayer(playerLayerName) && isActive)
-        {
-            ResetScene.RestartScene();
-        }
+        /* else if(other.gameObject.layer == LayerMask.NameToLayer(playerLayerName) && isActive)
+         {
+             ResetScene.RestartScene();
+         }*/
     }
 
     private void OnDrawGizmos()

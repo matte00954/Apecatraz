@@ -565,6 +565,11 @@ public class ThirdPersonMovement : MonoBehaviour
         return rb.velocity.magnitude;
     }
 
+    public bool GetGodMode()
+    {
+        return godMode;
+    }
+
     public State GetState()
     {
         return playerState;
@@ -578,6 +583,15 @@ public class ThirdPersonMovement : MonoBehaviour
     public void SetIsMoving(bool newMoveBool)
     {
         isMoving = newMoveBool;
+    }
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.layer.Equals(8))
+        {
+            ResetScene.RestartScene();
+        }
     }
 }
 
