@@ -30,7 +30,7 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float GROUND_CHECK_RADIUS = 0.3f; // comparing ground check game object to floor
 
     //rotation
-    private const float TURN_SMOOTH_TIME = 0.1f;
+    private const float TURN_SMOOTH_TIME = 0.05f;
     private const float TURN_SMOOTH_TIME_IN_AIR = 0.25f;
 
 
@@ -254,6 +254,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Movement()
     {
+
         Vector3 direction = new Vector3(horizontal, 0f, vertical);
 
         charAnims.SetAnimFloat("runY", rb.velocity.magnitude); //Joches grej
@@ -282,7 +283,13 @@ public class ThirdPersonMovement : MonoBehaviour
                 angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TURN_SMOOTH_TIME); //adjust angle for smoothing on ground
             }
 
-            rb.MoveRotation(Quaternion.Euler(0f, angle, 0f));
+            if (OnSlope())
+            {
+                movementOnSlope = Vector3.ProjectOnPlane(direction, slopeHitNormal);
+                rb.MoveRotation(Quaternion.Euler(movementOnSlope.x, angle, 0f));
+            }
+            else
+                rb.MoveRotation(Quaternion.Euler(0f, angle, 0f));
 
             //transform.rotation = Quaternion.Euler(0f, angle, 0f); //adjusted angle used here for rotation
 
@@ -294,14 +301,6 @@ public class ThirdPersonMovement : MonoBehaviour
                 {
 
                     float difference = Mathf.Abs(rb.velocity.magnitude - MAX_PLAYER_SPEED);
-
-                    /*if (OnSlope())
-                    {
-                        Debug.Log("SLOPE");
-                        movementOnSlope = Vector3.ProjectOnPlane(moveDirection, slopeHitNormal);
-                        SwitchRotationBasedOnFloor();
-                        rb.velocity = playerSpeed * Time.fixedDeltaTime * movementOnSlope; //On ground and slope
-                    }*/
 
                     /*if (rb.velocity.magnitude > MAX_PLAYER_SPEED)
                     {

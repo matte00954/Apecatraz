@@ -41,6 +41,7 @@ GameObject:
   - component: {fileID: 7839385444603745566}
   - component: {fileID: 7839385444603745567}
   - component: {fileID: 6680642983138274034}
+  - component: {fileID: 8924450990886106635}
   m_Layer: 0
   m_Name: Interactable Trashcan
   m_TagString: Trashcan
@@ -90,6 +91,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enterLocation: {fileID: 63586481}
+--- !u!64 &8924450990886106635
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7839385444603745560}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1001 &7839385444128934075
 PrefabInstance:
   m_ObjectHideFlags: 0
