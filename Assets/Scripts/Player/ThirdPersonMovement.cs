@@ -14,7 +14,8 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float DASH_FORCE = 25f;
 
     //movement
-    private const float MAX_PLAYER_SPEED = 8f; //Do not change
+    private const float MAX_PLAYER_SPEED_RUN = 8f; //Do not change
+    private const float MAX_PLAYER_SPEED_WALK = 2f; //Do not change
     private const float PLAYER_SPEED_DIVIDER_IN_AIR = 5f; //Do not change
     private const float JUMP_HEIGHT = 22f; //Do not change
 
@@ -82,7 +83,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     //Changes during runtime
     private RaycastHit ledgeHit;
-    private Vector3 movementOnSlope;
+    private Vector3 slopeMoveDirection;
     private Vector3 slopeHitNormal;
 
     private bool isMoving = false;
@@ -91,6 +92,7 @@ public class ThirdPersonMovement : MonoBehaviour
     private bool frontFeetOnGround;
     private bool jump;
     private bool resetVelocity;
+    private bool walk;
 
     private float horizontal;
     private float vertical;
@@ -164,6 +166,8 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 jump = Physics.Raycast(backFeetGroundCheck.position, Vector3.down, 1.2f, groundMask) && Input.GetButtonDown("Jump");
             }
+
+            walk = Input.GetKey(KeyCode.LeftControl);
 
             if (Time.timeScale != 1 && !slowmotionAllowed) //to unpause game
             {
@@ -283,40 +287,35 @@ public class ThirdPersonMovement : MonoBehaviour
                 angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TURN_SMOOTH_TIME); //adjust angle for smoothing on ground
             }
 
-            if (OnSlope())
-            {
-                movementOnSlope = Vector3.ProjectOnPlane(direction, slopeHitNormal);
-                rb.MoveRotation(Quaternion.Euler(movementOnSlope.x, angle, 0f));
-            }
-            else
-                rb.MoveRotation(Quaternion.Euler(0f, angle, 0f));
-
-            //transform.rotation = Quaternion.Euler(0f, angle, 0f); //adjusted angle used here for rotation
+            rb.MoveRotation(Quaternion.Euler(0f, angle, 0f));
 
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward; //adjust direction to camera rotation/direction
+
+            slopeMoveDirection = Vector3.ProjectOnPlane(moveDirection, slopeHitNormal);
 
             if (horizontal != 0 || vertical != 0)
             {
                 if (backFeetOnGround || frontFeetOnGround)
                 {
+                    float difference = Mathf.Abs(rb.velocity.magnitude - MAX_PLAYER_SPEED_RUN);
 
-                    float difference = Mathf.Abs(rb.velocity.magnitude - MAX_PLAYER_SPEED);
-
-                    /*if (rb.velocity.magnitude > MAX_PLAYER_SPEED)
+                    if (OnSlope())
                     {
-                        Debug.Log("COUNTER FORCE " + - moveDirection);  
-                        rb.AddForce(-moveDirection, ForceMode.Impulse);
-                        //rb.velocity = rb.velocity.normalized * MAX_PLAYER_SPEED;
-                        //rb.velocity += Mathf.Clamp(moveDirection, rb.velocity.magnitude, );
-                        //playerSpeed * Time.fixedDeltaTime * moveDirection; //On ground
+                        //rb.MoveRotation(Quaternion.Euler(angle, rb.transform.rotation.y, 0f));
+                        rb.AddForce(slopeMoveDirection.normalized * difference, ForceMode.Impulse);
                     }
-                    else*/
-                    if (rb.velocity.magnitude < MAX_PLAYER_SPEED)
+                    else
                     {
-                        rb.AddForce(moveDirection * difference, ForceMode.Impulse);
+                        if (walk)
+                        {
+                            if (rb.velocity.magnitude < MAX_PLAYER_SPEED_WALK)
+                                rb.AddForce(moveDirection * difference, ForceMode.Impulse);
+                        }
+                        else if (!walk && rb.velocity.magnitude < MAX_PLAYER_SPEED_RUN)
+                        {
+                            rb.AddForce(moveDirection * difference, ForceMode.Impulse);
+                        }
                     }
-                    //rb.velocity += moveDirection * Time.fixedDeltaTime;
-                    //+= playerSpeed * Time.fixedDeltaTime * moveDirection; //On ground
                 }
                 else
                     rb.AddForce(moveDirection / PLAYER_SPEED_DIVIDER_IN_AIR, ForceMode.Impulse); //In air
@@ -369,11 +368,15 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         RaycastHit slopeHit;
 
-        if (Physics.Raycast(frontFeetGroundCheck.position, Vector3.down, out slopeHit, 0.5f, groundMask) ||
-            Physics.Raycast(backFeetGroundCheck.position, Vector3.down, out slopeHit, 0.5f, groundMask))
+        if (Physics.Raycast(midRaycast.position, Vector3.down, out slopeHit, 0.5f, groundMask))
         {
-            slopeHitNormal = slopeHit.normal;
-            return slopeHit.normal != Vector3.up;
+            if (slopeHit.normal != Vector3.up)
+            {
+                slopeHitNormal = slopeHit.normal;
+                return slopeHit.normal != Vector3.up;
+            }
+            else
+                return false;
         }
         else
             return false;
