@@ -23,4 +23,19 @@ public class EnemyAnims : MonoBehaviour
     {
         anim.SetFloat("Blend", move);
     }
+
+    public void Aim()
+    {
+        anim.SetTrigger("Aim");
+    }
+
+    public void StopAiming()
+    {
+        anim.SetTrigger("StopAiming");
+    }
+
+    public void Fire()
+    {
+        anim.SetTrigger("Fire");
+    }
 }
