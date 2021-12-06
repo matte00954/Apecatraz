@@ -533,11 +533,6 @@ public class ThirdPersonMovement : MonoBehaviour
     }
     #endregion
 
-    private bool CheckGround(Transform groundcheck)
-    {
-        return Physics.CheckSphere(groundcheck.position, GROUND_CHECK_RADIUS, groundMask);
-    }
-
     private void OnDrawGizmos()
     {
         //backFeetOnGround = Physics.CheckSphere(backFeetGroundCheck.position, GROUND_CHECK_RADIUS, ~playerLayer);
