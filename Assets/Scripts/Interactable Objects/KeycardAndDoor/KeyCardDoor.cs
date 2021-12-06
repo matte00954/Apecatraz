@@ -9,14 +9,23 @@ public class KeyCardDoor : MonoBehaviour
     [SerializeField]
     private UnityEvent onUnlock;
 
+    [SerializeField]
+    private Animator animator;
+    [SerializeField]
+    private Collider door;
+
+    private bool opened = false;
+
     private void OnTriggerEnter(Collider other) 
     {
         if(other.CompareTag("Player"))
         {
-            if(other.GetComponent<KeyChain>().CheckIfKeycardIsInKeychain(Color))
+            if(other.GetComponent<KeyChain>().CheckIfKeycardIsInKeychain(Color) && opened == false)
             {
                 onUnlock.Invoke();
-                transform.parent.gameObject.SetActive(false);
+                animator.SetTrigger("Open");
+                door.enabled = false;
+                opened = true;
             }
         }
     }
