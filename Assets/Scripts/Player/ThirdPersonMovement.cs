@@ -319,7 +319,8 @@ public class ThirdPersonMovement : MonoBehaviour
                 }
                 else
                 {
-                    rb.AddForce(moveDirection , ForceMode.Impulse); //In air
+                    if (rb.velocity.magnitude < MAX_PLAYER_SPEED_RUN)
+                        rb.AddForce(moveDirection, ForceMode.Impulse); //In air
                 }
             }
         }
