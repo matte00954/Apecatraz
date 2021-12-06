@@ -321,7 +321,7 @@ public class ThirdPersonMovement : MonoBehaviour
                 }
                 else
                 {
-                    rb.AddForce(moveDirection / PLAYER_SPEED_DIVIDER_IN_AIR, ForceMode.Impulse); //In air
+                    rb.AddForce(moveDirection , ForceMode.Impulse); //In air
                 }
             }
         }
