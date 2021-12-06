@@ -535,7 +535,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1987647258618843996}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.656}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5321045694983690834}
@@ -664,7 +664,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6360272792391924099}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!2083052967 &2738580199408642040
 VisualEffect:
@@ -1043,7 +1043,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6360272792391924099}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!2083052967 &3923627000863140696
 VisualEffect:
@@ -1634,7 +1634,7 @@ MonoBehaviour:
     m_Bits: 6153
   dashObstacles:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 6217
   charAnims: {fileID: 5321045694983690835}
   ledgeDownCheck: {fileID: 5891773173451076276}
   ledgeUpCheck: {fileID: 1987647258618843996}
@@ -1649,7 +1649,7 @@ MonoBehaviour:
   dashAllowed: 1
   ledgeGrabAllowed: 1
   telekinesAllowed: 1
-  godMode: 0
+  godMode: 1
   slowmotionAllowed: 0
 --- !u!114 &2638028919231352875
 MonoBehaviour:
@@ -1726,7 +1726,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5321045694983690839}
-  m_Material: {fileID: 13400000, guid: 99e8872c4189be24ebc321e1bf8888d3, type: 2}
+  m_Material: {fileID: 13400000, guid: bc963bcd1744f5745b0ca51f1943fc2e, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -1774,7 +1774,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trashCanTextUI: {fileID: 0}
-  thirdPersonMovement: {fileID: 0}
+  thirdPersonMovement: {fileID: 5321045694983690832}
 --- !u!1 &5328992075731690637
 GameObject:
   m_ObjectHideFlags: 0
@@ -6954,7 +6954,10 @@ VisualEffect:
     m_Vector3f:
       m_Array: []
     m_Vector4f:
-      m_Array: []
+      m_Array:
+      - m_Value: {x: 1.0666667, y: 2.21, z: 2.6352942, w: 0}
+        m_Name: OutlineColor
+        m_Overridden: 1
     m_Uint:
       m_Array: []
     m_Int:
@@ -7221,10 +7224,10 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 7800799410148376344}
-  - {fileID: 9006580762521037500}
-  - {fileID: 4400003340688513332}
   - {fileID: 6208207752845154768}
+  - {fileID: 7800799410148376344}
+  - {fileID: 4400003340688513332}
+  - {fileID: 9006580762521037500}
   m_Father: {fileID: 5321045694983690834}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7258,7 +7261,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6360272792391924099}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!2083052967 &6880027315055689080
 VisualEffect:

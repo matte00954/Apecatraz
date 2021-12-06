@@ -93,6 +93,8 @@ MonoBehaviour:
   onUnlock:
     m_PersistentCalls:
       m_Calls: []
+  animator: {fileID: 8498358631897645553}
+  door: {fileID: 5138795659901319002}
 --- !u!1001 &3885603679609903620
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -165,5 +167,15 @@ PrefabInstance:
 --- !u!4 &2198187183391392885 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3129412872866963057, guid: d438e5daec59a0f4fbf27222298b5130, type: 3}
+  m_PrefabInstance: {fileID: 3885603679609903620}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &5138795659901319002 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 8267699175956016478, guid: d438e5daec59a0f4fbf27222298b5130, type: 3}
+  m_PrefabInstance: {fileID: 3885603679609903620}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &8498358631897645553 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4619659487525673973, guid: d438e5daec59a0f4fbf27222298b5130, type: 3}
   m_PrefabInstance: {fileID: 3885603679609903620}
   m_PrefabAsset: {fileID: 0}

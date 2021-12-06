@@ -23,7 +23,7 @@ public class DialogueManager : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if(Input.GetKeyDown(KeyCode.Q))
         {
             DisplayNextSentence();
         }
@@ -46,7 +46,7 @@ public class DialogueManager : MonoBehaviour
             sentences.Enqueue(sentence);
         }
 
-        DisplayNextSentence();
+        //DisplayNextSentence();
     }
 
     public void DisplayNextSentence()

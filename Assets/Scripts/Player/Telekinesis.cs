@@ -32,7 +32,7 @@ public class Telekinesis : MonoBehaviour
 
     private GameObject carriedObject;
 
-    private float moveForce = 25f;
+    private float moveForce = 50f;
     private float pickupRange = 10f;
     private float minRange = 1.5f;
     private float maxRange = 12f; // needs to be higher than pickuprange

@@ -15,7 +15,7 @@ public class DialogueTrigger : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         
-        if(other.gameObject.CompareTag("Player") && Input.GetKeyDown(KeyCode.F) && !DialogueManager.isActive) {
+        if(other.gameObject.CompareTag("Player") && Input.GetKeyDown(KeyCode.Q) && !DialogueManager.isActive) {
             TriggerDialogue();
         }
     }

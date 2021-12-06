@@ -11,20 +11,20 @@ public class ThirdPersonMovement : MonoBehaviour
 
     //teleport
     private const float DASH_DISTANCE_CHECK = 1f;
-    private const float DASH_FORCE = 25f;
+    private const float DASH_FORCE = 45f;
 
     //movement
     private const float MAX_PLAYER_SPEED_RUN = 8f; //Do not change
-    private const float MAX_PLAYER_SPEED_WALK = 2f; //Do not change
+    private const float MAX_PLAYER_SPEED_WALK = 5f; //Do not change
     private const float PLAYER_SPEED_DIVIDER_IN_AIR = 5f; //Do not change
-    private const float JUMP_HEIGHT = 22f; //Do not change
+    private const float JUMP_HEIGHT = 30f; //Do not change
 
     //dash
     private const float DASH_ENERGY_COST = 5f;
 
     //gravity
-    private const float GRAVITY_VALUE = 2f;
-    private const float GRAVITY_JUMP_APEX = 3f;
+    private const float GRAVITY_VALUE = 2.8f;
+    private const float GRAVITY_JUMP_APEX = 3.8f;
     private const float LEDGE_CHECK_RAY_LENGTH_MULTIPLIER = 1.5f;
 
     //ground check
@@ -100,14 +100,14 @@ public class ThirdPersonMovement : MonoBehaviour
     private float dashCooldown;
     private float dashTimer;
     private float timeRemainingOnAnimation;
-    private float defaultDrag;
-    private float deafaltDynamicFriction;
+    //private float defaultDrag;
+    //private float deafaltDynamicFriction;
     //ALL CLIMBABLE OBJECTS NEEDS A TRIGGER WITH CLIMB LAYER
 
     private void Start()
     {
-        deafaltDynamicFriction = pm.dynamicFriction;
-        defaultDrag = rb.drag;
+        /*deafaltDynamicFriction = pm.dynamicFriction;
+        defaultDrag = rb.drag;*/
         resetVelocity = true;
 
         dashTimer = 0.2f;
@@ -261,12 +261,10 @@ public class ThirdPersonMovement : MonoBehaviour
 
         Vector3 direction = new Vector3(horizontal, 0f, vertical);
 
-        charAnims.SetAnimFloat("runY", rb.velocity.magnitude); //Joches grej
-
-        if (rb.drag != defaultDrag && frontFeetOnGround && backFeetOnGround)
+        /*if (rb.drag != defaultDrag && frontFeetOnGround && backFeetOnGround)
         {
             rb.drag = defaultDrag;
-        }
+        }*/
 
         if (horizontal == 0 && vertical == 0)
         {
@@ -302,7 +300,8 @@ public class ThirdPersonMovement : MonoBehaviour
                     if (OnSlope())
                     {
                         //rb.MoveRotation(Quaternion.Euler(angle, rb.transform.rotation.y, 0f));
-                        rb.AddForce(slopeMoveDirection.normalized * difference, ForceMode.Impulse);
+                        if (rb.velocity.magnitude < MAX_PLAYER_SPEED_RUN)
+                            rb.AddForce(slopeMoveDirection.normalized * difference, ForceMode.Impulse);
                     }
                     else
                     {
@@ -311,14 +310,18 @@ public class ThirdPersonMovement : MonoBehaviour
                             if (rb.velocity.magnitude < MAX_PLAYER_SPEED_WALK)
                                 rb.AddForce(moveDirection * difference, ForceMode.Impulse);
                         }
-                        else if (!walk && rb.velocity.magnitude < MAX_PLAYER_SPEED_RUN)
+                        else if (rb.velocity.magnitude < MAX_PLAYER_SPEED_RUN)
                         {
-                            rb.AddForce(moveDirection * difference, ForceMode.Impulse);
+                            if (rb.velocity.magnitude < MAX_PLAYER_SPEED_RUN)
+                                rb.AddForce(moveDirection * difference, ForceMode.Impulse);
                         }
                     }
                 }
                 else
-                    rb.AddForce(moveDirection / PLAYER_SPEED_DIVIDER_IN_AIR, ForceMode.Impulse); //In air
+                {
+                    if (rb.velocity.magnitude < MAX_PLAYER_SPEED_RUN)
+                        rb.AddForce(moveDirection, ForceMode.Impulse); //In air
+                }
             }
         }
 
@@ -330,10 +333,7 @@ public class ThirdPersonMovement : MonoBehaviour
         //gravity
         if (!frontFeetOnGround && !backFeetOnGround)  //In air
         {
-            if (rb.drag != 1f)
-                rb.drag = 1f;
-
-            if (rb.velocity.y > 0f)
+            if (rb.velocity.y < 0f)
             {
                 rb.AddForce(Physics.gravity * GRAVITY_JUMP_APEX, ForceMode.Acceleration);
             }
@@ -355,13 +355,17 @@ public class ThirdPersonMovement : MonoBehaviour
 
         if (jump)
         {
-
             rb.AddForce(new Vector3(0, JUMP_HEIGHT, 0), ForceMode.Impulse);
 
             charAnims.SetTriggerFromString("Jump");
 
             jump = false; //jump input set in update, otherwise too delayed
         }
+    }
+
+    private void LateUpdate()
+    {
+        charAnims.SetAnimFloat("runY", rb.velocity.magnitude); //Joches grej
     }
 
     private bool OnSlope()
@@ -493,7 +497,6 @@ public class ThirdPersonMovement : MonoBehaviour
         if (rb.useGravity)
             rb.useGravity = false;
 
-        rb.drag = 0f;
         RaycastHit spherecast;
 
         if (Physics.SphereCast(headRaycastOrigin.position, DASH_DISTANCE_CHECK, Vector3.zero, out spherecast, dashObstacles) || !energy.CheckEnergy(DASH_ENERGY_COST))
@@ -523,8 +526,8 @@ public class ThirdPersonMovement : MonoBehaviour
             dashEffectsReference.SpeedUp();
             rb.useGravity = true;
             resetVelocity = true;
-            pm.dynamicFriction = deafaltDynamicFriction;
-            rb.drag = defaultDrag;
+            //pm.dynamicFriction = deafaltDynamicFriction;
+            //rb.drag = defaultDrag;
             playerState = State.nothing;
             dashCooldown = 1f;
             dashTimer = 0.2f;
