@@ -44,8 +44,8 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private PhysicMaterial pm;
 
     [Header("Ground check")]
-    [SerializeField] private Transform frontFeetGroundCheck;
-    [SerializeField] private Transform backFeetGroundCheck;
+    [SerializeField] private Transform frontFeetTransform;
+    [SerializeField] private Transform backFeetTransform;
 
     [Header("Layer masks")]
     [SerializeField] private LayerMask playerLayer;
@@ -156,15 +156,15 @@ public class ThirdPersonMovement : MonoBehaviour
         if (!InGameMenuManager.gameIsPaused)
         {
 
-            backFeetOnGround = Physics.Raycast(backFeetGroundCheck.position, Vector3.down, 0.2f, groundMask);
-            frontFeetOnGround = Physics.Raycast(frontFeetGroundCheck.position, Vector3.down, 0.2f, groundMask);
+            backFeetOnGround = Physics.Raycast(backFeetTransform.position, Vector3.down, 0.2f, groundMask);
+            frontFeetOnGround = Physics.Raycast(frontFeetTransform.position, Vector3.down, 0.2f, groundMask);
 
             horizontal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Vertical");
 
             if (Input.GetButtonDown("Jump") && !playerState.Equals(State.climbing)) //ser till att man inte kan få ett superhopp samtidigt som man klättrar
             {
-                jump = Physics.Raycast(backFeetGroundCheck.position, Vector3.down, 1.2f, groundMask) && Input.GetButtonDown("Jump");
+                jump = Physics.Raycast(backFeetTransform.position, Vector3.down, 1.2f, groundMask) && Input.GetButtonDown("Jump");
             }
 
             walk = Input.GetKey(KeyCode.LeftControl);
@@ -403,7 +403,7 @@ public class ThirdPersonMovement : MonoBehaviour
                 {
                     RaycastHit forwardHit;
 
-                    if (Physics.Raycast(frontFeetGroundCheck.transform.position, transform.forward * LEDGE_CHECK_RAY_LENGTH_MULTIPLIER,
+                    if (Physics.Raycast(frontFeetTransform.transform.position, transform.forward * LEDGE_CHECK_RAY_LENGTH_MULTIPLIER,
                         out forwardHit, LEDGE_CHECK_RAY_LENGTH_MULTIPLIER)) //checks distance from object so animation starts at correct the distance
                     {
                         rb.useGravity = false; //otherwise player might float under object
@@ -581,14 +581,20 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         isMoving = newMoveBool;
     }
-
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer.Equals(8))
         {
             ResetScene.RestartScene();
         }
+    }
+    public bool GetFrontFeetGrounded()
+    {
+        return frontFeetOnGround;
+    }
+    public bool GetBackFeetGrounded()
+    {
+        return backFeetOnGround;
     }
 }
 
