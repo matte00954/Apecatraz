@@ -50,6 +50,7 @@ public class Telekinesis : MonoBehaviour
 
     [SerializeField] private Canvas interactiveIcon;
     [SerializeField] private VisualEffect thinking;
+    [SerializeField] private VisualEffect telekinesis;
 
     // Telekinesis prototype
     private Dictionary<string, Action> keywordActions = new Dictionary<string, Action>();
@@ -84,7 +85,10 @@ public class Telekinesis : MonoBehaviour
         }
 
         /// Inking and typing settings, get to know you needs to be on
+        
+        // vfx
         thinking.Stop();
+        telekinesis.enabled = false;
         carriedObjectOutline = null;
 
         carriedObject = null;
@@ -167,9 +171,6 @@ public class Telekinesis : MonoBehaviour
                 ////Debug.Log("hit " + hit.transform.gameObject);
                 thirdPersonMovement.ActivateRenderer(1); //// 1 = Ability shader
                 thirdPersonMovement.PlayerState = ThirdPersonMovement.State.telekinesis;
-
-                // Makes the VFX play
-                thinking.Play();
             }
         }
         else
@@ -188,6 +189,11 @@ public class Telekinesis : MonoBehaviour
 
             // Destroy Icon
             Destroy(carriedObjectOutline);
+
+            //activate vfx
+            thinking.Play();
+            telekinesis.enabled = true;
+
         }
     }
 
@@ -198,6 +204,9 @@ public class Telekinesis : MonoBehaviour
         {
             Vector3 moveDirection = cameraTelekinesisTarget.position - carriedObject.transform.position + (cameraTelekinesisTarget.forward * telkenesisOffset);
             carriedObject.GetComponent<Rigidbody>().AddForce(moveDirection * moveForce);
+            
+            //Set telekinesis target,
+            telekinesis.SetVector3("TargetVector3", carriedObject.GetComponent<Rigidbody>().worldCenterOfMass);
 
             energy.SpendEnergy(telekinesisEnergyCost);
 
@@ -255,11 +264,12 @@ public class Telekinesis : MonoBehaviour
             thirdPersonMovement.PlayerState = ThirdPersonMovement.State.nothing;
 
             telkenesisOffset = 0;
-
+            energy.ActivateEnergyRegen(true);
+            
             // Stops vfx and objectOutline
             thinking.Stop();
+            telekinesis.enabled = false;
             Destroy(carriedObjectOutline);
-            energy.ActivateEnergyRegen(true);
         }
         else
             Debug.LogError("carriedObject is null");

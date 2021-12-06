@@ -59,6 +59,12 @@ public class EnemyMovement : MonoBehaviour
     [Header("Patrol variables")]
     [SerializeField, Tooltip("A stationary guard will stay and move back to one spot.")]
     private bool isStationary;
+    [SerializeField, Range(0f, 180f), Tooltip("Changes how many degrees the enemy will look around if stationary.")]
+    private float scanRotation;
+    [SerializeField, Range(1f, 10f), Tooltip("The frequency of looking left and right if stationary.")]
+    private float scanTime;
+    [SerializeField, Range(1f, 100f), Tooltip("How fast the enemy rotates if stationary.")]
+    private float scanSpeed;
     [SerializeField, Tooltip("Check this if this guard follows an encircling path.")]
     private bool isCircling;
     [SerializeField, Tooltip("The amount of time the guard should wait after reaching a waypoint.")]
@@ -69,6 +75,8 @@ public class EnemyMovement : MonoBehaviour
     private Vector3 lastKnownPlayerDestination;
     private Vector3 stationaryPosition;
     private Vector3 stationaryLookAtPosition;
+    private Vector3 leftScanAngle;
+    private Vector3 rightScanAngle;
 
     private int currentWaypointIndex;
     private float waitStateTimer;
@@ -76,14 +84,16 @@ public class EnemyMovement : MonoBehaviour
     private float searchTimer;
     private float detectionTimer;
     private float detectionRange;
+    private float stationaryScanTimer;
 
     private bool isPathInverted;
     private bool detectingPlayer;
     private bool searchPointSet;
+    private bool rightScanIsNext;
     private GuardState currentState;
 
     // 'public' necessery to reference a specific state in other scripts (if they have a reference to EnemyMovement).
-    public enum GuardState { patrolling, waiting, investigating, searching, dumbstruck, chasing, shooting }
+    public enum GuardState { patrolling, waiting, scanning, investigating, searching, dumbstruck, chasing, shooting }
 
     // Gets & sets
     public Vector3 HeadPosition { get => headTransform.position; }
@@ -96,22 +106,19 @@ public class EnemyMovement : MonoBehaviour
     /// Rotates the enemy towards the specified position.
     /// </summary>
     /// <param name="pos">Position</param>
-    public void RotateSelfToPosition(Vector3 pos)
+    public void RotateSelfToPosition(Vector3 pos, float ratio)
     {
         Vector3 direction = (pos - transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 3f);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * ratio);
     }
 
     /// <summary>
     /// Rotates the enemy towards the player's position.
     /// </summary>
-    public void RotateSelfToPlayer() => RotateSelfToPosition(PlayerDetectionPosition);
+    public void RotateSelfToPlayer() => RotateSelfToPosition(PlayerDetectionPosition, 3f);
 
-    public void RefreshDetectionDelay()
-    {
-        detectionTimer = 0f;
-    }
+    public void RefreshDetectionDelay() => detectionTimer = 0f;
 
     private void Awake()
     {
@@ -131,6 +138,8 @@ public class EnemyMovement : MonoBehaviour
         {
             stationaryPosition = transform.position;
             stationaryLookAtPosition = stationaryPosition + (transform.forward * StationaryLookAtPositionMagnitude);
+            leftScanAngle = transform.rotation.eulerAngles - (Vector3.up * scanRotation);
+            rightScanAngle = transform.rotation.eulerAngles + (Vector3.up * scanRotation);
             currentState = GuardState.waiting;
         }
         else if (waypoints.Length > 1)
@@ -172,9 +181,38 @@ public class EnemyMovement : MonoBehaviour
                 else if ((transform.position - stationaryPosition).magnitude >= 1f)
                     agent.SetDestination(stationaryPosition);
                 else
-                    RotateSelfToPosition(stationaryLookAtPosition);
+                {
+                    RotateSelfToPosition(stationaryLookAtPosition, 3f);
+                    stationaryScanTimer = 0f;
+                    currentState = GuardState.scanning;
+                }
 
                 break;
+
+            case GuardState.scanning:
+                if (stationaryScanTimer >= scanTime)
+                {
+                    stationaryScanTimer = 0f;
+                    rightScanIsNext = !rightScanIsNext;
+                    Debug.Log("RightScanIsNext: " + rightScanIsNext);
+                }
+                else
+                    stationaryScanTimer += Time.deltaTime;
+
+                
+                if (rightScanIsNext)
+                {
+                    float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.y, rightScanAngle.y, scanSpeed * Time.deltaTime);
+                    transform.eulerAngles = new Vector3(0, angle, 0);
+                } 
+                else
+                {
+                    float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.y, leftScanAngle.y, scanSpeed * Time.deltaTime);
+                    transform.eulerAngles = new Vector3(0, angle, 0);
+                }
+
+                break;
+
             case GuardState.investigating:
                 if (agent.remainingDistance <= investigateDestinationSpacing)
                     StartWaiting();
@@ -184,7 +222,7 @@ public class EnemyMovement : MonoBehaviour
                 if (dumbStateTimer < dumbstruckTime) 
                 {
                     dumbStateTimer += Time.deltaTime;
-                    RotateSelfToPosition(PlayerDetectionPosition);
+                    RotateSelfToPosition(PlayerDetectionPosition, 3f);
                 }
                 else if (detectingPlayer) // This runs once when enemy sees player at the end of dumbstruck time which transitions from 'dumbstruck' to 'chasing'.
                 {
@@ -307,7 +345,7 @@ public class EnemyMovement : MonoBehaviour
     {
         Vector3 randomDirection = Random.insideUnitSphere * searchRadius;
         randomDirection += transform.position;
-        NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, searchPointRadius, 1);
+        NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, searchRadius, 1);
         searchPointSet = true;
         return hit.position;
     }
