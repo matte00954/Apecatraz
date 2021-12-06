@@ -261,8 +261,6 @@ public class ThirdPersonMovement : MonoBehaviour
 
         Vector3 direction = new Vector3(horizontal, 0f, vertical);
 
-        charAnims.SetAnimFloat("runY", rb.velocity.magnitude); //Joches grej
-
         /*if (rb.drag != defaultDrag && frontFeetOnGround && backFeetOnGround)
         {
             rb.drag = defaultDrag;
@@ -362,6 +360,11 @@ public class ThirdPersonMovement : MonoBehaviour
 
             jump = false; //jump input set in update, otherwise too delayed
         }
+    }
+
+    private void LateUpdate()
+    {
+        charAnims.SetAnimFloat("runY", rb.velocity.magnitude); //Joches grej
     }
 
     private bool OnSlope()
