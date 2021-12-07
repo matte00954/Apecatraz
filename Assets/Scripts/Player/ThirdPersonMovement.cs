@@ -17,14 +17,14 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float MAX_PLAYER_SPEED_RUN = 8f; //Do not change
     private const float MAX_PLAYER_SPEED_WALK = 5f; //Do not change
     private const float PLAYER_SPEED_DIVIDER_IN_AIR = 5f; //Do not change
-    private const float JUMP_HEIGHT = 30f; //Do not change
+    private const float JUMP_HEIGHT = 23.5f; //Do not change
 
     //dash
     private const float DASH_ENERGY_COST = 5f;
 
     //gravity
-    private const float GRAVITY_VALUE = 2.8f;
-    private const float GRAVITY_JUMP_APEX = 3.8f;
+    private const float GRAVITY_VALUE = 1.5f;
+    private const float GRAVITY_JUMP_APEX = 5f;
     private const float LEDGE_CHECK_RAY_LENGTH_MULTIPLIER = 1.5f;
 
     //ground check
@@ -155,16 +155,17 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         if (!InGameMenuManager.gameIsPaused)
         {
-
             backFeetOnGround = Physics.Raycast(backFeetTransform.position, Vector3.down, 0.2f, groundMask);
             frontFeetOnGround = Physics.Raycast(frontFeetTransform.position, Vector3.down, 0.2f, groundMask);
 
             horizontal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Vertical");
 
-            if (Input.GetButtonDown("Jump") && !playerState.Equals(State.climbing)) //ser till att man inte kan få ett superhopp samtidigt som man klättrar
+            if (!playerState.Equals(State.climbing)) //ser till att man inte kan få ett superhopp samtidigt som man klättrar
             {
-                jump = Physics.Raycast(backFeetTransform.position, Vector3.down, 1.2f, groundMask) && Input.GetButtonDown("Jump");
+                jump = Physics.Raycast(backFeetTransform.position, Vector3.down, 0.5f, groundMask) && Input.GetButtonDown("Jump");
+                //RaycastHit raycastHit;
+                //jump = Physics.SphereCast(backFeetTransform.position, 1f, Vector3.down, out raycastHit, groundMask) && Input.GetButtonDown("Jump");
             }
 
             walk = Input.GetKey(KeyCode.LeftControl);
@@ -335,10 +336,10 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             if (rb.velocity.y < 0f)
             {
-                rb.AddForce(Physics.gravity * GRAVITY_JUMP_APEX, ForceMode.Acceleration);
+                rb.AddForce(Physics.gravity * GRAVITY_JUMP_APEX);
             }
             else
-                rb.AddForce(Physics.gravity * GRAVITY_VALUE, ForceMode.Acceleration);
+                rb.AddForce(Physics.gravity * GRAVITY_VALUE);
 
             if (!landAnimationReady)
                 landAnimationReady = true;
@@ -355,7 +356,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
         if (jump)
         {
-            rb.AddForce(new Vector3(0, JUMP_HEIGHT, 0), ForceMode.Impulse);
+            rb.AddForce(new Vector3(0, JUMP_HEIGHT, 0), ForceMode.VelocityChange);
 
             charAnims.SetTriggerFromString("Jump");
 
