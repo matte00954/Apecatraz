@@ -149,7 +149,7 @@ public class Telekinesis : MonoBehaviour
     {
         // Enable for outline of objects.
         // FindObjectOutline();
-        if (thirdPersonMovement.isTelekinesisActive)
+        if (thirdPersonMovement.IsTelekinesisActive)
         {
             if (carriedObject != null)
             {

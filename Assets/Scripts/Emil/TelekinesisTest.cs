@@ -151,7 +151,7 @@ public class TelekinesisTest : MonoBehaviour
         //Enable for outline of objects.
         //FindObjectOutline();
 
-        if (thirdPersonMovement.isTelekinesisActive)
+        if (thirdPersonMovement.IsTelekinesisActive)
         {
             if (Input.GetKeyDown(KeyCode.E))
             {

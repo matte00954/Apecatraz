@@ -2,17 +2,19 @@ using UnityEngine;
 
 public class ProjectileNet : MonoBehaviour
 {
+    ////private readonly string playerLayerName = "Player";
+
     [SerializeField, Tooltip("The layers the projectile will collide with (exluding 'Player').")]
     private LayerMask collisionMask;
     [SerializeField, Range(1f, 50f)] private float speed = 5f;
     [SerializeField, Range(1f, 10f)] private float maxLifetime = 5f;
 
-    private readonly string playerLayerName = "Player";
-
     private float lifeTimer = 0f;
     private bool isActive = true;
 
-    void Update()
+    public bool IsActive() { return isActive; }
+
+    private void Update()
     {
         if (isActive)
         {
@@ -31,6 +33,7 @@ public class ProjectileNet : MonoBehaviour
             isActive = false;
             Destroy(this.gameObject, 2f);
         }
+
         /* else if(other.gameObject.layer == LayerMask.NameToLayer(playerLayerName) && isActive)
          {
              ResetScene.RestartScene();
