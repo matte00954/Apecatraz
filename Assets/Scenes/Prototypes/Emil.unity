@@ -447,7 +447,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a68c43fe1f2a47cfa234b5eeaa98012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Intensity: 814.56683
+  m_Intensity: 53.18297
   m_EnableSpotReflector: 1
   m_LuxAtDistance: 1
   m_InnerSpotPercent: 0
@@ -569,8 +569,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 814.56683
+  m_Color: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 1}
+  m_Intensity: 53.18297
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -2596,7 +2596,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 840864111}
-  m_LocalRotation: {x: 0.02895936, y: 0.96915, z: -0.1395927, w: 0.2010561}
+  m_LocalRotation: {x: 0.028959362, y: 0.96915, z: -0.1395927, w: 0.20105612}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -10993,7 +10993,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1903475186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11416,7 +11416,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1977203262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15541,8 +15541,8 @@ MonoBehaviour:
   dashEffectsReference: {fileID: 504819902}
   rb: {fileID: 5321045696720537746}
   pm: {fileID: 13400000, guid: 99e8872c4189be24ebc321e1bf8888d3, type: 2}
-  frontFeetGroundCheck: {fileID: 6496614434418998459}
-  backFeetGroundCheck: {fileID: 5321045696457536966}
+  frontFeetTransform: {fileID: 0}
+  backFeetTransform: {fileID: 0}
   playerLayer:
     serializedVersion: 2
     m_Bits: 32934
