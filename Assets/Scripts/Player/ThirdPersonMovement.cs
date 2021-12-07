@@ -315,7 +315,8 @@ public class ThirdPersonMovement : MonoBehaviour
                 }
                 else
                 {
-                    if (rb.velocity.magnitude < MaxPlayerSpeedRun)
+                    Vector3 velocityWithoutY = new Vector3(rb.velocity.x, 0f , rb.velocity.z); //remove Y velocity from calc
+                    if (velocityWithoutY.magnitude < MaxPlayerSpeedRun)
                         rb.AddForce(moveDirection, ForceMode.Impulse); // In air
                 }
             }
