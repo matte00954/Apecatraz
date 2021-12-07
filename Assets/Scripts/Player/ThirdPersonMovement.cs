@@ -11,7 +11,7 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float MaxPlayerSpeedRun = 8f; // Do not change
     private const float MaxPlayerSpeedWalk = 5f; // Do not change
     private const float PlayerSpeedDividerInAir = 5f; // Do not change
-    private const float JumpHeight = 23.5f; // Do not change
+    private const float JumpHeight = 22f; // Do not change
 
     // dash
     private const float DashEnergyCost = 5f;
