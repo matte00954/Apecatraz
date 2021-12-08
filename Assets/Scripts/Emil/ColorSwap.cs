@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class ColorSwap : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class ColorSwap : MonoBehaviour
 
     public Material mat1;
     public Material mat2;
+   
+    public VisualEffect telekinesis;
 
     //Lägg till getcomponent carriedobject set materialcolor = rend color.
 
@@ -23,34 +26,13 @@ public class ColorSwap : MonoBehaviour
         colors[3] = Color.yellow;
         colors[4] = Color.magenta;
         AssignColors(0);
-
     }
-
-    // Update is called once per frame
-  /*  void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            if (index < 4)
-            {
-                index++;
-                AssignColors();
-                print("T IS PRESS " + index);
-            }
-            else
-            {
-                index = 0;
-                AssignColors();
-                print("T IS PRESS " + index);
-            }
-        }
-        
-    }*/
 
     public void AssignColors(int colorNumber)
     {
         mat1.SetColor("GradientNoiseColor", colors[colorNumber]);
         mat2.SetColor("GradientNoiseColor", colors[colorNumber]);
+        telekinesis.SetVector4("OutlineColor", colors[colorNumber]);
     }
 
 }
