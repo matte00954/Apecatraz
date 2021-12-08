@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerHeadCollider : MonoBehaviour
 {
-    [SerializeField] private GameObject head;
+    /*[SerializeField] private GameObject head;
     [SerializeField] private LayerMask groundMask;
     private Collider headCollider;
 
@@ -21,5 +21,5 @@ public class PlayerHeadCollider : MonoBehaviour
         {
             headCollider.enabled = true;
         }
-    }
+    }*/
 }
