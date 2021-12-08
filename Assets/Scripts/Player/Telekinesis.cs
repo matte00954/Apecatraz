@@ -181,41 +181,46 @@ public class Telekinesis : MonoBehaviour
         if (carriedObject == null && !silenced && energy.CheckEnergy(telekinesisEnergyCost))
         {
             RaycastHit hit;
-            //These two casts do not seem to work in the same if statement
-            if (Physics.Raycast(telekinesisOrigin.transform.position, 
+            //Multiple raycasts do not seem to work in the same if statement, therefore split up
+            if (Physics.Raycast(telekinesisOrigin.transform.position,
                 mainCamera.transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
             {
                 PickupObject(hit.transform.gameObject);
-            } 
-            else if(Physics.SphereCast(telekinesisOrigin.transform.position, telekinesisSphereRadius,
+            }
+            else if (Physics.SphereCast(telekinesisOrigin.transform.position, telekinesisSphereRadius,
                     mainCamera.transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
             {
                 PickupObject(hit.transform.gameObject);
             }
-            else if(Physics.SphereCast(telekinesisOrigin.transform.position, telekinesisSphereRadius,
-                    mainCamera.transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBePushedLayer))
+            else if (Physics.SphereCast(telekinesisOrigin.transform.position, telekinesisSphereRadius,
+                    mainCamera.transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBePushedLayer)) //Sphere moving towards camera forward
             {
-                if (pushTimer <= 0f)
-                {
-                    Rigidbody push = null;
-                    if (hit.transform.gameObject.CompareTag("WreckingBall"))
-                    {
-                        push = hit.transform.gameObject.GetComponentInParent<Rigidbody>();
-                    }
-                    else
-                    {
-                        push = hit.transform.gameObject.GetComponent<Rigidbody>();
-                    }
-                    if (push == null)
-                        return;
-
-                    push.AddForce(mainCamera.transform.TransformDirection(Vector3.forward) * pushMultiplier, ForceMode.Impulse);
-                    pushTimer = maxPushTimer;
-                }
+                PushObject(hit);
             }
         }
         else
             DropObject();
+    }
+
+    private void PushObject(RaycastHit hit) //Push instead of moving object
+    {
+        if (pushTimer <= 0f)
+        {
+            Rigidbody push = null;
+            if (hit.transform.gameObject.CompareTag("WreckingBall"))
+            {
+                push = hit.transform.gameObject.GetComponentInParent<Rigidbody>();
+            }
+            else
+            {
+                push = hit.transform.gameObject.GetComponent<Rigidbody>();
+            }
+            if (push == null)
+                return;
+
+            push.AddForce(mainCamera.transform.TransformDirection(Vector3.forward) * pushMultiplier, ForceMode.Impulse);
+            pushTimer = maxPushTimer;
+        }
     }
 
     private void PickupObject(GameObject pickObject)
