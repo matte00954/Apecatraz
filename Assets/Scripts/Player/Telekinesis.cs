@@ -14,6 +14,8 @@ public class Telekinesis : MonoBehaviour
     [SerializeField] private ThirdPersonMovement thirdPersonMovement;
     [SerializeField] private Transform cameraTelekinesisTarget;
     [SerializeField] private LayerMask canBeCarriedLayer;
+    [SerializeField] private LayerMask canBePushedLayer;
+
 
     [Header("Energy")]
     [SerializeField] private Energy energy;
@@ -42,6 +44,10 @@ public class Telekinesis : MonoBehaviour
     private float minRange = 1.5f;
     private float maxRange = 12f; // needs to be higher than pickuprange
     private float telekinesisSphereRadius = 3f;
+
+    private float pushMultiplier = 20f;
+    private float maxPushTimer = 1f;
+    private float pushTimer;
 
     private bool silenced;
 
@@ -149,6 +155,11 @@ public class Telekinesis : MonoBehaviour
         {
             FindObject();
         }
+
+        if (pushTimer > 0f)
+        {
+            pushTimer -= Time.deltaTime;
+        }
     }
 
     private void FixedUpdate()
@@ -166,6 +177,7 @@ public class Telekinesis : MonoBehaviour
 
     private void FindObject()
     {
+
         if (carriedObject == null && !silenced && energy.CheckEnergy(telekinesisEnergyCost))
         {
             RaycastHit hit;
@@ -179,6 +191,27 @@ public class Telekinesis : MonoBehaviour
                     mainCamera.transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
             {
                 PickupObject(hit.transform.gameObject);
+            }
+            else if(Physics.SphereCast(telekinesisOrigin.transform.position, telekinesisSphereRadius,
+                    mainCamera.transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBePushedLayer))
+            {
+                if (pushTimer <= 0f)
+                {
+                    Rigidbody push = null;
+                    if (hit.transform.gameObject.CompareTag("WreckingBall"))
+                    {
+                        push = hit.transform.gameObject.GetComponentInParent<Rigidbody>();
+                    }
+                    else
+                    {
+                        push = hit.transform.gameObject.GetComponent<Rigidbody>();
+                    }
+                    if (push == null)
+                        return;
+
+                    push.AddForce(mainCamera.transform.TransformDirection(Vector3.forward) * pushMultiplier, ForceMode.Impulse);
+                    pushTimer = maxPushTimer;
+                }
             }
         }
         else
