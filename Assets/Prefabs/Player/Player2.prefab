@@ -724,6 +724,7 @@ VFXRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 0}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1573,6 +1574,7 @@ GameObject:
   - component: {fileID: 5896154082591643461}
   - component: {fileID: 5321045694983690844}
   - component: {fileID: 8615403523504092069}
+  - component: {fileID: 2315227547458531755}
   m_Layer: 7
   m_Name: Player2
   m_TagString: Player
@@ -1775,6 +1777,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trashCanTextUI: {fileID: 0}
   thirdPersonMovement: {fileID: 5321045694983690832}
+--- !u!114 &2315227547458531755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5321045694983690839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f774bec188160724992222dbe4d6c9ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 2738580199408642040}
+  EventName: OnCollison
 --- !u!1 &5328992075731690637
 GameObject:
   m_ObjectHideFlags: 0
