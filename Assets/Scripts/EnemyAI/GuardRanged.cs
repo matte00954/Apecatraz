@@ -5,6 +5,7 @@ public class GuardRanged : MonoBehaviour
 {
     [Header("References")]
     private EnemyMovement enemyMovement;
+    private EnemyAnims enemyAnims;
     [SerializeField] private GameObject netProjectilePrefab;
     [SerializeField] private GameObject firePositionObject;
     [SerializeField] private GameObject playerMovementPredictionObject;
@@ -22,26 +23,34 @@ public class GuardRanged : MonoBehaviour
 
     private float chargeTimer;
     private bool isCharging;
+    private bool isInRange;
 
     private void Awake() 
     {
         chargeTimer = attackChargeTime;
         enemyMovement = GetComponent<EnemyMovement>();
+        enemyAnims = GetComponentInChildren<EnemyAnims>();
         audioSource = GetComponent<AudioSource>();
     } 
 
     private void Update()
     {
         // Starts charging the weapon when the following conditions are meet.
-        if (Vector3.Distance(enemyMovement.HeadPosition, enemyMovement.PlayerDetectionPosition) <= attackRangeMax 
-            && enemyMovement.DetectingPlayer && chargeTimer >= attackChargeTime && !isCharging
-            && enemyMovement.CurrentState != EnemyMovement.GuardState.dumbstruck)
+        if (Vector3.Distance(enemyMovement.HeadPosition, enemyMovement.PlayerDetectionPosition) <= attackRangeMax
+            && enemyMovement.IsDetectingPlayer && enemyMovement.CurrentState != EnemyMovement.GuardState.dumbstruck)
         {
-            chargeTimer = 0f;
-            enemyMovement.CurrentState = EnemyMovement.GuardState.shooting;
-            isCharging = true;
-            audioSource.PlayOneShot(chargingClip);
+            if (!isCharging && chargeTimer >= attackChargeTime)
+            {
+                chargeTimer = 0f;
+                enemyMovement.CurrentState = EnemyMovement.GuardState.shooting;
+                isCharging = true;
+                audioSource.PlayOneShot(chargingClip);
+                enemyAnims.Aim();
+            }
+            isInRange = true;
         }
+        else if (isInRange)
+            isInRange = false;
 
         // Rotates towards the player while counting down the charge timer.
         if (isCharging && chargeTimer < attackChargeTime) 
@@ -53,10 +62,16 @@ public class GuardRanged : MonoBehaviour
         {
             isCharging = false;
             FireAtPlayer();
-            enemyMovement.Agent.SetDestination(enemyMovement.PlayerDetectionPosition);
             enemyMovement.RefreshDetectionDelay();
-            enemyMovement.CurrentState = EnemyMovement.GuardState.chasing;
+            if (!isInRange || !enemyMovement.IsDetectingPlayer)
+            {
+                enemyMovement.Agent.SetDestination(enemyMovement.PlayerDetectionPosition);
+                enemyMovement.CurrentState = EnemyMovement.GuardState.chasing;
+                enemyAnims.StopAiming();
+            }
         }
+
+        
     }
 
     private void FireAtPlayer()
@@ -64,6 +79,7 @@ public class GuardRanged : MonoBehaviour
         firePositionObject.transform.LookAt(playerMovementPredictionObject.transform.position);
         Instantiate(netProjectilePrefab, firePositionObject.transform.position, firePositionObject.transform.rotation);
         audioSource.PlayOneShot(shootClip);
+        enemyAnims.Fire();
     }
 
     private void OnDrawGizmos()

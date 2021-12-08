@@ -1,6 +1,7 @@
 // Author: Mattias Larsson
 // Author: William �rnquist
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -32,10 +33,11 @@ public class Telekinesis : MonoBehaviour
 
     private GameObject carriedObject;
 
-    private float moveForce = 25f;
-    private float pickupRange = 10f;
+    private float moveForce = 50f;
+    private float pickupRange = 8f;
     private float minRange = 1.5f;
     private float maxRange = 12f; // needs to be higher than pickuprange
+    private float telekinesisSphereRadius = 3f;
 
     private bool silenced;
 
@@ -149,7 +151,7 @@ public class Telekinesis : MonoBehaviour
     {
         // Enable for outline of objects.
         // FindObjectOutline();
-        if (thirdPersonMovement.isTelekinesisActive)
+        if (thirdPersonMovement.IsTelekinesisActive)
         {
             if (carriedObject != null)
             {
@@ -163,14 +165,16 @@ public class Telekinesis : MonoBehaviour
         if (carriedObject == null && !silenced && energy.CheckEnergy(telekinesisEnergyCost))
         {
             RaycastHit hit;
-
-            if (Physics.Raycast(telekinesisOrigin.transform.position, /*transform.TransformDirection(Vector3.forward)*/ mainCamera.transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
+            //These two casts do not seem to work in the same if statement
+            if (Physics.Raycast(telekinesisOrigin.transform.position, 
+                mainCamera.transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
             {
                 PickupObject(hit.transform.gameObject);
-
-                ////Debug.Log("hit " + hit.transform.gameObject);
-                thirdPersonMovement.ActivateRenderer(1); //// 1 = Ability shader
-                thirdPersonMovement.PlayerState = ThirdPersonMovement.State.telekinesis;
+            } 
+            else if(Physics.SphereCast(telekinesisOrigin.transform.position, telekinesisSphereRadius,
+                    mainCamera.transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
+            {
+                PickupObject(hit.transform.gameObject);
             }
         }
         else
@@ -181,6 +185,9 @@ public class Telekinesis : MonoBehaviour
     {
         if (pickObject.GetComponent<Rigidbody>())
         {
+            thirdPersonMovement.ActivateRenderer(1); //// 1 = Ability shader
+            thirdPersonMovement.PlayerState = ThirdPersonMovement.State.telekinesis;
+
             Rigidbody objectRigidbody = pickObject.GetComponent<Rigidbody>();
             objectRigidbody.useGravity = false;
             objectRigidbody.freezeRotation = true;
@@ -318,11 +325,6 @@ public class Telekinesis : MonoBehaviour
     }
     */
 
-    private void OnDrawGizmos()
-    {
-        // Gizmos.DrawRay(transform.position, transform.TransformDirection(Vector3.forward));
-        // For testing
-    }
     #region Andreas Outline code
     // NOT USED
 

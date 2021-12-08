@@ -1,26 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyAnims : MonoBehaviour
 {
-
+    private const string BlendStr = "Blend";
+    private const string AimStr = "Aim";
+    private const string StopAimingStr = "StopAiming";
+    private const string FireStr = "Aim";
     [SerializeField]
     private Animator anim;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void SetMove(int move)
-    {
-        anim.SetFloat("Blend", move);
-    }
+    public void SetMove(int move) => anim.SetFloat(BlendStr, move);
+    public void Aim() => anim.SetTrigger(AimStr);
+    public void StopAiming() => anim.SetTrigger(StopAimingStr);
+    public void Fire() => anim.SetTrigger(FireStr);
 }

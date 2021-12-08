@@ -23,7 +23,7 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private AudioClip mistakenClip;
     private AudioSource audioSource;
     [SerializeField] private AudioClip[] chasingClips;
-    [SerializeField] private EnemyAnims enemyAnim;
+    private EnemyAnims enemyAnim;
 
     [Header("Agent")]
     [SerializeField] private NavMeshAgent agent;
@@ -99,7 +99,7 @@ public class EnemyMovement : MonoBehaviour
     public Vector3 HeadPosition { get => headTransform.position; }
     public Vector3 PlayerDetectionPosition { get => playerDetectionPoint.transform.position; }
     public NavMeshAgent Agent { get => agent; }
-    public bool DetectingPlayer { get => detectingPlayer; }
+    public bool IsDetectingPlayer { get => detectingPlayer; }
     public GuardState CurrentState { get => currentState; set => currentState = value; }
 
     /// <summary>
@@ -123,6 +123,7 @@ public class EnemyMovement : MonoBehaviour
     private void Awake()
     {
         audioSource = gameObject.GetComponent<AudioSource>();
+        enemyAnim = GetComponentInChildren<EnemyAnims>();
         detectionRange = fieldOfViewCollider.bounds.size.z;
         agent.speed = patrolSpeed;
         audioSource.clip = walkClip;
@@ -199,7 +200,6 @@ public class EnemyMovement : MonoBehaviour
                 else
                     stationaryScanTimer += Time.deltaTime;
 
-                
                 if (rightScanIsNext)
                 {
                     float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.y, rightScanAngle.y, scanSpeed * Time.deltaTime);
@@ -293,6 +293,9 @@ public class EnemyMovement : MonoBehaviour
     /// </summary>
     private void StartWaiting()
     {
+        if (currentState.Equals(GuardState.chasing))
+            enemyAnim.StopAiming();
+
         currentState = GuardState.waiting;
         agent.SetDestination(transform.position);
         waitStateTimer = TimerResetValue;
