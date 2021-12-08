@@ -28,6 +28,10 @@ public class Telekinesis : MonoBehaviour
     private int maxTelekenesisOffset = 3;
     private int minTelekenesisOffset = -1;
 
+    //Emil
+    private Material originalMat;
+    [SerializeField] private Material telekinesisMat;
+
     private float minDrag = 1f;
     private float maxDrag = 4f;
 
@@ -194,6 +198,11 @@ public class Telekinesis : MonoBehaviour
             objectRigidbody.drag = maxDrag; // Makes object move slower when holding
             carriedObject = pickObject;
 
+            //Emil Shader
+            originalMat = carriedObject.GetComponent<Renderer>().material;
+            telekinesisMat.SetTexture("MainTexture", originalMat.mainTexture);
+            carriedObject.GetComponent<Renderer>().material = telekinesisMat;
+
             // Destroy Icon
             Destroy(carriedObjectOutline);
 
@@ -265,6 +274,10 @@ public class Telekinesis : MonoBehaviour
             carriedRigidbody.freezeRotation = false;
             carriedRigidbody.useGravity = true;
             carriedRigidbody.drag = minDrag;
+            //Emil
+            carriedObject.GetComponent<Renderer>().material = originalMat;
+            originalMat = null;
+
             carriedObject.transform.parent = null;
             carriedObject = null;
             thirdPersonMovement.PlayerState = ThirdPersonMovement.State.nothing;

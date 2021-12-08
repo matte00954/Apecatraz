@@ -28,7 +28,6 @@ public class TelekinesisTest : MonoBehaviour
     private int minTelkenesisOffset = -1;
 
     //Emil
-    private TelekinesisToggle telekinesisToggle;
     private Material originalMat;
     [SerializeField] private Material telekinesisMat;
 
