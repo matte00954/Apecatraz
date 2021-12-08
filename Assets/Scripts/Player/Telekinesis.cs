@@ -215,11 +215,10 @@ public class Telekinesis : MonoBehaviour
             //Set telekinesis target,
             telekinesis.SetVector3("TargetVector3", carriedObject.GetComponent<Rigidbody>().worldCenterOfMass);
 
-            energy.SpendEnergy(telekinesisEnergyCost);
+            energy.SpendEnergy(telekinesisEnergyCost); 
 
             if (!energy.CheckEnergy(telekinesisEnergyCost)
-                || Vector3.Distance(transform.position, carriedObject.transform.position) > maxRange
-                || Vector3.Distance(transform.position, carriedObject.transform.position) < minRange
+                || Vector3.Distance(transform.position, carriedObject.transform.position) > maxRange          
                 /*|| collisionContacts.Contains(carriedObject)*/)
             {
                 DropObject();
