@@ -90,6 +90,8 @@ public class ThirdPersonMovement : MonoBehaviour
     private bool resetVelocity;
     private bool walk;
 
+    private bool isChased;
+
     private float horizontal;
     private float vertical;
     private float turnSmoothVelocity;
@@ -617,6 +619,11 @@ public class ThirdPersonMovement : MonoBehaviour
     public bool GetBackFeetGrounded()
     {
         return backFeetOnGround;
+    }
+
+    public bool GetIsChased()
+    {
+        return isChased;
     }
 }
 

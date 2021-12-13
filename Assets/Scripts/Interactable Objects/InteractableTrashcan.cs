@@ -6,6 +6,8 @@ public class InteractableTrashcan : MonoBehaviour
 {
     [SerializeField]
     private GameObject trashCanTextUI;
+    [SerializeField]
+    private GameObject trashCanIsChasedUI;
 
     [SerializeField]
     private ThirdPersonMovement thirdPersonMovement;
@@ -13,6 +15,8 @@ public class InteractableTrashcan : MonoBehaviour
     private Vector3 cachedEnteredLocation;
 
     private bool canEnter = false;
+
+    private float chasedTimer = 3f;
 
     private Transform targetTransform;
 
@@ -24,13 +28,28 @@ public class InteractableTrashcan : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            if (canEnter == true && thirdPersonMovement.PlayerState.Equals(ThirdPersonMovement.State.hiding) == false)
+            if(thirdPersonMovement.GetIsChased() == true && canEnter == true) //Can not enter if player is chased
+            {
+                trashCanIsChasedUI.SetActive(true);
+            }
+            else if (canEnter == true && thirdPersonMovement.PlayerState.Equals(ThirdPersonMovement.State.nothing) == true)
             {
                 EnterTrashCan();
             }
             else if (thirdPersonMovement.PlayerState.Equals(ThirdPersonMovement.State.hiding) == true)
             {
                 ExitTrashCan();
+            }
+        }
+
+        if (trashCanIsChasedUI.activeSelf)
+        {
+            chasedTimer -= Time.deltaTime;
+
+            if(chasedTimer < 0)
+            {
+                trashCanIsChasedUI.SetActive(false);
+                chasedTimer = 3f;
             }
         }
     }
