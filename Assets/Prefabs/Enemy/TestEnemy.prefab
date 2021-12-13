@@ -94,7 +94,6 @@ MonoBehaviour:
   lostplayerClip: {fileID: 8300000, guid: 98244e7d2d837364a889efc9014feffe, type: 3}
   mistakenClip: {fileID: 8300000, guid: 98244e7d2d837364a889efc9014feffe, type: 3}
   chasingClips: []
-  enemyAnim: {fileID: 8624596441752712569}
   agent: {fileID: 3235691328590164832}
   patrolSpeed: 3
   alertSpeed: 6
@@ -509,6 +508,18 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: ab4cfc76613dfd34cb54eb344914c1d1, type: 3}
       propertyPath: m_RootOrder
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ab4cfc76613dfd34cb54eb344914c1d1, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ab4cfc76613dfd34cb54eb344914c1d1, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: ab4cfc76613dfd34cb54eb344914c1d1, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ab4cfc76613dfd34cb54eb344914c1d1, type: 3}
       propertyPath: m_LocalPosition.x
