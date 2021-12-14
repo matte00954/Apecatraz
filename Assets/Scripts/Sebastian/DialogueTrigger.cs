@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class DialogueTrigger : MonoBehaviour
 {
-    public Dialogue dialogue;
+    [SerializeField] private Dialogue dialogue;
 
-    public void TriggerDialogue ()
+    public void TriggerDialogue()
     {
         FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
 
@@ -14,8 +14,9 @@ public class DialogueTrigger : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        
-        if(other.gameObject.CompareTag("Player") && Input.GetKeyDown(KeyCode.Q) && !DialogueManager.isActive) {
+
+        if (other.gameObject.CompareTag("Player") && Input.GetKeyDown(KeyCode.Q) && !DialogueManager.isActive)
+        {
             TriggerDialogue();
         }
     }

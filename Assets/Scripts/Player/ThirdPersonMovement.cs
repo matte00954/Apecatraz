@@ -1,4 +1,5 @@
 // Author: Mattias Larsson
+using System;
 using UnityEngine;
 
 public class ThirdPersonMovement : MonoBehaviour
@@ -72,6 +73,10 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private bool godMode = false; // only effects slowmotion atm
     [SerializeField] private bool slowmotionAllowed = false;
 
+    [SerializeField] private GameManager gameManager;
+
+    [SerializeField] private float respawnTimer = 3f;
+
     // Changes during runtime
     private RaycastHit ledgeHit;
     private Vector3 slopeMoveDirection;
@@ -84,6 +89,8 @@ public class ThirdPersonMovement : MonoBehaviour
     private bool jump;
     private bool resetVelocity;
     private bool walk;
+
+    private bool isChased;
 
     private float horizontal;
     private float vertical;
@@ -155,7 +162,7 @@ public class ThirdPersonMovement : MonoBehaviour
             vertical = Input.GetAxisRaw("Vertical");
 
             // ser till att man inte kan få ett superhopp samtidigt som man klättrar
-            if (!playerState.Equals(State.climbing)) 
+            if (!playerState.Equals(State.climbing))
             {
                 jump = Physics.Raycast(backFeetTransform.position, Vector3.down, 0.5f, groundMask) && Input.GetButtonDown("Jump");
                 ////RaycastHit raycastHit;
@@ -165,7 +172,7 @@ public class ThirdPersonMovement : MonoBehaviour
             walk = Input.GetKey(KeyCode.LeftControl);
 
             // to unpause game
-            if (Time.timeScale != 1 && !slowmotionAllowed) 
+            if (Time.timeScale != 1 && !slowmotionAllowed)
             {
                 Time.timeScale = 1;
             }
@@ -224,6 +231,9 @@ public class ThirdPersonMovement : MonoBehaviour
                 break;
             case State.disabled: // disabled = captured/rekt
                 // spela death anim
+                respawnTimer -= Time.deltaTime;
+                PlayDeathAnim();
+                RespawnPlayer();
                 // reset spel
                 break;
             case State.climbing:
@@ -249,6 +259,21 @@ public class ThirdPersonMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.L))
         {
             Debug.Log("IN AIR = " + (!frontFeetOnGround && !backFeetOnGround));
+        }
+    }
+
+    private void PlayDeathAnim()
+    {
+        //throw new NotImplementedException();
+    }
+
+    private void RespawnPlayer()
+    {
+        if (respawnTimer <= 0.0f)
+        {
+            gameManager.RespawnAtLatestCheckpoint();
+            playerState = State.nothing;
+            respawnTimer = 3f;
         }
     }
 
@@ -315,7 +340,7 @@ public class ThirdPersonMovement : MonoBehaviour
                 }
                 else
                 {
-                    Vector3 velocityWithoutY = new Vector3(rb.velocity.x, 0f , rb.velocity.z); //remove Y velocity from calc
+                    Vector3 velocityWithoutY = new Vector3(rb.velocity.x, 0f, rb.velocity.z); //remove Y velocity from calc
                     if (velocityWithoutY.magnitude < MaxPlayerSpeedRun)
                         rb.AddForce(moveDirection, ForceMode.Impulse); // In air
                 }
@@ -585,7 +610,7 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         if (other.gameObject.layer.Equals(LayerMask.NameToLayer("Projectile")))
             if (other.gameObject.GetComponent<ProjectileNet>().IsActive())
-                ResetScene.RestartScene();
+                playerState = State.disabled;
     }
     public bool GetFrontFeetGrounded()
     {
@@ -594,6 +619,11 @@ public class ThirdPersonMovement : MonoBehaviour
     public bool GetBackFeetGrounded()
     {
         return backFeetOnGround;
+    }
+
+    public bool GetIsChased()
+    {
+        return isChased;
     }
 }
 

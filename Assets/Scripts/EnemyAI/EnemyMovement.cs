@@ -396,6 +396,12 @@ public class EnemyMovement : MonoBehaviour
                 currentState = GuardState.investigating;
                 agent.SetDestination(other.gameObject.transform.position);
             }
+
+            if (!isDeaf && other.gameObject.CompareTag("RevealerSource"))
+            {
+                currentState = GuardState.chasing;
+                ReactToPlayer();
+            }
         }
     }
 
