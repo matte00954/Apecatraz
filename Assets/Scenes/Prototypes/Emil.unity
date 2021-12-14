@@ -1511,7 +1511,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.3333334, y: 1}
+    m_SensorSize: {x: 1.7777778, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -1595,7 +1595,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.3333334, y: 1}
+    m_SensorSize: {x: 1.7777778, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -1785,7 +1785,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.3333334, y: 1}
+    m_SensorSize: {x: 1.7777778, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -1894,7 +1894,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.3333334, y: 1}
+    m_SensorSize: {x: 1.7777778, y: 1}
     Iso: 200
     ShutterSpeed: 0.005
     Aperture: 16
@@ -2686,7 +2686,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1450459030
 Transform:
   m_ObjectHideFlags: 0
@@ -16908,6 +16908,14 @@ PrefabInstance:
     - target: {fileID: 7568698505635926187, guid: 368de260b8bc2a748b8adcea8de4a7dc, type: 3}
       propertyPath: m_Name
       value: Flies
+      objectReference: {fileID: 0}
+    - target: {fileID: 7568698505635926869, guid: 368de260b8bc2a748b8adcea8de4a7dc, type: 3}
+      propertyPath: SizeModule.enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7568698505635926869, guid: 368de260b8bc2a748b8adcea8de4a7dc, type: 3}
+      propertyPath: InitialModule.startSize.minScalar
+      value: 0.08
       objectReference: {fileID: 0}
     - target: {fileID: 7568698505635926870, guid: 368de260b8bc2a748b8adcea8de4a7dc, type: 3}
       propertyPath: m_RootOrder
