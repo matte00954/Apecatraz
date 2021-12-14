@@ -28,11 +28,8 @@ public class InteractableTrashcan : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            if(thirdPersonMovement.GetIsChased() == true && canEnter == true) //Can not enter if player is chased
-            {
-                trashCanIsChasedUI.SetActive(true);
-            }
-            else if (canEnter == true && thirdPersonMovement.PlayerState.Equals(ThirdPersonMovement.State.nothing) == true)
+
+            if (canEnter == true && thirdPersonMovement.PlayerState.Equals(ThirdPersonMovement.State.nothing) == true && EnemyMovement.AwareEnemies.Count == 0)
             {
                 EnterTrashCan();
             }
@@ -40,6 +37,8 @@ public class InteractableTrashcan : MonoBehaviour
             {
                 ExitTrashCan();
             }
+            else if(canEnter == true) 
+                trashCanIsChasedUI.SetActive(true);
         }
 
         if (trashCanIsChasedUI.activeSelf)
