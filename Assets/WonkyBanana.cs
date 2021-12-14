@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class WonkyBanana : MonoBehaviour
 {
+    public AnimationCurve curve;
 
    /* void Start()
     {
@@ -12,7 +13,8 @@ public class WonkyBanana : MonoBehaviour
     } */
     void Update()
     {
-        transform.Rotate(90 * Time.deltaTime * 10, 0, 0);
+        transform.Rotate(90 * Time.deltaTime * 5, 1, 2);
 
+        transform.position = new Vector3(transform.position.x, curve.Evaluate((Time.time % curve.length)) + 2, transform.position.z);
     }
 }
