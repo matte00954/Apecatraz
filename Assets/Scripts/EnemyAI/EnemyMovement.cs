@@ -251,21 +251,20 @@ public class EnemyMovement : MonoBehaviour
 
                 break;
             case GuardState.chasing:
-
+                if (!awareEnemies.Contains(gameObject))
+                    awareEnemies.Add(gameObject);
                 if (detectionTimer < lostDetectionDelay)
                 {
-                    if (!awareEnemies.Contains(gameObject))
-                        awareEnemies.Add(gameObject);
                     agent.SetDestination(playerDetectionPoint.transform.position);
                     detectionTimer += Time.deltaTime;
                 }
-                else if (awareEnemies.Contains(gameObject))
-                    awareEnemies.Remove(gameObject);
 
                 if (detectingPlayer)
                     detectionTimer = TimerResetValue;
                 else if (agent.remainingDistance <= chaseDestinationSpacing && detectionTimer >= lostDetectionDelay)
                 {
+                    if (awareEnemies.Contains(gameObject))
+                        awareEnemies.Remove(gameObject);
                     exclamationMark.SetActive(false);
                     StartSearching(alertSpeed);
                 }
@@ -274,6 +273,8 @@ public class EnemyMovement : MonoBehaviour
             case GuardState.shooting:
                 if (agent.remainingDistance >= 1f)
                     agent.SetDestination(transform.position);
+                if (!awareEnemies.Contains(gameObject))
+                    awareEnemies.Add(gameObject);
                 break;
 
             case GuardState.searching:
