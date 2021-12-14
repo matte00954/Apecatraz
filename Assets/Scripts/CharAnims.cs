@@ -73,6 +73,11 @@ public class CharAnims : MonoBehaviour
         anim.SetFloat(animName, magnitude);
     }
 
+    public void SetAnimBool(string animName, bool value)
+    {
+        anim.SetBool(animName, value);
+    }
+
     private void GetTurn() //Joche
     {
         anim.SetFloat("runX", (saveRotation + 1000) - (transform.eulerAngles.y + 1000));

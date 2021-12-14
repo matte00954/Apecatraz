@@ -230,7 +230,7 @@ public class ThirdPersonMovement : MonoBehaviour
             case State.disabled: // disabled = captured/rekt
                 // spela death anim
                 respawnTimer -= Time.deltaTime;
-                PlayDeathAnim();
+                Death();
                 RespawnPlayer();
                 // reset spel
                 break;
@@ -260,15 +260,17 @@ public class ThirdPersonMovement : MonoBehaviour
         }
     }
 
-    private void PlayDeathAnim()
+    private void Death()
     {
         //throw new NotImplementedException();
+        charAnims.SetAnimBool("Deth", true);
     }
 
     private void RespawnPlayer()
     {
         if (respawnTimer <= 0.0f)
         {
+            charAnims.SetAnimBool("Deth", false);
             gameManager.RespawnAtLatestCheckpoint();
             playerState = State.nothing;
             respawnTimer = 3f;
