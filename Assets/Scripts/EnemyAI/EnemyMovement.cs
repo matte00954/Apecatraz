@@ -1,4 +1,5 @@
 // Author: William �rnquist
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -13,6 +14,9 @@ public class EnemyMovement : MonoBehaviour
     private const float DefaultAlertSpeed = 6f;
 
     private const float StationaryLookAtPositionMagnitude = 5f;
+
+    // This list keeps an eye on all enemies that are currently aware of the player's position
+    private static List<GameObject> awareEnemies = new List<GameObject>();
 
     [Header("References")]
     [SerializeField] private GameObject exclamationMark;
@@ -96,6 +100,11 @@ public class EnemyMovement : MonoBehaviour
     public enum GuardState { patrolling, waiting, scanning, investigating, searching, dumbstruck, chasing, shooting }
 
     // Gets & sets
+
+    /// <summary>
+    /// Keeps an eye on all enemies that are currently aware of the player's current position.
+    /// </summary>
+    public static List<GameObject> AwareEnemies { get => awareEnemies; } 
     public Vector3 HeadPosition { get => headTransform.position; }
     public Vector3 PlayerDetectionPosition { get => playerDetectionPoint.transform.position; }
     public NavMeshAgent Agent { get => agent; }
@@ -242,12 +251,16 @@ public class EnemyMovement : MonoBehaviour
 
                 break;
             case GuardState.chasing:
-                
+
                 if (detectionTimer < lostDetectionDelay)
                 {
+                    if (!awareEnemies.Contains(gameObject))
+                        awareEnemies.Add(gameObject);
                     agent.SetDestination(playerDetectionPoint.transform.position);
                     detectionTimer += Time.deltaTime;
                 }
+                else if (awareEnemies.Contains(gameObject))
+                    awareEnemies.Remove(gameObject);
 
                 if (detectingPlayer)
                     detectionTimer = TimerResetValue;
