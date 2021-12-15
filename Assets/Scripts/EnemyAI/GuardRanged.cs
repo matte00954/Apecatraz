@@ -25,13 +25,27 @@ public class GuardRanged : MonoBehaviour
     private bool isCharging;
     private bool isInRange;
 
+    public void ResetGuard()
+    {
+        isCharging = false;
+        chargeTimer = attackChargeTime;
+        enemyAnims.StopAiming();
+        enemyMovement.ResetTransform();
+        enemyMovement.StartWaiting();
+    }
+
     private void Awake() 
     {
         chargeTimer = attackChargeTime;
         enemyMovement = GetComponent<EnemyMovement>();
         enemyAnims = GetComponentInChildren<EnemyAnims>();
         audioSource = GetComponent<AudioSource>();
-    } 
+    }
+
+    private void Start()
+    {
+        GameManager.Guards.Add(gameObject);
+    }
 
     private void Update()
     {
@@ -47,6 +61,7 @@ public class GuardRanged : MonoBehaviour
                 audioSource.PlayOneShot(chargingClip);
                 enemyAnims.Aim();
             }
+
             isInRange = true;
         }
         else if (isInRange)
@@ -70,8 +85,6 @@ public class GuardRanged : MonoBehaviour
                 enemyAnims.StopAiming();
             }
         }
-
-        
     }
 
     private void FireAtPlayer()

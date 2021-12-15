@@ -4,6 +4,7 @@ public class SecurityCam : MonoBehaviour
 {
     // Read-only variables
     private const string PlayerTagStr = "Player";
+    private const float TimerResetValue = 0f;
 
     // Serialized variables
     [Header("References")]
@@ -50,6 +51,15 @@ public class SecurityCam : MonoBehaviour
     private bool playerIsDetectable;
     private bool isAlerted;
 
+    public void ForceEndAlert()
+    {
+        if (isAlerted)
+        {
+            isAlerted = false;
+            alertDelayTimer = TimerResetValue;
+        }
+    }
+
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
@@ -57,6 +67,8 @@ public class SecurityCam : MonoBehaviour
         leftScanEuler = objectRotator.transform.rotation.eulerAngles - (Vector3.up * leftScanAngle);
         rightScanEuler = objectRotator.transform.rotation.eulerAngles + (Vector3.up * rightScanAngle);
     }
+
+    private void Start() => GameManager.SecurityCams.Add(gameObject);
 
     private void Update()
     {
@@ -75,7 +87,7 @@ public class SecurityCam : MonoBehaviour
                 UpdateDetection();
             else if (detectionTimer > 0f)
             {
-                detectionTimer = 0f;
+                detectionTimer = TimerResetValue;
                 lightDetection.color = colorSafe;
             }
             else if (audioSource.clip != clipRotation)
@@ -91,7 +103,7 @@ public class SecurityCam : MonoBehaviour
     {
         if (scanTimer >= scanTimeInSeconds)
         {
-            scanTimer = 0f;
+            scanTimer = TimerResetValue;
             rotatingClockwise = !rotatingClockwise;
         }
         else
@@ -103,7 +115,7 @@ public class SecurityCam : MonoBehaviour
         if (alertDelayTimer >= alertEndDelay)
         {
             lightDetection.color = colorSafe;
-            alertDelayTimer = 0f;
+            alertDelayTimer = TimerResetValue;
             isAlerted = false;
             return;
         }
@@ -112,7 +124,7 @@ public class SecurityCam : MonoBehaviour
 
         if (playerIsDetectable)
         {
-            alertDelayTimer = 0f;
+            alertDelayTimer = TimerResetValue;
             if (!revealerCollider.enabled)
                 revealerCollider.enabled = true;
         }

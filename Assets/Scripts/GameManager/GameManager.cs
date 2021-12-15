@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
+    private static List<GameObject> guards = new List<GameObject>();
+    private static List<GameObject> securityCams = new List<GameObject>();
+
     [SerializeField]
     private ThirdPersonMovement thirdPersonMovement;
 
@@ -12,6 +16,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private GameObject currentCheckpoint;
+
+    public static List<GameObject> Guards { get => guards; }
+    public static List<GameObject> SecurityCams { get => securityCams; }
 
     public void SetCurrentCheckpoint(GameObject checkpoint)
     {
@@ -26,6 +33,14 @@ public class GameManager : MonoBehaviour
     public void RespawnAtCheckpointX(int checkpointnumber)
     {
         thirdPersonMovement.MoveTo(checkpoints[checkpointnumber].transform.position);
+    }
+
+    public void ResetAllEnemies()
+    {
+        foreach (GameObject guard in guards)
+            guard.GetComponent<GuardRanged>().ResetGuard();
+        foreach (GameObject secCam in securityCams)
+            secCam.GetComponent<SecurityCam>().ForceEndAlert();
     }
 
     private void Update()

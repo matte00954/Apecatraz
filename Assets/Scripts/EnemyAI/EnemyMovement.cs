@@ -76,7 +76,8 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField, Tooltip("An array of waypoint objects the guard should follow in order.")]
     private GameObject[] waypoints;
 
-    private Vector3 lastKnownPlayerDestination;
+    private Quaternion startingRotation;
+    private Vector3 startingPosition;
     private Vector3 stationaryPosition;
     private Vector3 stationaryLookAtPosition;
     private Vector3 leftScanAngle;
@@ -129,10 +130,32 @@ public class EnemyMovement : MonoBehaviour
 
     public void RefreshDetectionDelay() => detectionTimer = 0f;
 
+    /// <summary>
+    /// Enemy starts waiting in place for X seconds set from totalWaitTime.
+    /// </summary>
+    public void StartWaiting()
+    {
+        if (currentState.Equals(GuardState.chasing))
+            enemyAnim.StopAiming();
+
+        currentState = GuardState.waiting;
+        agent.SetDestination(transform.position);
+        waitStateTimer = TimerResetValue;
+        agent.speed = patrolSpeed;
+    }
+
+    public void ResetTransform()
+    {
+        transform.position = startingPosition;
+        transform.rotation = startingRotation;
+    }
+
     private void Awake()
     {
         audioSource = gameObject.GetComponent<AudioSource>();
         enemyAnim = GetComponentInChildren<EnemyAnims>();
+        startingPosition = transform.position;
+        startingRotation = transform.rotation;
         detectionRange = fieldOfViewCollider.bounds.size.z;
         agent.speed = patrolSpeed;
         audioSource.clip = walkClip;
@@ -300,20 +323,6 @@ public class EnemyMovement : MonoBehaviour
         }
         else
             enemyAnim.SetMove(0);
-    }
-
-    /// <summary>
-    /// Enemy starts waiting in place for X seconds set from totalWaitTime.
-    /// </summary>
-    private void StartWaiting()
-    {
-        if (currentState.Equals(GuardState.chasing))
-            enemyAnim.StopAiming();
-
-        currentState = GuardState.waiting;
-        agent.SetDestination(transform.position);
-        waitStateTimer = TimerResetValue;
-        agent.speed = patrolSpeed;
     }
 
     /// <summary>

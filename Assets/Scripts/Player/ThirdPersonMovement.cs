@@ -1,6 +1,7 @@
 // Author: Mattias Larsson
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ThirdPersonMovement : MonoBehaviour
 {
@@ -65,6 +66,9 @@ public class ThirdPersonMovement : MonoBehaviour
     [Header("Ability Shaders")]
     [SerializeField] private Material[] materials;
     private Renderer rend;
+
+    [Header("Events")]
+    [SerializeField] private UnityEvent onRespawn;
 
     [Header("ONLY FOR PROTOTYPES")]
     [SerializeField] private bool dashAllowed = true;
@@ -274,6 +278,7 @@ public class ThirdPersonMovement : MonoBehaviour
             gameManager.RespawnAtLatestCheckpoint();
             playerState = State.nothing;
             respawnTimer = 3f;
+            onRespawn.Invoke();
         }
     }
 
