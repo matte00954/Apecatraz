@@ -24,7 +24,7 @@ public class KeyCardDoor : MonoBehaviour
             {
                 onUnlock.Invoke();
                 animator.SetTrigger("Open");
-                door.enabled = false;
+                //door.enabled = false;
                 opened = true;
             }
         }

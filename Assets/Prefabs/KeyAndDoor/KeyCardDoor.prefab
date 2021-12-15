@@ -1,5 +1,21 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!208 &7738897201786236862
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288334617979467092}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 2.7500002, y: 7.025, z: 1.2110001}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: 2.7500002, y: 7.025, z: -0.90000004}
+  m_TimeToStationary: 0.5
 --- !u!1 &2652848767059744803
 GameObject:
   m_ObjectHideFlags: 0
@@ -94,7 +110,23 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   animator: {fileID: 8498358631897645553}
-  door: {fileID: 5138795659901319002}
+  door: {fileID: 0}
+--- !u!208 &3163794465358762830
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7023262849568453319}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 2.7500002, y: 7.025, z: 1.2110001}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 0
+  m_Center: {x: -2.7500002, y: 7.025, z: -0.90000004}
+  m_TimeToStationary: 0.5
 --- !u!1001 &3885603679609903620
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -213,13 +245,18 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3129412872866963057, guid: d438e5daec59a0f4fbf27222298b5130, type: 3}
   m_PrefabInstance: {fileID: 3885603679609903620}
   m_PrefabAsset: {fileID: 0}
---- !u!65 &5138795659901319002 stripped
-BoxCollider:
-  m_CorrespondingSourceObject: {fileID: 8267699175956016478, guid: d438e5daec59a0f4fbf27222298b5130, type: 3}
-  m_PrefabInstance: {fileID: 3885603679609903620}
-  m_PrefabAsset: {fileID: 0}
 --- !u!95 &8498358631897645553 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 4619659487525673973, guid: d438e5daec59a0f4fbf27222298b5130, type: 3}
+  m_PrefabInstance: {fileID: 3885603679609903620}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1288334617979467092 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2597867215568531280, guid: d438e5daec59a0f4fbf27222298b5130, type: 3}
+  m_PrefabInstance: {fileID: 3885603679609903620}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7023262849568453319 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6096690461875955907, guid: d438e5daec59a0f4fbf27222298b5130, type: 3}
   m_PrefabInstance: {fileID: 3885603679609903620}
   m_PrefabAsset: {fileID: 0}
