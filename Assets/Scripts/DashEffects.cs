@@ -44,7 +44,6 @@ public class DashEffects : MonoBehaviour
     void Start()
     {
         aSource = GetComponent<AudioSource>();
-        aSource.volume = 0.03f; //TEMP FIX, audio too loud
         targetWeight = 0;
         slowDownReady = true;
 

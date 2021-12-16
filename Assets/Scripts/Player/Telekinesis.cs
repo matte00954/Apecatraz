@@ -26,6 +26,10 @@ public class Telekinesis : MonoBehaviour
     [SerializeField] private GameObject telekinesisOrigin;
     [SerializeField] private bool voiceCommandsEnabled = false;
 
+    [SerializeField] private AudioClip telekinesisSound;
+
+    [SerializeField] private AudioSource audioSource;
+
     private int telkenesisOffset = 0;
     private int maxTelekenesisOffset = 3;
     private int minTelekenesisOffset = -1;
@@ -76,6 +80,13 @@ public class Telekinesis : MonoBehaviour
         {
             Debug.Log("Name: " + device);
         }*/
+
+        audioSource = GetComponent<AudioSource>();
+
+        if(audioSource == null)
+        {
+            Debug.LogError("Can not find audio source");
+        }
 
         if (voiceCommandsEnabled)
         {
@@ -137,7 +148,7 @@ public class Telekinesis : MonoBehaviour
 
     private void VoicePickUp()
     {
-        FindObject();
+        FindObject(true);
     }
 
     private void VoiceDrop()
@@ -153,7 +164,7 @@ public class Telekinesis : MonoBehaviour
     {
         if (Input.GetButtonDown("Fire2"))
         {
-            FindObject();
+            FindObject(false);
         }
 
         if (pushTimer > 0f)
@@ -175,7 +186,7 @@ public class Telekinesis : MonoBehaviour
         }
     }
 
-    private void FindObject()
+    private void FindObject(bool voiceCommand)
     {
 
         if (carriedObject == null && !silenced && energy.CheckEnergy(telekinesisEnergyCost))
@@ -199,7 +210,10 @@ public class Telekinesis : MonoBehaviour
             }
         }
         else
-            DropObject();
+        {
+            if(voiceCommand == false)
+                DropObject();
+        }
     }
 
     private void PushObject(RaycastHit hit) //Push instead of moving object
@@ -225,6 +239,14 @@ public class Telekinesis : MonoBehaviour
 
     private void PickupObject(GameObject pickObject)
     {
+        bool audio = false;
+
+        if (audio == false)
+        {
+            audioSource.PlayOneShot(telekinesisSound);
+            audio = true;
+        }
+
         if (pickObject.GetComponent<Rigidbody>())
         {
             thirdPersonMovement.ActivateRenderer(1); //// 1 = Ability shader
@@ -305,6 +327,8 @@ public class Telekinesis : MonoBehaviour
 
     private void DropObject()
     {
+        audioSource.Stop();
+
         if (carriedObject != null)
         {
             thirdPersonMovement.ActivateRenderer(0); // 0 = default shader
