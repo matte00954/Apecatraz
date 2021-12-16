@@ -31,10 +31,12 @@ public class BigRedButton : MonoBehaviour
             prepareToExplode = true;
             interactableObjectsText.SetActive(false);
         }
+
         if (prepareToExplode == true)
         {
             explosiontimer -= Time.deltaTime;
         }
+
         if (explosiontimer < 0)
         {
             playExplosionAnimation();
