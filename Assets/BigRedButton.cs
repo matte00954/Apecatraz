@@ -5,9 +5,17 @@ using UnityEngine;
 
 public class BigRedButton : MonoBehaviour
 {
+    [SerializeField] private GameObject cutsceneCamera;
+
+    [SerializeField] private GameObject playerCamera;
     [SerializeField] private GameObject interactableObjectsText;
 
+    private float explosiontimer = 5f;
+
     private bool canPress = false;
+
+    [SerializeField] private GameObject boom;
+    private bool prepareToExplode = false;
 
     private void Start()
     {
@@ -18,16 +26,27 @@ public class BigRedButton : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            if (canPress == true)
+            if (canPress == true && prepareToExplode == false)
             {
-                playExplosionAnimation();
+                cutsceneCamera.SetActive(true);
+                playerCamera.SetActive(false);
+                prepareToExplode = true;
             }
+        }
+        if (prepareToExplode == true)
+        {
+            explosiontimer -= Time.deltaTime;
+        }
+        if (explosiontimer < 0)
+        {
+            playExplosionAnimation();
         }
     }
 
     private void playExplosionAnimation()
     {
-        throw new NotImplementedException();
+
+        boom.SetActive(true);
     }
 
     private void OnTriggerEnter(Collider other)
