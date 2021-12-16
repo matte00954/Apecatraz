@@ -10,6 +10,19 @@ public class Quest : MonoBehaviour
     public Animator animator;
 
 
+    public void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.X))
+        {
+            ActivateMission();
+        }
+
+        if(Input.GetKeyDown(KeyCode.C))
+        {
+            DeactivateMission();
+        }
+    }
+
     public void NextMission()
     {
         if(currentMissionID <= missions.Length - 1)
@@ -27,13 +40,14 @@ public class Quest : MonoBehaviour
 
     public void ActivateMission()
     {
-        if(Input.GetKeyDown(KeyCode.Q))
-        {
-            animator.SetBool("IsACtive", true);
-        }
+      animator.SetBool("IsActive", true);
+       
+    }
 
+    public void DeactivateMission()
+    {
+      animator.SetBool("IsActive", false);
         
-      
     }
 
 }
