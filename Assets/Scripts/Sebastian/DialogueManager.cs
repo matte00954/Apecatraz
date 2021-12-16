@@ -73,10 +73,7 @@ public class DialogueManager : MonoBehaviour
         Debug.Log(sentence);
     }
 
-    public void DisplayPreviousSentence()
-    {
-
-    }
+   
 
     IEnumerator TypeSentence (string sentence)
     {
