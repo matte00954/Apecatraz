@@ -10,7 +10,7 @@ public class BigRedButton : MonoBehaviour
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private GameObject interactableObjectsText;
 
-    private float explosiontimer = 5f;
+    private float explosiontimer = 3.5f;
 
     private bool canPress = false;
 
@@ -31,6 +31,7 @@ public class BigRedButton : MonoBehaviour
                 cutsceneCamera.SetActive(true);
                 playerCamera.SetActive(false);
                 prepareToExplode = true;
+                interactableObjectsText.SetActive(false);
             }
         }
         if (prepareToExplode == true)
