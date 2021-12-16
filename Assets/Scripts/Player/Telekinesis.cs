@@ -219,7 +219,11 @@ public class Telekinesis : MonoBehaviour
 
     private void PushObject(RaycastHit hit) //Push instead of moving object
     {
-        audioSource.PlayOneShot(pushSound);
+        if (audioSource.isPlaying == false)
+        {
+            audioSource.clip = pushSound;
+            audioSource.Play();
+        }
 
         if (pushTimer <= 0f)
         {
@@ -242,6 +246,7 @@ public class Telekinesis : MonoBehaviour
 
     private void PickupObject(GameObject pickObject)
     {
+        audioSource.Stop();
         audioSource.loop = true;
         audioSource.clip = telekinesisSound;
         audioSource.Play();
