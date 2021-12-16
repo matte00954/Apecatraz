@@ -24,7 +24,7 @@ public class Telekinesis : MonoBehaviour
     [Header("Telekinesis")]
     [SerializeField] private GameObject mainCamera;
     [SerializeField] private GameObject telekinesisOrigin;
-    [SerializeField] private bool voiceCommandsEnabled = false;
+    private bool voiceCommandsEnabled = true;
 
     [SerializeField] private AudioClip telekinesisSound;
 
@@ -71,6 +71,8 @@ public class Telekinesis : MonoBehaviour
     // Telekinesis prototype
     private Dictionary<string, Action> keywordActions = new Dictionary<string, Action>();
     private KeywordRecognizer keywordRecognizer;
+
+    public bool VoiceCommandsEnabled { get => voiceCommandsEnabled; set => voiceCommandsEnabled = value; }
 
     ////private List<GameObject> collisionContacts = new List<GameObject>();
 

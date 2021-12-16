@@ -70,6 +70,11 @@ public class ThirdPersonMovement : MonoBehaviour
     [Header("Events")]
     [SerializeField] private UnityEvent onRespawn;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip footSteps;
+    [SerializeField] private AudioClip glassImpact;
+    [SerializeField] private AudioClip genericImpact;
+
     [Header("ONLY FOR PROTOTYPES")]
     [SerializeField] private bool dashAllowed = true;
     [SerializeField] private bool ledgeGrabAllowed = true;
@@ -77,7 +82,11 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private bool godMode = false; // only effects slowmotion atm
     [SerializeField] private bool slowmotionAllowed = false;
 
+
+    [Header("Game handler")]
     [SerializeField] private GameManager gameManager;
+
+    [SerializeField] private AudioSource audioSource;
 
     [SerializeField] private float respawnTimer = 3f;
 
@@ -116,6 +125,8 @@ public class ThirdPersonMovement : MonoBehaviour
         /*deafaltDynamicFriction = pm.dynamicFriction;
         defaultDrag = rb.drag;*/
         resetVelocity = true;
+
+        audioSource = GetComponent<AudioSource>();
 
         dashTimer = 0.2f;
 
@@ -624,6 +635,19 @@ public class ThirdPersonMovement : MonoBehaviour
     public bool GetBackFeetGrounded()
     {
         return backFeetOnGround;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("GlassImpact"))
+        {
+            audioSource.PlayOneShot(glassImpact);
+        }
+
+        if (collision.gameObject.CompareTag("GenericImpact"))
+        {
+            audioSource.PlayOneShot(genericImpact);
+        }
     }
 }
 
