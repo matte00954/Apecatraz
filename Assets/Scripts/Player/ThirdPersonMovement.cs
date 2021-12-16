@@ -126,8 +126,6 @@ public class ThirdPersonMovement : MonoBehaviour
         defaultDrag = rb.drag;*/
         resetVelocity = true;
 
-        audioSource = GetComponent<AudioSource>();
-
         dashTimer = 0.2f;
 
         if (!dashAllowed)

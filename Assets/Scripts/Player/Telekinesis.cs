@@ -27,6 +27,7 @@ public class Telekinesis : MonoBehaviour
     private bool voiceCommandsEnabled = true;
 
     [SerializeField] private AudioClip telekinesisSound;
+    [SerializeField] private AudioClip pushSound;
 
     [SerializeField] private AudioSource audioSource;
 
@@ -83,11 +84,9 @@ public class Telekinesis : MonoBehaviour
             Debug.Log("Name: " + device);
         }*/
 
-        audioSource = GetComponent<AudioSource>();
-
         if(audioSource == null)
         {
-            Debug.LogError("Can not find audio source");
+            Debug.LogError("No audio source");
         }
 
         if (voiceCommandsEnabled)
@@ -220,6 +219,8 @@ public class Telekinesis : MonoBehaviour
 
     private void PushObject(RaycastHit hit) //Push instead of moving object
     {
+        audioSource.PlayOneShot(pushSound);
+
         if (pushTimer <= 0f)
         {
             Rigidbody push = null;
@@ -241,13 +242,10 @@ public class Telekinesis : MonoBehaviour
 
     private void PickupObject(GameObject pickObject)
     {
-        bool audio = false;
+        audioSource.loop = true;
+        audioSource.clip = telekinesisSound;
+        audioSource.Play();
 
-        if (audio == false)
-        {
-            audioSource.PlayOneShot(telekinesisSound);
-            audio = true;
-        }
 
         if (pickObject.GetComponent<Rigidbody>())
         {
@@ -329,10 +327,12 @@ public class Telekinesis : MonoBehaviour
 
     private void DropObject()
     {
-        audioSource.Stop();
 
         if (carriedObject != null)
         {
+            audioSource.loop = false;
+            audioSource.Stop();
+
             thirdPersonMovement.ActivateRenderer(0); // 0 = default shader
             Rigidbody carriedRigidbody = carriedObject.GetComponent<Rigidbody>();
             carriedRigidbody.freezeRotation = false;
