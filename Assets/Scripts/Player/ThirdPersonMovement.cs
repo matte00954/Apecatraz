@@ -180,6 +180,11 @@ public class ThirdPersonMovement : MonoBehaviour
 
                 jump = Physics.Raycast(frontFeetTransform.position, Vector3.down, 0.5f, groundMask) && Input.GetButtonDown("Jump");
 
+                if (jump)
+                {
+                    Debug.Log("Bananbröd");
+                }
+
                 ////RaycastHit raycastHit;
                 ////jump = Physics.SphereCast(backFeetTransform.position, 1f, Vector3.down, out raycastHit, groundMask) && Input.GetButtonDown("Jump");
             }
