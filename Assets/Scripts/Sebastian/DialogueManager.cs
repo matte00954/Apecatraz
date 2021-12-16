@@ -9,6 +9,7 @@ public class DialogueManager : MonoBehaviour
     public Text dialogueText;
 
     public Animator animator;
+    public Animator blur;
 
     private Queue<string> sentences;
 
@@ -27,13 +28,22 @@ public class DialogueManager : MonoBehaviour
         {
             DisplayNextSentence();
         }
+
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            EndDialogue();
+        }
     }
+
+    
 
     public void StartDialogue (Dialogue dialogue)
     {
         Debug.Log("Starting conversation with " + dialogue.name);
 
         animator.SetBool("IsOpen", true);
+
+        blur.SetBool("IsHere", true);
 
         isActive = true;
 
@@ -63,6 +73,11 @@ public class DialogueManager : MonoBehaviour
         Debug.Log(sentence);
     }
 
+    public void DisplayPreviousSentence()
+    {
+
+    }
+
     IEnumerator TypeSentence (string sentence)
     {
         dialogueText.text = "";
@@ -77,6 +92,7 @@ public class DialogueManager : MonoBehaviour
     {
         Debug.Log("End of conversation");
         animator.SetBool("IsOpen", false);
+        blur.SetBool("IsHere", false);
         isActive = false;
     }
 
