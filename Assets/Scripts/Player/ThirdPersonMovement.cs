@@ -41,6 +41,7 @@ public class ThirdPersonMovement : MonoBehaviour
     [Header("Ground check")]
     [SerializeField] private Transform frontFeetTransform;
     [SerializeField] private Transform backFeetTransform;
+    [SerializeField] private Transform coyoteJumpTransform;
 
     [Header("Layer masks")]
     [SerializeField] private LayerMask playerLayer;
@@ -175,7 +176,11 @@ public class ThirdPersonMovement : MonoBehaviour
             // ser till att man inte kan få ett superhopp samtidigt som man klättrar
             if (!playerState.Equals(State.climbing))
             {
-                jump = Physics.Raycast(backFeetTransform.position, Vector3.down, 0.5f, groundMask) && Input.GetButtonDown("Jump");
+                RaycastHit hit;
+                jump = Physics.Raycast(backFeetTransform.position, Vector3.down, 0.3f, groundMask) && Input.GetButtonDown("Jump") ||
+                    Physics.Raycast(frontFeetTransform.position, Vector3.down, 0.3f, groundMask) && Input.GetButtonDown("Jump") ||
+                    Physics.SphereCast(coyoteJumpTransform.position, 1f, Vector3.down, out hit, 0.3f, groundMask) && Input.GetButtonDown("Jump") && rb.velocity.y < 0;
+
                 ////RaycastHit raycastHit;
                 ////jump = Physics.SphereCast(backFeetTransform.position, 1f, Vector3.down, out raycastHit, groundMask) && Input.GetButtonDown("Jump");
             }
