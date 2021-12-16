@@ -28,6 +28,9 @@ public class EnemyMovement : MonoBehaviour
     private AudioSource audioSource;
     [SerializeField] private AudioClip[] chasingClips;
     private EnemyAnims enemyAnim;
+    [SerializeField] private EnemyVariables enemyVariables;
+    [SerializeField] private TextAsset jsonFile;
+
 
     [Header("Agent")]
     [SerializeField] private NavMeshAgent agent;
@@ -150,6 +153,14 @@ public class EnemyMovement : MonoBehaviour
     {
         transform.position = startingPosition;
         transform.rotation = startingRotation;
+    }
+
+    private void Start()
+    {
+        EnemyVariables EnemyMovementInJson = JsonUtility.FromJson<EnemyVariables>(jsonFile.text);
+        patrolSpeed = EnemyMovementInJson.patrolSpeed;
+        alertSpeed = EnemyMovementInJson.alertSpeed;
+        dumbstruckTime = EnemyMovementInJson.dumbstruckTime;
     }
 
     private void Awake()
