@@ -13,7 +13,7 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float MaxPlayerSpeedRun = 8f; // Do not change
     private const float MaxPlayerSpeedWalk = 5f; // Do not change
     private const float PlayerSpeedDividerInAir = 5f; // Do not change
-    private const float JumpHeight = 22f; // Do not change
+    private const float JumpHeight = 30f; // Do not change
 
     // dash
     private const float DashEnergyCost = 5f;
@@ -401,7 +401,9 @@ public class ThirdPersonMovement : MonoBehaviour
 
         if (jump)
         {
-            rb.AddForce(new Vector3(0, JumpHeight, 0), ForceMode.VelocityChange);
+            rb.AddForce(new Vector3(0, JumpHeight, 0), ForceMode.Impulse);
+
+            //rb.velocity.y = JumpHeight;
 
             charAnims.SetTriggerFromString("Jump");
 
