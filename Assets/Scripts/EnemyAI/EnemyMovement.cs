@@ -105,12 +105,14 @@ public class EnemyMovement : MonoBehaviour
     /// <summary>
     /// Keeps an eye on all enemies that are currently aware of the player's current position.
     /// </summary>
-    public static List<GameObject> AwareEnemies { get => awareEnemies; } 
+    public static List<GameObject> AwareEnemies { get => awareEnemies; }
     public Vector3 HeadPosition { get => headTransform.position; }
     public Vector3 PlayerDetectionPosition { get => playerDetectionPoint.transform.position; }
     public NavMeshAgent Agent { get => agent; }
     public bool IsDetectingPlayer { get => detectingPlayer; }
     public GuardState CurrentState { get => currentState; set => currentState = value; }
+
+    public string guardNumber = "";
 
     /// <summary>
     /// Rotates the enemy towards the specified position.
@@ -227,7 +229,7 @@ public class EnemyMovement : MonoBehaviour
                 {
                     stationaryScanTimer = 0f;
                     rightScanIsNext = !rightScanIsNext;
-                    Debug.Log("RightScanIsNext: " + rightScanIsNext);
+                    //Debug.Log("RightScanIsNext: " + rightScanIsNext);
                 }
                 else
                     stationaryScanTimer += Time.deltaTime;
@@ -236,7 +238,7 @@ public class EnemyMovement : MonoBehaviour
                 {
                     float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.y, rightScanAngle.y, scanSpeed * Time.deltaTime);
                     transform.eulerAngles = new Vector3(0, angle, 0);
-                } 
+                }
                 else
                 {
                     float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.y, leftScanAngle.y, scanSpeed * Time.deltaTime);
@@ -251,7 +253,7 @@ public class EnemyMovement : MonoBehaviour
 
                 break;
             case GuardState.dumbstruck: // While dumbstruck is active, the enemy will stand still and rotate towards the player until the dumbstruck timer runs out.
-                if (dumbStateTimer < dumbstruckTime) 
+                if (dumbStateTimer < dumbstruckTime)
                 {
                     dumbStateTimer += Time.deltaTime;
                     RotateSelfToPosition(PlayerDetectionPosition, 3f);
@@ -264,6 +266,7 @@ public class EnemyMovement : MonoBehaviour
                     dumbStateTimer = TimerResetValue;
                     currentState = GuardState.chasing;
                     agent.speed = alertSpeed;
+                    Debug.Log("Guard : " + guardNumber + " , Detected Player");
                 }
                 else // This runs once when enemy does not see the player at the end of dumbstruck time which transitions from 'dumbstruck' to 'waiting'.
                 {

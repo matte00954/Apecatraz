@@ -8,10 +8,11 @@ public class VentTeleport : MonoBehaviour
     [SerializeField]
     private UnityEvent onEnter;
 
-    private void OnTriggerEnter(Collider other) 
+    private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
+            Debug.Log("Player entered vent");
             other.transform.position = exitLocation.position;
             other.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
             onEnter.Invoke();

@@ -19,17 +19,20 @@ public class KeyCardDoor : MonoBehaviour
 
     private bool opened = false;
 
-    private void OnTriggerEnter(Collider other) 
+    [SerializeField] private string doorNumber = "";
+
+    private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
-            if(other.GetComponent<KeyChain>().CheckIfKeycardIsInKeychain(Color) && opened == false)
+            if (other.GetComponent<KeyChain>().CheckIfKeycardIsInKeychain(Color) && opened == false)
             {
                 audioSource.Play();
                 onUnlock.Invoke();
                 animator.SetTrigger("Open");
                 //door.enabled = false;
                 opened = true;
+                Debug.Log("opened door : " + doorNumber);
             }
         }
     }

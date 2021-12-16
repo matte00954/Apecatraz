@@ -1780,7 +1780,19 @@ MonoBehaviour:
   - {fileID: 2100000, guid: e75f10c6188d0fa49ad30288534c25ea, type: 2}
   onRespawn:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2322073669503858514, guid: 036cb5f80980448449b583fe6481b903, type: 3}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: ResetAllEnemies
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   footSteps: {fileID: 8300000, guid: 0f1b40388833ca241a8df356c0340fd7, type: 3}
   glassImpact: {fileID: 8300000, guid: a5c558817818ec44999c7bf329eaa028, type: 3}
   genericImpact: {fileID: 8300000, guid: 742e8dbec822df9499a12f1bd56ee13b, type: 3}

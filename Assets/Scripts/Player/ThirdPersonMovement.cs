@@ -288,6 +288,7 @@ public class ThirdPersonMovement : MonoBehaviour
             playerState = State.nothing;
             respawnTimer = 3f;
             onRespawn.Invoke();
+            Debug.Log("Player died");
         }
     }
 
