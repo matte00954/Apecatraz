@@ -167,8 +167,8 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         if (!InGameMenuManager.gameIsPaused)
         {
-            backFeetOnGround = Physics.Raycast(backFeetTransform.position, Vector3.down, 0.2f, groundMask);
-            frontFeetOnGround = Physics.Raycast(frontFeetTransform.position, Vector3.down, 0.2f, groundMask);
+            backFeetOnGround = Physics.Raycast(backFeetTransform.position, Vector3.down, 0.4f, groundMask);
+            frontFeetOnGround = Physics.Raycast(frontFeetTransform.position, Vector3.down, 0.4f, groundMask);
 
             horizontal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Vertical");
@@ -176,8 +176,9 @@ public class ThirdPersonMovement : MonoBehaviour
             // ser till att man inte kan få ett superhopp samtidigt som man klättrar
             if (!playerState.Equals(State.climbing))
             {
-                jump = Physics.Raycast(backFeetTransform.position, Vector3.down, 0.3f, groundMask) && Input.GetButtonDown("Jump") ||
-                    Physics.Raycast(frontFeetTransform.position, Vector3.down, 0.3f, groundMask) && Input.GetButtonDown("Jump");
+                jump = Physics.Raycast(backFeetTransform.position, Vector3.down, 0.5f, groundMask) && Input.GetButtonDown("Jump");
+
+                jump = Physics.Raycast(frontFeetTransform.position, Vector3.down, 0.5f, groundMask) && Input.GetButtonDown("Jump");
 
                 ////RaycastHit raycastHit;
                 ////jump = Physics.SphereCast(backFeetTransform.position, 1f, Vector3.down, out raycastHit, groundMask) && Input.GetButtonDown("Jump");

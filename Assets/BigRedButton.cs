@@ -1,7 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BigRedButton : MonoBehaviour
 {
@@ -11,6 +9,8 @@ public class BigRedButton : MonoBehaviour
     [SerializeField] private GameObject interactableObjectsText;
 
     private float explosiontimer = 3.5f;
+
+    [SerializeField] private float endTimer;
 
     private bool canPress = false;
 
@@ -24,15 +24,12 @@ public class BigRedButton : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) && canPress == true && prepareToExplode == false || Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.Alpha0))
         {
-            if (canPress == true && prepareToExplode == false)
-            {
-                cutsceneCamera.SetActive(true);
-                playerCamera.SetActive(false);
-                prepareToExplode = true;
-                interactableObjectsText.SetActive(false);
-            }
+            cutsceneCamera.SetActive(true);
+            playerCamera.SetActive(false);
+            prepareToExplode = true;
+            interactableObjectsText.SetActive(false);
         }
         if (prepareToExplode == true)
         {
@@ -41,12 +38,18 @@ public class BigRedButton : MonoBehaviour
         if (explosiontimer < 0)
         {
             playExplosionAnimation();
+            endTimer -= Time.deltaTime;
+        }
+
+        if (endTimer < 0)
+        {
+            cutsceneCamera.SetActive(false);
+            SceneManager.LoadScene("EndScene");
         }
     }
 
     private void playExplosionAnimation()
     {
-
         boom.SetActive(true);
     }
 
