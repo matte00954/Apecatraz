@@ -176,10 +176,8 @@ public class ThirdPersonMovement : MonoBehaviour
             // ser till att man inte kan få ett superhopp samtidigt som man klättrar
             if (!playerState.Equals(State.climbing))
             {
-                RaycastHit hit;
                 jump = Physics.Raycast(backFeetTransform.position, Vector3.down, 0.3f, groundMask) && Input.GetButtonDown("Jump") ||
-                    Physics.Raycast(frontFeetTransform.position, Vector3.down, 0.3f, groundMask) && Input.GetButtonDown("Jump") ||
-                    Physics.SphereCast(coyoteJumpTransform.position, 1f, Vector3.down, out hit, 0.3f, groundMask) && Input.GetButtonDown("Jump") && rb.velocity.y < 0;
+                    Physics.Raycast(frontFeetTransform.position, Vector3.down, 0.3f, groundMask) && Input.GetButtonDown("Jump");
 
                 ////RaycastHit raycastHit;
                 ////jump = Physics.SphereCast(backFeetTransform.position, 1f, Vector3.down, out raycastHit, groundMask) && Input.GetButtonDown("Jump");

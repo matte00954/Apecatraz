@@ -12,6 +12,8 @@ public class TriggerSetActive : MonoBehaviour
 
     private int i = 0;
 
+    private AudioSource audioSource;
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.CompareTag("Player") && start == false)
@@ -20,6 +22,7 @@ public class TriggerSetActive : MonoBehaviour
 
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         timer = delayBetween;
     }
 
@@ -30,6 +33,7 @@ public class TriggerSetActive : MonoBehaviour
             timer -= Time.deltaTime;
             if (timer <= 0f)
             {
+                audioSource.Play();
                 toActivate[i].SetActive(true);
                 i++;
                 ResetTimer();
