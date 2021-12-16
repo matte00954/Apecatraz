@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 public class InGameMenuManager : MonoBehaviour
 {
     public static bool gameIsPaused = false;
-    
+
     private Animator animator;
 
     [SerializeField] GameObject[] MenuItems;
@@ -53,8 +53,8 @@ public class InGameMenuManager : MonoBehaviour
     {
         animator.SetTrigger("Close");
 
-        
-        Time.timeScale = 1; 
+
+        Time.timeScale = 1;
         gameIsPaused = false;
 
     }
