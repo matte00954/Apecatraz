@@ -13,7 +13,7 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float MaxPlayerSpeedRun = 8f; // Do not change
     private const float MaxPlayerSpeedWalk = 5f; // Do not change
     private const float PlayerSpeedDividerInAir = 5f; // Do not change
-    private const float JumpHeight = 30f; // Do not change
+    private const float JumpHeight = 22f; // Do not change
 
     // dash
     private const float DashEnergyCost = 5f;
@@ -176,13 +176,14 @@ public class ThirdPersonMovement : MonoBehaviour
             // ser till att man inte kan få ett superhopp samtidigt som man klättrar
             if (!playerState.Equals(State.climbing))
             {
-                jump = Physics.Raycast(backFeetTransform.position, Vector3.down, 0.5f, groundMask) && Input.GetButtonDown("Jump");
-
-                jump = Physics.Raycast(frontFeetTransform.position, Vector3.down, 0.5f, groundMask) && Input.GetButtonDown("Jump");
-
-                if (jump)
+                if(Physics.Raycast(backFeetTransform.position, Vector3.down, 0.5f, groundMask) && Input.GetButtonDown("Jump"))
                 {
-                    Debug.Log("Bananbröd");
+                    jump = true;
+                }
+
+                if(Physics.Raycast(frontFeetTransform.position, Vector3.down, 0.5f, groundMask) && Input.GetButtonDown("Jump"))
+                {
+                    jump = true;
                 }
 
                 ////RaycastHit raycastHit;
@@ -401,9 +402,9 @@ public class ThirdPersonMovement : MonoBehaviour
 
         if (jump)
         {
-            rb.AddForce(new Vector3(0, JumpHeight, 0), ForceMode.Impulse);
+            //rb.AddForce(new Vector3(0, JumpHeight, 0), ForceMode.Impulse);
 
-            //rb.velocity.y = JumpHeight;
+            rb.velocity = new Vector3(rb.velocity.x, JumpHeight, rb.velocity.z);
 
             charAnims.SetTriggerFromString("Jump");
 
