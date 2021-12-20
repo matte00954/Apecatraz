@@ -5,8 +5,10 @@ using UnityEngine.UI;
 
 public class DialogueManager : MonoBehaviour
 {
+    
     public Text nameText;
     public Text dialogueText;
+    public static bool pausedWhileReading = false;
 
     public Animator animator;
     public Animator blur;
@@ -46,6 +48,9 @@ public class DialogueManager : MonoBehaviour
         blur.SetBool("IsHere", true);
 
         isActive = true;
+
+        Time.timeScale = 0;
+        pausedWhileReading = true;
 
         nameText.text = dialogue.name;
 
@@ -91,6 +96,10 @@ public class DialogueManager : MonoBehaviour
         animator.SetBool("IsOpen", false);
         blur.SetBool("IsHere", false);
         isActive = false;
+        Time.timeScale = 1;
+        pausedWhileReading = false;
     }
+
+    
 
 }
