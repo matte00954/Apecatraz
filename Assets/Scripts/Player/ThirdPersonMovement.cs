@@ -341,25 +341,25 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 if (backFeetOnGround || frontFeetOnGround)
                 {
-                    float difference = Mathf.Abs(rb.velocity.magnitude - MaxPlayerSpeedRun);
+                    //float difference = Mathf.Abs(rb.velocity.magnitude - MaxPlayerSpeedRun);
 
                     if (OnSlope())
                     {
                         ////rb.MoveRotation(Quaternion.Euler(angle, rb.transform.rotation.y, 0f));
                         if (rb.velocity.magnitude < MaxPlayerSpeedRun)
-                            rb.AddForce(slopeMoveDirection.normalized * difference, ForceMode.Impulse);
+                            rb.AddForce(slopeMoveDirection.normalized, ForceMode.Impulse);
                     }
                     else
                     {
                         if (walk)
                         {
                             if (rb.velocity.magnitude < MaxPlayerSpeedWalk)
-                                rb.AddForce(moveDirection * difference, ForceMode.Impulse);
+                                rb.AddForce(moveDirection, ForceMode.Impulse);
                         }
                         else if (rb.velocity.magnitude < MaxPlayerSpeedRun)
                         {
                             if (rb.velocity.magnitude < MaxPlayerSpeedRun)
-                                rb.AddForce(moveDirection * difference, ForceMode.Impulse);
+                                rb.AddForce(moveDirection, ForceMode.Impulse);
                         }
                     }
                 }
@@ -546,9 +546,7 @@ public class ThirdPersonMovement : MonoBehaviour
         if (rb.useGravity)
             rb.useGravity = false;
 
-        RaycastHit spherecast;
-
-        if (Physics.SphereCast(headRaycastOrigin.position, DashDistanceCheck, Vector3.zero, out spherecast, dashObstacles) || !energy.CheckEnergy(DashEnergyCost))
+        if (Physics.SphereCast(headRaycastOrigin.position, DashDistanceCheck, Vector3.forward, out _, dashObstacles) || !energy.CheckEnergy(DashEnergyCost))
         {
             StopDashing(true);
         }
