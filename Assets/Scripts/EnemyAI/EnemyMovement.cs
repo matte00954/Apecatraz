@@ -31,7 +31,6 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private EnemyVariables enemyVariables;
     [SerializeField] private TextAsset jsonFile;
 
-
     [Header("Agent")]
     [SerializeField] private NavMeshAgent agent;
     [SerializeField, Range(1f, 10f)] private float patrolSpeed = DefaultPatrolSpeed;
@@ -115,8 +114,6 @@ public class EnemyMovement : MonoBehaviour
     public bool IsDetectingPlayer { get => detectingPlayer; }
     public GuardState CurrentState { get => currentState; set => currentState = value; }
 
-    public string guardNumber = "";
-
     /// <summary>
     /// Rotates the enemy towards the specified position.
     /// </summary>
@@ -157,10 +154,10 @@ public class EnemyMovement : MonoBehaviour
 
     private void Start()
     {
-        EnemyVariables EnemyMovementInJson = JsonUtility.FromJson<EnemyVariables>(jsonFile.text);
-        patrolSpeed = EnemyMovementInJson.patrolSpeed;
-        alertSpeed = EnemyMovementInJson.alertSpeed;
-        dumbstruckTime = EnemyMovementInJson.dumbstruckTime;
+        EnemyVariables enemyMovementInJson = JsonUtility.FromJson<EnemyVariables>(jsonFile.text);
+        patrolSpeed = enemyMovementInJson.patrolSpeed;
+        alertSpeed = enemyMovementInJson.alertSpeed;
+        dumbstruckTime = enemyMovementInJson.dumbstruckTime;
     }
 
     private void Awake()
@@ -206,6 +203,8 @@ public class EnemyMovement : MonoBehaviour
         switch (currentState)
         {
             case GuardState.patrolling:
+                CheckIsAwareOfPlayer(false);
+
                 if (agent.remainingDistance <= patrolDestinationSpacing)
                 {
                     audioSource.Pause();
@@ -214,7 +213,10 @@ public class EnemyMovement : MonoBehaviour
                 }
 
                 break;
+
             case GuardState.waiting:
+                CheckIsAwareOfPlayer(false);
+
                 if (waitStateTimer < totalWaitTime)
                     waitStateTimer += Time.deltaTime;
                 else if (!isStationary)
@@ -236,34 +238,33 @@ public class EnemyMovement : MonoBehaviour
                 break;
 
             case GuardState.scanning:
+                CheckIsAwareOfPlayer(false);
+
                 if (stationaryScanTimer >= scanTime)
                 {
                     stationaryScanTimer = 0f;
                     rightScanIsNext = !rightScanIsNext;
-                    //Debug.Log("RightScanIsNext: " + rightScanIsNext);
                 }
                 else
                     stationaryScanTimer += Time.deltaTime;
 
                 if (rightScanIsNext)
-                {
-                    float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.y, rightScanAngle.y, scanSpeed * Time.deltaTime);
-                    transform.eulerAngles = new Vector3(0, angle, 0);
-                }
+                    MoveTowardsScanAngle(rightScanAngle.y);
                 else
-                {
-                    float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.y, leftScanAngle.y, scanSpeed * Time.deltaTime);
-                    transform.eulerAngles = new Vector3(0, angle, 0);
-                }
+                    MoveTowardsScanAngle(leftScanAngle.y);
 
                 break;
 
             case GuardState.investigating:
+                CheckIsAwareOfPlayer(false);
+
                 if (agent.remainingDistance <= investigateDestinationSpacing)
                     StartWaiting();
 
                 break;
             case GuardState.dumbstruck: // While dumbstruck is active, the enemy will stand still and rotate towards the player until the dumbstruck timer runs out.
+                CheckIsAwareOfPlayer(false);
+
                 if (dumbStateTimer < dumbstruckTime)
                 {
                     dumbStateTimer += Time.deltaTime;
@@ -277,7 +278,7 @@ public class EnemyMovement : MonoBehaviour
                     dumbStateTimer = TimerResetValue;
                     currentState = GuardState.chasing;
                     agent.speed = alertSpeed;
-                    Debug.Log("Guard : " + guardNumber + " , Detected Player");
+                    Debug.Log("Guard : " + gameObject.name + " , Detected Player");
                 }
                 else // This runs once when enemy does not see the player at the end of dumbstruck time which transitions from 'dumbstruck' to 'waiting'.
                 {
@@ -287,9 +288,10 @@ public class EnemyMovement : MonoBehaviour
                 }
 
                 break;
+
             case GuardState.chasing:
-                if (!awareEnemies.Contains(gameObject))
-                    awareEnemies.Add(gameObject);
+                CheckIsAwareOfPlayer(true);
+
                 if (detectionTimer < lostDetectionDelay)
                 {
                     agent.SetDestination(playerDetectionPoint.transform.position);
@@ -299,22 +301,20 @@ public class EnemyMovement : MonoBehaviour
                 if (detectingPlayer)
                     detectionTimer = TimerResetValue;
                 else if (agent.remainingDistance <= chaseDestinationSpacing && detectionTimer >= lostDetectionDelay)
-                {
-                    if (awareEnemies.Contains(gameObject))
-                        awareEnemies.Remove(gameObject);
-                    exclamationMark.SetActive(false);
                     StartSearching(alertSpeed);
-                }
 
                 break;
+
             case GuardState.shooting:
+                CheckIsAwareOfPlayer(true);
+
                 if (agent.remainingDistance >= 1f)
                     agent.SetDestination(transform.position);
-                if (!awareEnemies.Contains(gameObject))
-                    awareEnemies.Add(gameObject);
                 break;
 
             case GuardState.searching:
+                CheckIsAwareOfPlayer(false);
+
                 if (agent.remainingDistance <= 1f)
                     agent.SetDestination(GetRandomSearchPosition(searchPointRadius));
                 if (searchTimer <= searchTime)
@@ -332,11 +332,28 @@ public class EnemyMovement : MonoBehaviour
         }
 
         if (agent.velocity.magnitude >= 1f)
-        {
             enemyAnim.SetMove(1);
-        }
         else
             enemyAnim.SetMove(0);
+    }
+
+    /// <summary>
+    /// If set TRUE: Adds this enemy to the 'AwareEnemies' list if it has not already been added.
+    /// If set FALSE: Removes this enemy from the 'AwareEnemies' list if it has not already been removed.
+    /// </summary>
+    /// <param name="isAware">Is this enemy considered aware of the player?</param>
+    private void CheckIsAwareOfPlayer(bool isAware)
+    {
+        if (isAware && !AwareEnemies.Contains(gameObject))
+            AwareEnemies.Add(gameObject);
+        else if (!isAware && AwareEnemies.Contains(gameObject))
+            AwareEnemies.Remove(gameObject);
+    }
+
+    private void MoveTowardsScanAngle(float scanAngleY)
+    {
+        float angle = Mathf.MoveTowardsAngle(transform.eulerAngles.y, scanAngleY, scanSpeed * Time.deltaTime);
+        transform.eulerAngles = new Vector3(0, angle, 0);
     }
 
     /// <summary>
