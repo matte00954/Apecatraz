@@ -10,9 +10,8 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float DashForce = 45f;
 
     // movement
-    private const float MaxPlayerSpeedRun = 8f; // Do not change
-    private const float MaxPlayerSpeedWalk = 5f; // Do not change
-    private const float PlayerSpeedDividerInAir = 5f; // Do not change
+    private const float MaxPlayerSpeedRun = 8.5f; // Do not change
+    private const float MaxPlayerSpeedWalk = 3f; // Do not change
     private const float JumpHeight = 22f; // Do not change
 
     // dash
@@ -27,7 +26,7 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float GroundCheckRadius = 0.3f; // comparing ground check game object to floor
 
     // rotation
-    private const float TurnSmoothTime = 0.05f;
+    private const float TurnSmoothTime = 0.02f;
     private const float TurnSmoothTimeInAir = 0.25f;
 
     [Header("Main camera")]
@@ -110,8 +109,7 @@ public class ThirdPersonMovement : MonoBehaviour
     private float dashCooldown;
     private float dashTimer;
     private float timeRemainingOnAnimation;
-    ////private float defaultDrag;
-    ////private float deafaltDynamicFriction;
+
     // ALL CLIMBABLE OBJECTS NEEDS A TRIGGER WITH CLIMB LAYER
 
     // Player States
@@ -123,8 +121,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Start()
     {
-        /*deafaltDynamicFriction = pm.dynamicFriction;
-        defaultDrag = rb.drag;*/
+
         resetVelocity = true;
 
         dashTimer = 0.2f;
@@ -162,7 +159,6 @@ public class ThirdPersonMovement : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     private void Update()
     {
         if (!InGameMenuManager.gameIsPaused)
@@ -176,7 +172,7 @@ public class ThirdPersonMovement : MonoBehaviour
             // ser till att man inte kan få ett superhopp samtidigt som man klättrar
             if (!playerState.Equals(State.climbing))
             {
-                if(Physics.Raycast(backFeetTransform.position, Vector3.down, 0.5f, groundMask) && Input.GetButtonDown("Jump"))
+                if (Physics.Raycast(backFeetTransform.position, Vector3.down, 0.5f, groundMask) && Input.GetButtonDown("Jump"))
                 {
                     jump = true;
                 }
@@ -185,9 +181,6 @@ public class ThirdPersonMovement : MonoBehaviour
                 {
                     jump = true;
                 }
-
-                ////RaycastHit raycastHit;
-                ////jump = Physics.SphereCast(backFeetTransform.position, 1f, Vector3.down, out raycastHit, groundMask) && Input.GetButtonDown("Jump");
             }
 
             walk = Input.GetKey(KeyCode.LeftControl);
@@ -316,7 +309,7 @@ public class ThirdPersonMovement : MonoBehaviour
         {
         }
 
-        if (direction.magnitude >= 0.1f)
+        if (direction.magnitude >= 0.01f)
         {
 
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + mainCamera.transform.eulerAngles.y; // first find target angle
@@ -359,7 +352,7 @@ public class ThirdPersonMovement : MonoBehaviour
                         else if (rb.velocity.magnitude < MaxPlayerSpeedRun)
                         {
                             if (rb.velocity.magnitude < MaxPlayerSpeedRun)
-                                rb.AddForce(moveDirection, ForceMode.Impulse);
+                                rb.AddForce(moveDirection * 1.15f, ForceMode.Impulse);
                         }
                     }
                 }
@@ -546,7 +539,7 @@ public class ThirdPersonMovement : MonoBehaviour
         if (rb.useGravity)
             rb.useGravity = false;
 
-        if (Physics.SphereCast(headRaycastOrigin.position, DashDistanceCheck, Vector3.forward, out _, dashObstacles) || !energy.CheckEnergy(DashEnergyCost))
+        if (Physics.SphereCast(headRaycastOrigin.position, 0.2f, Vector3.forward, out _, DashDistanceCheck , dashObstacles) || !energy.CheckEnergy(DashEnergyCost))
         {
             StopDashing(true);
         }
