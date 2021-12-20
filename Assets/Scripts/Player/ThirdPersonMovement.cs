@@ -516,7 +516,7 @@ public class ThirdPersonMovement : MonoBehaviour
                     StopDashing(false);
                 }
             }
-            else if (playerState.Equals(State.dashing))
+            else
             {
                 StopDashing(false);
             }
@@ -548,8 +548,8 @@ public class ThirdPersonMovement : MonoBehaviour
             if (energy.CheckEnergy(DashEnergyCost) && !playerState.Equals(State.dashing))
             {
                 playerState = State.dashing;
-                if (rb.velocity != transform.forward * DashForce)
-                    rb.velocity = transform.forward * DashForce;
+                //if (rb.velocity != transform.forward * DashForce)
+                rb.velocity = transform.forward * DashForce;
                 //rb.AddForce(transform.forward * DASH_FORCE, ForceMode.Impulse);
                 //constant force results in constant accelaration, zero force results constant velocity
             }
