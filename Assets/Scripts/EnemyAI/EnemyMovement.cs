@@ -1,5 +1,6 @@
 // Author: William �rnquist
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -29,7 +30,8 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private AudioClip[] chasingClips;
     private EnemyAnims enemyAnim;
     [SerializeField] private EnemyVariables enemyVariables;
-    [SerializeField] private TextAsset jsonFile;
+    private string path;
+    private TextAsset jsonFile;
 
 
     [Header("Agent")]
@@ -157,7 +159,9 @@ public class EnemyMovement : MonoBehaviour
 
     private void Start()
     {
-        EnemyVariables EnemyMovementInJson = JsonUtility.FromJson<EnemyVariables>(jsonFile.text);
+        path = Application.streamingAssetsPath + "/EnemyVariables.json";
+        string contents = File.ReadAllText(path);
+        EnemyVariables EnemyMovementInJson = JsonUtility.FromJson<EnemyVariables>(contents);
         patrolSpeed = EnemyMovementInJson.patrolSpeed;
         alertSpeed = EnemyMovementInJson.alertSpeed;
         dumbstruckTime = EnemyMovementInJson.dumbstruckTime;
