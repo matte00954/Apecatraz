@@ -1,11 +1,14 @@
 using UnityEngine;
 public class JSONReader : MonoBehaviour
 {
-    public TextAsset jsonFile;
+    string path;
+
+    //public TextAsset jsonFile;
 
     void Start()
     {
-        EnemyVariables EnemyMovementInJson = JsonUtility.FromJson<EnemyVariables>(jsonFile.text);
+        path = Application.streamingAssetsPath + "/EnemyVariables.json";
+        EnemyVariables EnemyMovementInJson = JsonUtility.FromJson<EnemyVariables>(path);
         Debug.Log("Loaded player settings ::::");
         Debug.Log("Loaded Patrolspeed : " + EnemyMovementInJson.patrolSpeed);
         Debug.Log("Loaded alertSpeed : " + EnemyMovementInJson.alertSpeed);

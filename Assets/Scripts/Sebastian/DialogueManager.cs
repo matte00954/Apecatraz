@@ -17,8 +17,8 @@ public class DialogueManager : MonoBehaviour
 
     public static bool isActive;
 
-    
-    
+
+   
     void Start()
     {
         sentences = new Queue<string>();
@@ -49,8 +49,11 @@ public class DialogueManager : MonoBehaviour
 
         isActive = true;
 
+        
         Time.timeScale = 0;
         pausedWhileReading = true;
+        
+        
 
         nameText.text = dialogue.name;
 
