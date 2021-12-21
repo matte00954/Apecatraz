@@ -5,9 +5,11 @@ public class InGameMenuManager : MonoBehaviour
 {
     public static bool gameIsPaused = false;
 
+
     private Animator animator;
 
     [SerializeField] GameObject[] MenuItems;
+    [SerializeField] DialogueManager dialogueManager;
     // Start is called before the first frame update
 
     private void Awake()
@@ -34,8 +36,18 @@ public class InGameMenuManager : MonoBehaviour
             {
                 ResumeGame();
             }
+            
         }
-    }
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            dialogueManager.DisplayNextSentence();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            dialogueManager.EndDialogue();
+        }
+}
 
     public void QuitGame()
     {
