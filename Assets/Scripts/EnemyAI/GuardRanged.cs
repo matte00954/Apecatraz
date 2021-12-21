@@ -30,6 +30,7 @@ public class GuardRanged : MonoBehaviour
         isCharging = false;
         chargeTimer = attackChargeTime;
         enemyAnims.StopAiming();
+        enemyAnims.BoolFromString("WeaponDrawn", false);
         enemyMovement.ResetTransform();
         enemyMovement.StartWaiting();
     }
@@ -60,6 +61,7 @@ public class GuardRanged : MonoBehaviour
                 isCharging = true;
                 audioSource.PlayOneShot(chargingClip);
                 enemyAnims.Aim();
+                enemyAnims.BoolFromString("WeaponDrawn", true);
             }
 
             isInRange = true;
