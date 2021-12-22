@@ -17,14 +17,12 @@ public class DialogueManager : MonoBehaviour
 
     public static bool isActive;
 
-
-   
     void Start()
     {
         sentences = new Queue<string>();
     }
 
-    private void Update()
+    /*private void Update()
     {
         if(Input.GetKeyDown(KeyCode.Q))
         {
@@ -36,7 +34,7 @@ public class DialogueManager : MonoBehaviour
             EndDialogue();
         }
     }
-
+    */
     
 
     public void StartDialogue (Dialogue dialogue)
@@ -52,8 +50,8 @@ public class DialogueManager : MonoBehaviour
         
         Time.timeScale = 0;
         pausedWhileReading = true;
-        
-        
+
+
 
         nameText.text = dialogue.name;
 
@@ -83,7 +81,7 @@ public class DialogueManager : MonoBehaviour
 
    
 
-    IEnumerator TypeSentence (string sentence)
+    private IEnumerator TypeSentence (string sentence)
     {
         dialogueText.text = "";
         foreach (char letter in sentence.ToCharArray())
@@ -93,7 +91,7 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    void EndDialogue()
+    public void EndDialogue()
     {
         Debug.Log("End of conversation");
         animator.SetBool("IsOpen", false);

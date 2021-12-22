@@ -278,6 +278,7 @@ public class EnemyMovement : MonoBehaviour
                     exclamationMark.SetActive(true);
                     audioSource.Stop();
                     audioSource.PlayOneShot(alertClip);
+                    enemyAnim.TriggerFromString("Dumbstruck");
                     dumbStateTimer = TimerResetValue;
                     currentState = GuardState.chasing;
                     agent.speed = alertSpeed;
@@ -285,6 +286,7 @@ public class EnemyMovement : MonoBehaviour
                 }
                 else // This runs once when enemy does not see the player at the end of dumbstruck time which transitions from 'dumbstruck' to 'waiting'.
                 {
+                    enemyAnim.TriggerFromString("FalseAlarm");
                     audioSource.PlayOneShot(mistakenClip);
                     dumbStateTimer = TimerResetValue;
                     StartWaiting();
@@ -352,6 +354,7 @@ public class EnemyMovement : MonoBehaviour
         searchTimer = TimerResetValue;
         currentState = GuardState.searching;
         agent.speed = agentSpeed;
+        enemyAnim.TriggerFromString("StopAiming");
         //// Enemy lost player sound
     }
 
@@ -373,10 +376,12 @@ public class EnemyMovement : MonoBehaviour
             currentState = GuardState.dumbstruck;
             audioSource.Stop();
             audioSource.PlayOneShot(dumbstruckClip);
+            enemyAnim.TriggerFromString("Dumbstruck");
             agent.SetDestination(transform.position);
         }
         else if (currentState != GuardState.dumbstruck && currentState != GuardState.shooting)
         {
+            enemyAnim.TriggerFromString("StopAiming");
             currentState = GuardState.chasing;
             detectionTimer = TimerResetValue;
         }
@@ -424,6 +429,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void ResumePatrol()
     {
+        enemyAnim.TriggerFromString("StopAiming");
         audioSource.Play();
         agent.SetDestination(waypoints[currentWaypointIndex].transform.position);
     }

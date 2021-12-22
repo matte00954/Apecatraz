@@ -161,7 +161,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Update()
     {
-        if (!InGameMenuManager.gameIsPaused)
+        if (!InGameMenuManager.gameIsPaused && !DialogueManager.pausedWhileReading)
         {
             backFeetOnGround = Physics.Raycast(backFeetTransform.position, Vector3.down, 0.4f, groundMask);
             frontFeetOnGround = Physics.Raycast(frontFeetTransform.position, Vector3.down, 0.4f, groundMask);

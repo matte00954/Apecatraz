@@ -13,4 +13,8 @@ public class EnemyAnims : MonoBehaviour
     public void Aim() => anim.SetTrigger(AimStr);
     public void StopAiming() => anim.SetTrigger(StopAimingStr);
     public void Fire() => anim.SetTrigger(FireStr);
+
+    public void TriggerFromString(string name) => anim.SetTrigger(name);
+
+    public void BoolFromString(string name, bool state) => anim.SetBool(name, state);
 }
