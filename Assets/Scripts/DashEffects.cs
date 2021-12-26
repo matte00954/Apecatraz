@@ -1,3 +1,4 @@
+// Author: [full name here]
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -25,29 +26,71 @@ public class DashEffects : MonoBehaviour
 
     [SerializeField] private GameObject volume;
 
-    private AudioSource aSource;
+    private AudioSource audioSource;
 
     private float effectWeight;
     private float targetWeight;
 
     private float changeTimer;
 
-    private bool slowDownReady;
-    private bool dashing;
-
-    private bool effects;
+    private bool slowDownIsReady;
+    private bool isDashing;
+    private bool effectsIsActive;
 
     [SerializeField] private GameObject helpUI;
-    [SerializeField] private bool jochePrototyp;
-    // Start is called before the first frame update
+    [SerializeField] private bool jochePrototypeActive;
 
-    void Start()
+    public void SlowDown()
     {
-        aSource = GetComponent<AudioSource>();
-        targetWeight = 0;
-        slowDownReady = true;
+        if (!isDashing && slowDownIsReady)
+        {
+            if (!effectsIsActive)
+            {
+                particle1.Play();
 
-        dashing = false;
+                monkey.GetComponentInChildren<SkinnedMeshRenderer>().enabled = false; // TODO: ingen getComponent
+                ballMeshRenderer.enabled = true;
+                targetWeight = 100;
+            }
+
+            ////monkeySkinnedMeshRenderer.enabled = false;
+            ballMeshRenderer.enabled = true;
+            isDashing = true;
+
+            changeTimer = 0.5f;
+
+            audioSource.clip = slowDownClip;
+            audioSource.Play();
+        }
+    }
+
+    public void SpeedUp()
+    {
+        if (isDashing)
+        {
+            Time.timeScale = 1;
+            particle1.Stop();
+
+            monkey.GetComponentInChildren<SkinnedMeshRenderer>().enabled = true; // TODO: ingen getComponent
+            ballMeshRenderer.enabled = false;
+            slowDownIsReady = false;
+            isDashing = false;
+
+            changeTimer = 0.5f;
+
+            audioSource.clip = speedUpClip;
+            audioSource.Play();
+            targetWeight = 0;
+        }
+    }
+
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+        targetWeight = 0;
+        slowDownIsReady = true;
+
+        isDashing = false;
 
         monkeySkinnedMeshRenderer = monkey.gameObject.GetComponent<SkinnedMeshRenderer>();
         ballMeshRenderer = ball.gameObject.GetComponent<MeshRenderer>();
@@ -55,24 +98,19 @@ public class DashEffects : MonoBehaviour
         if (thirdPersonMovement == null)
         {
             Debug.LogError("Third person movement reference in dash effects on main camera is not assigned!!!");
-            thirdPersonMovement = FindObjectOfType<ThirdPersonMovement>(); //Just to prevent any scene from being bugged in case someone forgets
+            thirdPersonMovement = FindObjectOfType<ThirdPersonMovement>(); // Prevents any scene from being bugged in case someone forgets
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
-
-        if (Input.GetKeyDown(KeyCode.U) && jochePrototyp)
+        if (Input.anyKeyDown && jochePrototypeActive)
         {
-            effects = !effects;
+            if (Input.GetKeyDown(KeyCode.U))
+                effectsIsActive = !effectsIsActive;
+            if (Input.GetKeyDown(KeyCode.I))
+                helpUI.active = !helpUI.active; // TODO: Solve obsolete issue
         }
-        if (Input.GetKeyDown(KeyCode.I) && jochePrototyp)
-        {
-            helpUI.active = !helpUI.active;
-        }
-        
 
         if (changeTimer > 0)
         {
@@ -81,65 +119,15 @@ public class DashEffects : MonoBehaviour
             changeTimer -= Time.deltaTime;
 
             if (changeTimer < 0)
-            {
                 changeTimer = 0;
-            }
         }
 
         if (thirdPersonMovement.PlayerState.Equals(ThirdPersonMovement.State.dashing))
-        {
-            slowDownReady = true;
-        }
-    }
-
-    public void SlowDown()
-    {
-        if (!dashing && slowDownReady)
-        {
-
-            if (!effects)
-            {
-                particle1.Play();
-
-                monkey.GetComponentInChildren<SkinnedMeshRenderer>().enabled = false; //TODO ingen getComponent
-                ballMeshRenderer.enabled = true;
-                targetWeight = 100;
-            }
-            
-
-            //monkeySkinnedMeshRenderer.enabled = false;
-            ballMeshRenderer.enabled = true;
-            dashing = true;
-
-            changeTimer = 0.5f;
-
-            aSource.clip = slowDownClip;
-            aSource.Play();
-        }
-    }
-
-    public void SpeedUp()
-    {
-        if(dashing)
-        {
-            Time.timeScale = 1;
-            particle1.Stop();
-
-            monkey.GetComponentInChildren<SkinnedMeshRenderer>().enabled = true; //TODO ingen getComponent
-            ballMeshRenderer.enabled = false;
-            slowDownReady = false;
-            dashing = false;
-
-            changeTimer = 0.5f;
-
-            aSource.clip = speedUpClip;
-            aSource.Play();
-            targetWeight = 0;
-        }
+            slowDownIsReady = true;
     }
 }
 
-//OLD CODE
+// OLD CODE
 /*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -228,4 +216,3 @@ public class DashEffects : MonoBehaviour
         }
     }
 }*/
-

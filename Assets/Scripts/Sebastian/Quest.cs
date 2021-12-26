@@ -1,53 +1,38 @@
+// Author: Sebastian Klötz
 using UnityEngine;
-
 
 public class Quest : MonoBehaviour
 {
+    [SerializeField] private GameObject[] missions;
+    [SerializeField] private Animator animator;
 
-    [SerializeField]
-    private GameObject[] missions;
     private int currentMissionID;
-    public Animator animator;
 
-
-    public void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.X))
-        {
-            ActivateMission();
-        }
-
-        if(Input.GetKeyDown(KeyCode.C))
-        {
-            DeactivateMission();
-        }
-    }
-
+    // Public methods
+    public void ActivateMission() => animator.SetBool("IsActive", true);
+    public void DeactivateMission() => animator.SetBool("IsActive", false);
     public void NextMission()
     {
-        if(currentMissionID <= missions.Length - 1)
+        if (currentMissionID <= missions.Length - 1)
         {
             missions[currentMissionID].SetActive(false);
             currentMissionID++;
             missions[currentMissionID].SetActive(true);
-        }  
+        }
     }
 
-    private void Awake()
+    // Private methods
+    private void Update()
     {
-        currentMissionID = 0;
+        if (Input.anyKeyDown)
+        {
+            if (Input.GetKeyDown(KeyCode.X))
+                ActivateMission();
+
+            if (Input.GetKeyDown(KeyCode.C))
+                DeactivateMission();
+        }
     }
 
-    public void ActivateMission()
-    {
-      animator.SetBool("IsActive", true);
-       
-    }
-
-    public void DeactivateMission()
-    {
-      animator.SetBool("IsActive", false);
-        
-    }
-
+    private void Awake() => currentMissionID = 0;
 }

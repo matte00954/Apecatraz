@@ -34,8 +34,8 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private DashEffects dashEffectsReference;
 
     [Header("Controller")]
-    [SerializeField] private Rigidbody rb;
-    [SerializeField] private PhysicMaterial pm;
+    [SerializeField] private Rigidbody playerRigidbody;
+    [SerializeField] private PhysicMaterial playerPhysicMaterial;
 
     [Header("Ground check")]
     [SerializeField] private Transform frontFeetTransform;
@@ -82,7 +82,6 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private bool godMode = false; // only effects slowmotion atm
     [SerializeField] private bool slowmotionAllowed = false;
 
-
     [Header("Game handler")]
     [SerializeField] private GameManager gameManager;
 
@@ -115,13 +114,30 @@ public class ThirdPersonMovement : MonoBehaviour
     // Player States
     private State playerState;
     public enum State { dashing, telekinesis, disabled, nothing, climbing, hiding }
-
     public State PlayerState { get => playerState; set => playerState = value; }
     [HideInInspector] public bool IsTelekinesisActive { get; set; }
+    public float Velocity { get => playerRigidbody.velocity.magnitude; }
+    public bool IsGodMode { get => godMode; }
+    public bool IsMoving { get => isMoving; set => isMoving = value; }
+    public bool IsFrontFeetGrounded { get => frontFeetOnGround; }
+    public bool IsBackFeetGrounded { get => backFeetOnGround; }
+
+    public void MoveTo(Vector3 position)
+    {
+        playerRigidbody.velocity = Vector3.zero;
+        playerRigidbody.position = position;
+    }
+
+    public void ToggleRigidbodyCollisions(bool toggle)
+    {
+        playerRigidbody.detectCollisions = toggle;
+        playerRigidbody.useGravity = toggle;
+    }
+
+    public void ActivateRenderer(int index) => rend.sharedMaterial = materials[index]; // To switch shaders when using ability
 
     private void Start()
     {
-
         resetVelocity = true;
 
         dashTimer = 0.2f;
@@ -137,18 +153,11 @@ public class ThirdPersonMovement : MonoBehaviour
         if (slowmotionAllowed)
             Debug.Log("Slow motion allowed, SHOULD ONLY BE ALLOWED IN PROTOTYPE!!!");
 
-        if (!telekinesAllowed)
-        {
-            IsTelekinesisActive = false;
-        }
-        else
-            IsTelekinesisActive = true;
-
+        IsTelekinesisActive = telekinesAllowed;
         playerState = State.nothing;
+        Cursor.lockState = CursorLockMode.Locked; // Prevents mouse from leaving screen
 
-        Cursor.lockState = CursorLockMode.Locked; // prevents mouse from leaving screen
-
-        // Emils grej
+        // Added by Emil
         rend = GetComponentInChildren<Renderer>();
         rend.enabled = true;
         rend.sharedMaterial = materials[0];
@@ -161,7 +170,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Update()
     {
-        if (!InGameMenuManager.gameIsPaused && !DialogueManager.pausedWhileReading)
+        if (!InGameMenuManager.GameIsPaused && !DialogueManager.IsPausedWhileReading)
         {
             backFeetOnGround = Physics.Raycast(backFeetTransform.position, Vector3.down, 0.4f, groundMask);
             frontFeetOnGround = Physics.Raycast(frontFeetTransform.position, Vector3.down, 0.4f, groundMask);
@@ -169,15 +178,15 @@ public class ThirdPersonMovement : MonoBehaviour
             horizontal = Input.GetAxisRaw("Horizontal");
             vertical = Input.GetAxisRaw("Vertical");
 
-            // ser till att man inte kan få ett superhopp samtidigt som man klättrar
-            if (!playerState.Equals(State.climbing))
+            // Makes sure the player cannot execute superjump while climbing
+            if (!playerState.Equals(State.climbing) && Input.GetButtonDown("Jump"))
             {
-                if (Physics.Raycast(backFeetTransform.position, Vector3.down, 0.5f, groundMask) && Input.GetButtonDown("Jump"))
+                if (Physics.Raycast(backFeetTransform.position, Vector3.down, 0.5f, groundMask))
                 {
                     jump = true;
                 }
 
-                if(Physics.Raycast(frontFeetTransform.position, Vector3.down, 0.5f, groundMask) && Input.GetButtonDown("Jump"))
+                if (Physics.Raycast(frontFeetTransform.position, Vector3.down, 0.5f, groundMask))
                 {
                     jump = true;
                 }
@@ -185,7 +194,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
             walk = Input.GetKey(KeyCode.LeftControl);
 
-            // to unpause game
+            // To unpause game
             if (Time.timeScale != 1 && !slowmotionAllowed)
             {
                 Time.timeScale = 1;
@@ -196,43 +205,39 @@ public class ThirdPersonMovement : MonoBehaviour
                 slowmotionAllowed = !slowmotionAllowed;
             }
 
-            #region Joche slowmotion
-            //ENDAST F�R JOCHES PROTOTYP
+            // For Joche's prototype
             if (slowmotionAllowed)
             {
+                ////if (PlayerState.Equals(State.dashing) && Time.timeScale != 0.2f)
+                ////{
+                ////    Time.timeScale = 0.2f;
+                ////}
+                ////else if (!PlayerState.Equals(State.dashing) && Time.timeScale != 1f)
+                ////{
+                ////    Time.timeScale = 1f;
+                ////}
 
-                if (PlayerState.Equals(State.dashing) && Time.timeScale != 0.2f) //ENDAST F�R JOCHES PROTOTYP
-                {
-                    Time.timeScale = 0.2f;
-                }
-                else if (!PlayerState.Equals(State.dashing) && Time.timeScale != 1)
-                {
-                    Time.timeScale = 1f;
-                }
+                // Equivalent solution (value = condition ? true : false)
+                Time.timeScale = PlayerState.Equals(State.dashing) && Time.timeScale != 0.2f ? 0.2f 
+                    : (!PlayerState.Equals(State.dashing) && Time.timeScale != 1f ? 1f : Time.timeScale);
             }
-            //ENDAST F�R JOCHES PROTOTYP
-            #endregion
         }
 
-        if (InGameMenuManager.gameIsPaused && Cursor.lockState.Equals(CursorLockMode.Locked))
-        {
+        if (InGameMenuManager.GameIsPaused && Cursor.lockState.Equals(CursorLockMode.Locked))
             Cursor.lockState = CursorLockMode.None;
-        }
-        else if (!InGameMenuManager.gameIsPaused && Cursor.lockState.Equals(CursorLockMode.None))
-        {
+        else if (!InGameMenuManager.GameIsPaused && Cursor.lockState.Equals(CursorLockMode.None))
             Cursor.lockState = CursorLockMode.Locked;
-        }
     }
 
     private void FixedUpdate()
     {
-        if (!InGameMenuManager.gameIsPaused)
+        if (!InGameMenuManager.GameIsPaused)
         {
             StateCheck();
         }
     }
 
-    private void StateCheck() // this is in update
+    private void StateCheck()
     {
         switch (playerState)
         {
@@ -244,11 +249,12 @@ public class ThirdPersonMovement : MonoBehaviour
                 Movement();
                 break;
             case State.disabled: // disabled = captured/rekt
-                // spela death anim
+                // Play death anim
                 respawnTimer -= Time.deltaTime;
                 Death();
                 RespawnPlayer();
-                // reset spel
+
+                // reset game
                 break;
             case State.climbing:
                 LedgeClimb();
@@ -278,7 +284,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Death()
     {
-        //throw new NotImplementedException();
+        ////throw new NotImplementedException();
         charAnims.SetAnimBool("Deth", true);
     }
 
@@ -297,7 +303,6 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Movement()
     {
-
         Vector3 direction = new Vector3(horizontal, 0f, vertical);
 
         /*if (rb.drag != defaultDrag && frontFeetOnGround && backFeetOnGround)
@@ -311,83 +316,77 @@ public class ThirdPersonMovement : MonoBehaviour
 
         if (direction.magnitude >= 0.01f)
         {
-
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + mainCamera.transform.eulerAngles.y; // first find target angle
+            float targetAngle = (Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg) + mainCamera.transform.eulerAngles.y; // First find target angle
             float angle;
 
-            if (!backFeetOnGround && !frontFeetOnGround)
-            {
-                angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TurnSmoothTimeInAir); // adjust angle for smoothing in air
-            }
-            else
-            {
-                angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TurnSmoothTime); // adjust angle for smoothing on ground
-            }
+            ////if (!backFeetOnGround && !frontFeetOnGround)
+            ////{
+            ////    angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TurnSmoothTimeInAir); // Adjust angle for smoothing in air
+            ////}
+            ////else
+            ////{
+            ////    angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TurnSmoothTime); // Adjust angle for smoothing on ground
+            ////}
+            
+            // Equivalent solution (variable = condition ? true : false)
+            angle = !backFeetOnGround && !frontFeetOnGround ?
+                Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TurnSmoothTimeInAir) // Adjust angle for smoothing in air
+                : Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TurnSmoothTime); // Adjust angle for smoothing on ground
 
-            rb.MoveRotation(Quaternion.Euler(0f, angle, 0f));
-
-            Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward; // adjust direction to camera rotation/direction
-
+            playerRigidbody.MoveRotation(Quaternion.Euler(0f, angle, 0f));
+            Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward; // Adjust direction to camera rotation/direction
             slopeMoveDirection = Vector3.ProjectOnPlane(moveDirection, slopeHitNormal);
 
             if (horizontal != 0 || vertical != 0)
             {
                 if (backFeetOnGround || frontFeetOnGround)
                 {
-                    //float difference = Mathf.Abs(rb.velocity.magnitude - MaxPlayerSpeedRun);
+                    ////float difference = Mathf.Abs(rb.velocity.magnitude - MaxPlayerSpeedRun);
 
                     if (OnSlope())
                     {
                         ////rb.MoveRotation(Quaternion.Euler(angle, rb.transform.rotation.y, 0f));
-                        if (rb.velocity.magnitude < MaxPlayerSpeedRun)
-                            rb.AddForce(slopeMoveDirection.normalized, ForceMode.Impulse);
+                        if (playerRigidbody.velocity.magnitude < MaxPlayerSpeedRun)
+                            playerRigidbody.AddForce(slopeMoveDirection.normalized, ForceMode.Impulse);
                     }
                     else
                     {
-                        if (walk)
-                        {
-                            if (rb.velocity.magnitude < MaxPlayerSpeedWalk)
-                                rb.AddForce(moveDirection, ForceMode.Impulse);
-                        }
-                        else if (rb.velocity.magnitude < MaxPlayerSpeedRun)
-                        {
-                            if (rb.velocity.magnitude < MaxPlayerSpeedRun)
-                                rb.AddForce(moveDirection * 1.15f, ForceMode.Impulse);
-                        }
+                        if (walk && playerRigidbody.velocity.magnitude < MaxPlayerSpeedWalk)
+                            playerRigidbody.AddForce(moveDirection, ForceMode.Impulse);
+                        else if (playerRigidbody.velocity.magnitude < MaxPlayerSpeedRun)
+                            playerRigidbody.AddForce(moveDirection * 1.15f, ForceMode.Impulse);
                     }
                 }
                 else
                 {
-                    Vector3 velocityWithoutY = new Vector3(rb.velocity.x, 0f, rb.velocity.z); //remove Y velocity from calc
+                    Vector3 velocityWithoutY = new Vector3(playerRigidbody.velocity.x, 0f, playerRigidbody.velocity.z); // Remove Y velocity from calc
                     if (velocityWithoutY.magnitude < MaxPlayerSpeedRun)
-                        rb.AddForce(moveDirection, ForceMode.Impulse); // In air
+                        playerRigidbody.AddForce(moveDirection, ForceMode.Impulse); // In air
                 }
             }
         }
 
         if (frontFeetOnGround || backFeetOnGround)
-        {
             charAnims.CheckStopRunning();
-        }
 
         // gravity
-        if (!frontFeetOnGround && !backFeetOnGround)  // In air
+
+        // In air
+        if (!frontFeetOnGround && !backFeetOnGround)
         {
-            if (rb.velocity.y < 0f)
-            {
-                rb.AddForce(Physics.gravity * GravityJumpApex);
-            }
+            if (playerRigidbody.velocity.y < 0f)
+                playerRigidbody.AddForce(Physics.gravity * GravityJumpApex);
             else
-                rb.AddForce(Physics.gravity * GravityValue);
+                playerRigidbody.AddForce(Physics.gravity * GravityValue);
 
             if (!landAnimationReady)
                 landAnimationReady = true;
 
-            charAnims.SetAnimFloat("YSpeed", rb.velocity.y);
+            charAnims.SetAnimFloat("YSpeed", playerRigidbody.velocity.y);
         }
 
-        if (frontFeetOnGround && landAnimationReady
-            || backFeetOnGround && landAnimationReady)
+        if ((frontFeetOnGround && landAnimationReady)
+            || (backFeetOnGround && landAnimationReady))
         {
             charAnims.SetTriggerFromString("Land");
             landAnimationReady = false;
@@ -395,19 +394,19 @@ public class ThirdPersonMovement : MonoBehaviour
 
         if (jump)
         {
-            //rb.AddForce(new Vector3(0, JumpHeight, 0), ForceMode.Impulse);
+            ////rb.AddForce(new Vector3(0, JumpHeight, 0), ForceMode.Impulse);
 
-            rb.velocity = new Vector3(rb.velocity.x, JumpHeight, rb.velocity.z);
+            playerRigidbody.velocity = new Vector3(playerRigidbody.velocity.x, JumpHeight, playerRigidbody.velocity.z);
 
             charAnims.SetTriggerFromString("Jump");
 
-            jump = false; // jump input set in update, otherwise too delayed
+            jump = false; // Jump input set in update, otherwise too delayed
         }
     }
 
     private void LateUpdate()
     {
-        charAnims.SetAnimFloat("runY", rb.velocity.magnitude); // Joches grej
+        charAnims.SetAnimFloat("runY", playerRigidbody.velocity.magnitude); // Added by Joche
     }
 
     private bool OnSlope()
@@ -433,44 +432,39 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         if (ledgeGrabAllowed)
         {
-            RaycastHit upHit;
+            RaycastHit upperHit;
 
-            if (Physics.Raycast(ledgeUpCheck.transform.position, Vector3.up * LedgeCheckRayLengthMultiplier,
-                out upHit, LedgeCheckRayLengthMultiplier)) //if player is above obstacle, do not climb
+            // If player is above obstacle, do not climb
+            if (Physics.Raycast(ledgeUpCheck.transform.position, Vector3.up * LedgeCheckRayLengthMultiplier, out upperHit, LedgeCheckRayLengthMultiplier))
             {
                 return;
             }
-            else //nothing in the way
+            else
             {
-                RaycastHit downHit; //ray from ledge check game object
+                RaycastHit downHit; // Ray from ledge check game object
 
-                if (Physics.Raycast(ledgeDownCheck.transform.position, Vector3.down * LedgeCheckRayLengthMultiplier,
-                    out downHit, LedgeCheckRayLengthMultiplier, ledgeMask)) //checks if target surface has "climb" layer
+                // Checks if target surface has "climb" layer
+                if (Physics.Raycast(ledgeDownCheck.transform.position, Vector3.down * LedgeCheckRayLengthMultiplier, out downHit, LedgeCheckRayLengthMultiplier, ledgeMask))
                 {
                     RaycastHit forwardHit;
 
-                    if (Physics.Raycast(frontFeetTransform.transform.position, transform.forward * LedgeCheckRayLengthMultiplier,
-                        out forwardHit, LedgeCheckRayLengthMultiplier)) //checks distance from object so animation starts at correct the distance
+                    // Checks distance from object so animation starts at correct the distance
+                    if (Physics.Raycast(frontFeetTransform.transform.position, transform.forward * LedgeCheckRayLengthMultiplier, out forwardHit, LedgeCheckRayLengthMultiplier)) 
                     {
-                        rb.useGravity = false; //otherwise player might float under object
+                        playerRigidbody.useGravity = false; // Otherwise player might float under object
 
-                        rb.velocity = Vector3.zero;
+                        playerRigidbody.velocity = Vector3.zero;
 
-                        MoveTo(new Vector3(forwardHit.point.x,
-                            downHit.point.y - skinnedMeshRenderer.bounds.extents.y,
-                            forwardHit.point.z));
-                        //adjusts player position before animation
-                        //y - y = height of object - height of player
+                        // Adjusts player position before animation
+                        // y - y = height of object - height of player
+                        MoveTo(new Vector3(forwardHit.point.x, downHit.point.y - skinnedMeshRenderer.bounds.extents.y, forwardHit.point.z));
 
                         playerState = State.climbing;
-
                         charAnims.SetTriggerFromString("LedgeGrab");
-
-                        ledgeHit = downHit; //target position of climb
-
+                        ledgeHit = downHit; // Target position of climb
                         timeRemainingOnAnimation = climbAnimation.length;
 
-                        //Method LedgeClimb() starts in update if playerstate is climbing
+                        // Method LedgeClimb() starts in update if playerstate is climbing
                     }
                 }
             }
@@ -479,7 +473,8 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void LedgeClimb()
     {
-        if (!rb.useGravity) //to make sure this only happens once, since this is set false in ledgecheck
+        // To make sure this only happens once, since this is set false in ledgecheck
+        if (!playerRigidbody.useGravity)
         {
             timeRemainingOnAnimation -= Time.fixedDeltaTime;
 
@@ -487,11 +482,11 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 charAnims.SetTriggerFromString("StopClimb");
 
-                MoveTo(ledgeHit.point + new Vector3(0, 0.4f, 0)); //adds marigin to make sure to not climb inside object instead of on top
+                MoveTo(ledgeHit.point + new Vector3(0, 0.4f, 0)); // Adds marigin to make sure to not climb inside object instead of on top
 
                 playerState = State.nothing;
 
-                rb.useGravity = true;
+                playerRigidbody.useGravity = true;
             }
         }
     }
@@ -500,7 +495,6 @@ public class ThirdPersonMovement : MonoBehaviour
     #region Dash
     private void DashCheck()
     {
-
         if (dashAllowed)
         {
             if (Input.GetButton("Fire1") && dashCooldown <= 0f)
@@ -508,18 +502,14 @@ public class ThirdPersonMovement : MonoBehaviour
                 if (energy.CheckEnergy(DashEnergyCost))
                 {
                     ActivateRenderer(1);
-                    energy.ActivateEnergyRegen(false);
+                    energy.IsRegenerating = false;
                     Dash();
                 }
                 else
-                {
                     StopDashing(false);
-                }
             }
             else
-            {
                 StopDashing(false);
-            }
         }
     }
 
@@ -529,34 +519,29 @@ public class ThirdPersonMovement : MonoBehaviour
 
         if (resetVelocity)
         {
-            rb.velocity = Vector3.zero;
+            playerRigidbody.velocity = Vector3.zero;
             resetVelocity = false;
         }
 
-        if (pm.dynamicFriction != 0)
-            pm.dynamicFriction = 0f;
+        if (playerPhysicMaterial.dynamicFriction != 0)
+            playerPhysicMaterial.dynamicFriction = 0f;
 
-        if (rb.useGravity)
-            rb.useGravity = false;
+        if (playerRigidbody.useGravity)
+            playerRigidbody.useGravity = false;
 
-        if (Physics.SphereCast(headRaycastOrigin.position, 0.2f, Vector3.forward, out _, DashDistanceCheck , dashObstacles) || !energy.CheckEnergy(DashEnergyCost))
-        {
+        if (Physics.SphereCast(headRaycastOrigin.position, 0.2f, Vector3.forward, out _, DashDistanceCheck, dashObstacles) || !energy.CheckEnergy(DashEnergyCost))
             StopDashing(true);
-        }
-        else
+        else if (energy.CheckEnergy(DashEnergyCost) && !playerState.Equals(State.dashing))
         {
-            if (energy.CheckEnergy(DashEnergyCost) && !playerState.Equals(State.dashing))
-            {
-                playerState = State.dashing;
-                //if (rb.velocity != transform.forward * DashForce)
-                rb.velocity = transform.forward * DashForce;
-                //rb.AddForce(transform.forward * DASH_FORCE, ForceMode.Impulse);
-                //constant force results in constant accelaration, zero force results constant velocity
-            }
+            playerState = State.dashing;
+            ////if (rb.velocity != transform.forward * DashForce)
+            playerRigidbody.velocity = transform.forward * DashForce;
+            ////rb.AddForce(transform.forward * DASH_FORCE, ForceMode.Impulse);
+            // Constant force results in constant accelaration, zero force results constant velocity
         }
+
         dashEffectsReference.SlowDown();
     }
-
 
     private void StopDashing(bool forceStop)
     {
@@ -564,14 +549,14 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             ActivateRenderer(0);
             dashEffectsReference.SpeedUp();
-            rb.useGravity = true;
+            playerRigidbody.useGravity = true;
             resetVelocity = true;
-            //pm.dynamicFriction = deafaltDynamicFriction;
-            //rb.drag = defaultDrag;
+            ////pm.dynamicFriction = deafaltDynamicFriction;
+            ////rb.drag = defaultDrag;
             playerState = State.nothing;
             dashCooldown = 1f;
             dashTimer = 0.2f;
-            energy.ActivateEnergyRegen(true);
+            energy.IsRegenerating = true;
         }
     }
     #endregion
@@ -582,78 +567,24 @@ public class ThirdPersonMovement : MonoBehaviour
         ////frontFeetOnGround = Physics.CheckSphere(frontFeetGroundCheck.position, GROUND_CHECK_RADIUS, ~playerLayer);
     }
 
-    public void MoveTo(Vector3 position)
-    {
-        rb.velocity = Vector3.zero;
-        rb.position = position;
-    }
-
-    public void ToggleRigidbodyCollisions(bool toggle)
-    {
-        rb.detectCollisions = toggle;
-        rb.useGravity = toggle;
-    }
-
-
-    public void ActivateRenderer(int index)
-    {
-        rend.sharedMaterial = materials[index]; // To switch shaders when using ability
-    }
-
-    public float GetVelocity()
-    {
-        return rb.velocity.magnitude;
-    }
-
-    public bool GetGodMode()
-    {
-        return godMode;
-    }
-
-    public State GetState()
-    {
-        return playerState;
-    }
-
-    public bool GetIsMoving()
-    {
-        return isMoving;
-    }
-
-    public void SetIsMoving(bool newMoveBool)
-    {
-        isMoving = newMoveBool;
-    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer.Equals(LayerMask.NameToLayer("Projectile")))
-            if (other.gameObject.GetComponent<ProjectileNet>().IsActive())
+            if (other.gameObject.GetComponent<ProjectileNet>().IsActive)
                 playerState = State.disabled;
-    }
-    public bool GetFrontFeetGrounded()
-    {
-        return frontFeetOnGround;
-    }
-    public bool GetBackFeetGrounded()
-    {
-        return backFeetOnGround;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("GlassImpact"))
-        {
             audioSource.PlayOneShot(glassImpact);
-        }
 
         if (collision.gameObject.CompareTag("GenericImpact"))
-        {
             audioSource.PlayOneShot(genericImpact);
-        }
     }
 }
 
-/*private void StopRunning() //Joche
+/*private void StopRunning() // Added by Joche
 {
     if (controller.velocity.magnitude > 3)
     {

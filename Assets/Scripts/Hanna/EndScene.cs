@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+// Author: Hanna Hellberg
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

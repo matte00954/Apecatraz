@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
+// Author: Andreas Scherman
 using UnityEngine;
 
 public class ActivateCameraTrigger : MonoBehaviour
 {
-    [SerializeField]
-    private Cinemachine.CinemachineVirtualCamera cinemachine;
+    [SerializeField] private Cinemachine.CinemachineVirtualCamera cinemachine;
 
     private void OnTriggerEnter(Collider other)
     {

@@ -1,3 +1,4 @@
+// Author: [full name here]
 using UnityEngine;
 using UnityEngine.UI;
 

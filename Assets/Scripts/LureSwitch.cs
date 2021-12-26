@@ -1,9 +1,12 @@
-using UnityEngine.Events;
+// Author: William Örnquist
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Collider))]
 public class LureSwitch : MonoBehaviour
 {
+    private readonly string playerLayerName = "Player";
+
 #pragma warning disable IDE0044 // Add readonly modifier
     [SerializeField] private UnityEvent onActivate;
     [SerializeField] private Material readyMaterial;
@@ -13,7 +16,6 @@ public class LureSwitch : MonoBehaviour
 #pragma warning restore IDE0044 // Add readonly modifier
 
     private MeshRenderer meshRenderer;
-    private readonly string playerLayerName = "Player";
     private float cooldownTimer;
 
 #pragma warning disable IDE0051 //Remove unused parameters
@@ -32,7 +34,6 @@ public class LureSwitch : MonoBehaviour
         if (cooldownTimer >= cooldownTime && meshRenderer.material != readyMaterial)
             meshRenderer.material = readyMaterial;
     }
-
 
     private void OnTriggerStay(Collider other)
 #pragma warning restore IDE0051 //Remove unused parameters

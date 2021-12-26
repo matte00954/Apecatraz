@@ -1,34 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
+// Author: Emil Moqvist
 using UnityEngine;
 
 public class LightTemperature : MonoBehaviour
 {
-    float transition = 1.0f;
-    Color color0 = Color.yellow;
-    Color color1 = Color.red;
-
-    Light light;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        light = GetComponent<Light>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        float t = Mathf.PingPong(Time.time, transition) / transition;
-        light.color = Color.Lerp(color0, color1, t);
-    }
+    private readonly float transitionValue = 1.0f;
+    private Light lightComp;
 
     public void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.name == "Player")
-        {
-            light.color = color1;
-        }
+        if (other.gameObject.name == "Player") 
+            lightComp.color = Color.red;
     }
 
+    private void Start() => lightComp = GetComponent<Light>();
+
+    private void Update()
+    {
+        lightComp.color = Color.Lerp(Color.yellow, Color.red, Mathf.PingPong(Time.time, transitionValue) / transitionValue);
+    }
 }

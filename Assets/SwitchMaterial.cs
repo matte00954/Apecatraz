@@ -1,8 +1,8 @@
+// Author: [full name here]
 using UnityEngine;
 
 public class SwitchMaterial : MonoBehaviour
 {
-
     [SerializeField] private Material newMaterial;
     [SerializeField] private MeshRenderer affectedObject;
 

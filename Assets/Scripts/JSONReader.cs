@@ -1,17 +1,19 @@
+// Author: [full name here]
 using UnityEngine;
+
 public class JSONReader : MonoBehaviour
 {
-    string path;
+    private string path;
 
-    //public TextAsset jsonFile;
+    ////public TextAsset jsonFile;
 
-    void Start()
+    private void Start()
     {
         path = Application.streamingAssetsPath + "/EnemyVariables.json";
-        EnemyVariables EnemyMovementInJson = JsonUtility.FromJson<EnemyVariables>(path);
+        EnemyVariables enemyMovementInJson = JsonUtility.FromJson<EnemyVariables>(path);
         Debug.Log("Loaded player settings ::::");
-        Debug.Log("Loaded Patrolspeed : " + EnemyMovementInJson.patrolSpeed);
-        Debug.Log("Loaded alertSpeed : " + EnemyMovementInJson.alertSpeed);
-        Debug.Log("Loaded DumbstruckTime: " + EnemyMovementInJson.dumbstruckTime);
+        Debug.Log("Loaded Patrolspeed : " + enemyMovementInJson.patrolSpeed);
+        Debug.Log("Loaded alertSpeed : " + enemyMovementInJson.alertSpeed);
+        Debug.Log("Loaded DumbstruckTime: " + enemyMovementInJson.dumbstruckTime);
     }
 }

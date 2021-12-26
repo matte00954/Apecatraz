@@ -1,19 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
+// Author: Sebastian Klötz
 using UnityEngine;
-using UnityEngine.UI;
-
 
 public class QuestHandler : MonoBehaviour
 {
-    public Quest quest;
+    [SerializeField] private Quest quest;
+    [SerializeField] private GameObject QuestWindow;
 
-    public GameObject QuestWindow;
-
-    public void questLog()
-    {
-        QuestWindow.SetActive(true);
-
-        
-    }
+    public void ActivateQuestWindow() => QuestWindow.SetActive(true);
 }

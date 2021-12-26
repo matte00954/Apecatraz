@@ -1,3 +1,4 @@
+// Author: [full name here]
 using UnityEngine;
 
 public class TriggerSetActive : MonoBehaviour
@@ -7,16 +8,14 @@ public class TriggerSetActive : MonoBehaviour
     [SerializeField] private float delayBetween;
 
     private float timer;
-
     private bool start;
-
     private int i = 0;
 
     private AudioSource audioSource;
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Player") && start == false)
+        if (other.gameObject.CompareTag("Player") && start == false)
             start = true;
     }
 
@@ -41,8 +40,5 @@ public class TriggerSetActive : MonoBehaviour
         }
     }
 
-    private void ResetTimer()
-    {
-        timer = delayBetween;
-    }
+    private void ResetTimer() => timer = delayBetween;
 }

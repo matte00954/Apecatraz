@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
+// Author: Andreas Scherman
 using UnityEngine;
 
 public class FontKeeper : MonoBehaviour
 {
-    public TMPro.TMP_FontAsset font;
+    [SerializeField] private TMPro.TMP_FontAsset font;
 }

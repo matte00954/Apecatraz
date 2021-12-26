@@ -1,42 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
+// Author: Andreas Scherman
 using UnityEngine;
-
 
 public class GatherColliders : MonoBehaviour
 {
-    public GameObject[] gObjects;
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private GameObject[] gameObjects;
+
+    private void Start()
     {
-        gObjects = GameObject.FindGameObjectsWithTag("3DUI");
+        gameObjects = GameObject.FindGameObjectsWithTag("3DUI");
 
         DrawLines();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        //OnDrawGizmos();
-    }
-
+    ////private void Update()
+    ////{
+    ////    ////OnDrawGizmos();
+    ////}
 
     private void DrawLines()
     {
-        foreach (GameObject game in gObjects)
+        foreach (GameObject game in gameObjects)
         {
-            GameObject UIWall = Instantiate(game, transform);
-            UIWall.layer = 15;
-            UIWall.AddComponent<LineRenderer>();
+            GameObject uiWall = Instantiate(game, transform);
+            uiWall.layer = 15;
+            uiWall.AddComponent<LineRenderer>();
 
-            LineRenderer line = UIWall.GetComponent<LineRenderer>();
-            Collider collider = UIWall.GetComponent<Collider>();
-            Mesh mesh = UIWall.GetComponent<MeshFilter>().mesh;
+            LineRenderer line = uiWall.GetComponent<LineRenderer>();
+            ////Collider collider = uiWall.GetComponent<Collider>(); // Unused
+            Mesh mesh = uiWall.GetComponent<MeshFilter>().mesh;
 
-            UIWall.GetComponent<MeshRenderer>().enabled = false;
+            uiWall.GetComponent<MeshRenderer>().enabled = false;
 
-            line.SetWidth(0.1f, 0.1f);
-            line.useWorldSpace =false;
+            line.SetWidth(0.1f, 0.1f); // TODO: Solve obsolete issue
+            line.useWorldSpace = false;
 
             line.positionCount = mesh.vertices.Length;
             line.SetPositions(mesh.vertices);

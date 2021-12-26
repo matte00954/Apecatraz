@@ -1,12 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+// Author: [full name here]
 using System.IO;
+using UnityEngine;
 
 public class WritoDebugToFile : MonoBehaviour
 {
-    int playSession = 1;
-    string fileName = "";
+    private int playSession = 1;
+    private string fileName = string.Empty;
+
+    public void Log(string logString, string stackTrace, LogType type)
+    {
+        TextWriter tw = new StreamWriter(fileName, true);
+        tw.WriteLine("[ playsession: " + playSession.ToString() + "]" + ", [" + System.DateTime.Now + "], " + logString);
+        tw.Close();
+    }
 
     private void OnEnable()
     {
@@ -17,18 +23,9 @@ public class WritoDebugToFile : MonoBehaviour
     {
         Application.logMessageReceived -= Log;
     }
-    public void Start()
+    
+    private void Start()
     {
         fileName = Application.dataPath + "/LogFile.text";
     }
-
-    public void Log(string logString, string stackTrace, LogType type)
-    {
-        TextWriter tw = new StreamWriter(fileName, true);
-
-        tw.WriteLine("[ playsession: " + playSession.ToString() + "]" + ", [" + System.DateTime.Now + "], " + logString);
-
-        tw.Close();
-    }
-
 }

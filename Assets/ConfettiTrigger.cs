@@ -1,53 +1,43 @@
+// Author: [full name here]
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ConfettiTrigger : MonoBehaviour
 {
+    [SerializeField] private AudioClip celebrateClip;
+    [SerializeField] private GameObject particleSystemObject; // TODO: refer ParticleSystem instead?
 
-    AudioSource audioSource;
-
-    public AudioClip celebrate;
-    public GameObject confettiFX;
+    private AudioSource audioSource;
 
     private bool isPlaying = false;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        confettiFX.GetComponent<ParticleSystem>().Stop();
+        particleSystemObject.GetComponent<ParticleSystem>().Stop();
         audioSource = GetComponent<AudioSource>();
     }
 
-
     private void OnTriggerEnter(Collider other)
     {
-
         if (other.gameObject.CompareTag("Ball"))
         {
             if (!isPlaying)
-            {
-                StartCoroutine(waiting());
-            }    
+                StartCoroutine(Wait());
             
-            //GameObject particle = Instantiate(confettiFX, this.transform.position, Quaternion.identity);
-            //particle.GetComponent<ParticleSystem>().Play();
+            ////GameObject particle = Instantiate(confettiFX, this.transform.position, Quaternion.identity);
+            ////particle.GetComponent<ParticleSystem>().Play();
         }
-        
     }
 
-    IEnumerator waiting()
+    private IEnumerator Wait()
     {
-        
-        confettiFX.GetComponent<ParticleSystem>().Play();
-        audioSource.PlayOneShot(celebrate, 0.7f);
+        particleSystemObject.GetComponent<ParticleSystem>().Play();
+        audioSource.PlayOneShot(celebrateClip, 0.7f);
         isPlaying = true;
 
         yield return new WaitForSeconds(4);
 
-        confettiFX.GetComponent<ParticleSystem>().Stop();
+        particleSystemObject.GetComponent<ParticleSystem>().Stop();
         isPlaying = false;
-
     }
-
 }

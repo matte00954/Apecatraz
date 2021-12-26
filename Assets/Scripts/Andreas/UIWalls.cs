@@ -1,14 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
+// Author: Andreas Scherman
 using UnityEngine;
 
 public class UIWalls : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
         CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+
         /*
         int i = 0;
         while (i < meshFilters.Length)

@@ -1,30 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
+// Author: Andreas Scherman
 using UnityEngine;
 
 public class FontChanger : MonoBehaviour
 {
-
-    public TMPro.TMP_FontAsset[] fontAsset;
-
-    private TMPro.TMP_Text[] TMProTextList;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        TMProTextList = FindObjectsOfType<TMPro.TMP_Text>(true);
-    }
-
-    // Update is called once per frame
-    
+    [SerializeField] private TMPro.TMP_FontAsset[] fontAsset;
+    private TMPro.TMP_Text[] tmproTextList;
 
     public void ChangeAllFonts(int fontNumber)
     {
-        
-        foreach (TMPro.TMP_Text text in TMProTextList)
-        {
+        foreach (TMPro.TMP_Text text in tmproTextList)
             text.GetComponent<TMPro.TMP_Text>().font = fontAsset[fontNumber];
-        }
     }
-        
+
+    private void Start() => tmproTextList = FindObjectsOfType<TMPro.TMP_Text>(true);
 }

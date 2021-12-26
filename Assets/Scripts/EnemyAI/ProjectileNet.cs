@@ -12,7 +12,7 @@ public class ProjectileNet : MonoBehaviour
     private float lifeTimer = 0f;
     private bool isActive = true;
 
-    public bool IsActive() { return isActive; }
+    public bool IsActive { get => isActive; }
 
     private void Update()
     {

@@ -1,16 +1,13 @@
+// Author: Emil Moqvist
 using UnityEngine;
 
 public class LookAtCamera : MonoBehaviour
 {
-    Camera cam;
-    // Start is called before the first frame update
-    void Start()
-    {
-        cam = Camera.main;
-    }
+    private Camera cam;
 
-    // Update is called once per frame
-    void Update()
+    private void Start() => cam = Camera.main;
+
+    private void Update()
     {
         transform.forward = cam.transform.position - transform.position;
     }

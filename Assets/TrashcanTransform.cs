@@ -1,16 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
+// Author: [full name here]
 using UnityEngine;
 
 public class TrashcanTransform : MonoBehaviour
 {
-    [SerializeField]
-    private Transform enterLocation;
-    [SerializeField] private string name;
+    [SerializeField] private Transform enterLocation;
+    [SerializeField] private string objectName;
     public Transform GetEnterLocation()
     {
-        name = gameObject.name;
-        Debug.Log("used trashcan number :" + name);
+        objectName = gameObject.name;
+        Debug.Log("used trashcan number :" + objectName);
         return enterLocation;
     }
 }

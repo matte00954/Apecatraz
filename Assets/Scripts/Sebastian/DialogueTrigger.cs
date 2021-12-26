@@ -1,50 +1,32 @@
-using System.Collections;
-using System.Collections.Generic;
+// Author: Sebastian Klötz
 using UnityEngine;
 
 public class DialogueTrigger : MonoBehaviour
 {
+    private const string PlayerTagName = "Player";
+
     [SerializeField] private Dialogue dialogue;
-    [SerializeField]
-    private GameObject canReadUI;
+    [SerializeField] private GameObject canReadUI;
 
+    public void TriggerDialogue() => FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
 
-    private void Start()
-    {
-        canReadUI.SetActive(false);
-    }
-    public void TriggerDialogue()
-    {
-        FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
-
-    }
+    private void Start() => canReadUI.SetActive(false);
 
     private void OnTriggerStay(Collider other)
     {
-
-        if (other.gameObject.CompareTag("Player") && Input.GetKeyDown(KeyCode.Q) && !DialogueManager.isActive)
-        {
+        if (other.gameObject.CompareTag(PlayerTagName) && Input.GetKeyDown(KeyCode.Q) && !DialogueManager.IsActive)
             TriggerDialogue();
-        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
-        {
+        if (other.gameObject.CompareTag(PlayerTagName))
             canReadUI.SetActive(true);
-
-        }
-
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
-        {
+        if (other.gameObject.CompareTag(PlayerTagName))
             canReadUI.SetActive(false);
-        }
-
     }
-
 }

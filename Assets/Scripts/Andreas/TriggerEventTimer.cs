@@ -1,28 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
+// Author: Andreas Scherman
 using UnityEngine;
 
 public class TriggerEventTimer : MonoBehaviour
 {
-    [SerializeField]
-    private float timerDuration = 1;
+    [SerializeField] private float timerDuration = 1f;
 
     private float timer;
-
-    private bool enabled;
+    private bool isEnabled;
     
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         timer -= Time.deltaTime;
         if (timer < 0)
-        {
             this.gameObject.SetActive(false);
-        }
     }
 
-    private void OnEnable()
-    {
-        timer = timerDuration;
-    }
+    private void OnEnable() => timer = timerDuration;
 }

@@ -1,3 +1,4 @@
+// Author: [full name here]
 using UnityEngine;
 
 public class TextMeshEnable : MonoBehaviour
@@ -8,7 +9,7 @@ public class TextMeshEnable : MonoBehaviour
     private void Start()
     {
         textInEditor = textToEnable.text;
-        textToEnable.text = "";
+        textToEnable.text = string.Empty;
     }
 
     private void OnTriggerEnter(Collider other)

@@ -1,45 +1,41 @@
+// Author: [full name here]
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class BigRedButton : MonoBehaviour
 {
     [SerializeField] private GameObject cutsceneCamera;
-
     [SerializeField] private GameObject playerCamera;
     [SerializeField] private GameObject interactableObjectsText;
+    [SerializeField] private float endTimer;
+    [SerializeField] private GameObject boom;
 
     private float explosiontimer = 3.5f;
-
-    [SerializeField] private float endTimer;
-
     private bool canPress = false;
-
-    [SerializeField] private GameObject boom;
-    private bool prepareToExplode = false;
+    private bool preparedToExplode = false;
 
     private void Start()
     {
-        if (interactableObjectsText.activeInHierarchy) interactableObjectsText.SetActive(false);
+        if (interactableObjectsText.activeInHierarchy)
+            interactableObjectsText.SetActive(false);
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q) && canPress == true && prepareToExplode == false || Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.Alpha0))
+        if ((Input.GetKeyDown(KeyCode.Q) && canPress == true && preparedToExplode == false) || (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.Alpha0)))
         {
             cutsceneCamera.SetActive(true);
             playerCamera.SetActive(false);
-            prepareToExplode = true;
+            preparedToExplode = true;
             interactableObjectsText.SetActive(false);
         }
 
-        if (prepareToExplode == true)
-        {
+        if (preparedToExplode)
             explosiontimer -= Time.deltaTime;
-        }
 
         if (explosiontimer < 0)
         {
-            playExplosionAnimation();
+            PlayExplosionAnimation();
             endTimer -= Time.deltaTime;
         }
 
@@ -50,10 +46,7 @@ public class BigRedButton : MonoBehaviour
         }
     }
 
-    private void playExplosionAnimation()
-    {
-        boom.SetActive(true);
-    }
+    private void PlayExplosionAnimation() => boom.SetActive(true);
 
     private void OnTriggerEnter(Collider other)
     {
@@ -63,6 +56,7 @@ public class BigRedButton : MonoBehaviour
             canPress = true;
         }
     }
+
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("BigRedButton"))
@@ -70,6 +64,5 @@ public class BigRedButton : MonoBehaviour
             interactableObjectsText.SetActive(false);
             canPress = false;
         }
-
     }
 }

@@ -1,28 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
+// Author: Andreas Scherman
 using UnityEngine;
 using UnityEngine.VFX;
 
 public class MonkeyVFX : MonoBehaviour
 {
-    CharacterController controller;
-    ThirdPersonMovement thirdPersonMovement;
+    private CharacterController controller;
+    private ThirdPersonMovement thirdPersonMovement;
 
-    public VisualEffect dustTrail;
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private VisualEffect dustTrail;
+
+    private void Start()
     {
         controller = GetComponent<CharacterController>();
         thirdPersonMovement = GetComponent<ThirdPersonMovement>();
 
-        //dustTrail.Stop();
+        ////dustTrail.Stop();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         {
-           dustTrail.Play();
+           dustTrail.Play(); // ???
         }
     }
 }

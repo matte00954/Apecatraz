@@ -1,3 +1,4 @@
+// Author: Sebastian Klötz
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,22 +6,65 @@ using UnityEngine.UI;
 
 public class DialogueManager : MonoBehaviour
 {
-    
-    public Text nameText;
-    public Text dialogueText;
-    public static bool pausedWhileReading = false;
+    private static bool isPausedWhileReading;
+    private static bool isActive;
 
-    public Animator animator;
-    public Animator blur;
+    [SerializeField] private Text nameText;
+    [SerializeField] private Text dialogueText;
+
+    [SerializeField] private Animator animator;
+    [SerializeField] private Animator blur;
 
     private Queue<string> sentences;
 
-    public static bool isActive;
+    public static bool IsPausedWhileReading { get => isPausedWhileReading; set => isPausedWhileReading = value; }
+    public static bool IsActive { get => isActive; set => isActive = value; }
 
-    void Start()
+    public void StartDialogue(Dialogue dialogue)
     {
-        sentences = new Queue<string>();
+        Debug.Log("Starting conversation with " + dialogue.name);
+
+        animator.SetBool("IsOpen", true);
+        blur.SetBool("IsHere", true);
+
+        isActive = true;
+        Time.timeScale = 0;
+        isPausedWhileReading = true;
+
+        nameText.text = dialogue.name;
+        sentences.Clear();
+
+        foreach (string sentence in dialogue.sentences)
+            sentences.Enqueue(sentence);
+
+        ////DisplayNextSentence();
     }
+
+    public void DisplayNextSentence()
+    {
+        if (sentences.Count == 0)
+        {
+            EndDialogue();
+            return;
+        }
+
+        string sentence = sentences.Dequeue();
+        StopAllCoroutines();
+        StartCoroutine(TypeSentence(sentence));
+        Debug.Log(sentence);
+    }
+
+    public void EndDialogue()
+    {
+        Debug.Log("End of conversation");
+        animator.SetBool("IsOpen", false);
+        blur.SetBool("IsHere", false);
+        isActive = false;
+        Time.timeScale = 1;
+        isPausedWhileReading = false;
+    }
+
+    private void Start() => sentences = new Queue<string>();
 
     /*private void Update()
     {
@@ -35,72 +79,14 @@ public class DialogueManager : MonoBehaviour
         }
     }
     */
-    
 
-    public void StartDialogue (Dialogue dialogue)
+    private IEnumerator TypeSentence(string sentence)
     {
-        Debug.Log("Starting conversation with " + dialogue.name);
-
-        animator.SetBool("IsOpen", true);
-
-        blur.SetBool("IsHere", true);
-
-        isActive = true;
-
-        
-        Time.timeScale = 0;
-        pausedWhileReading = true;
-
-
-
-        nameText.text = dialogue.name;
-
-        sentences.Clear();
-
-        foreach (string sentence in dialogue.sentences)
-        {
-            sentences.Enqueue(sentence);
-        }
-
-        //DisplayNextSentence();
-    }
-
-    public void DisplayNextSentence()
-    {
-        if(sentences.Count == 0)
-        {
-            EndDialogue();
-            return;
-        }
-
-        string sentence = sentences.Dequeue();
-        StopAllCoroutines();
-        StartCoroutine(TypeSentence(sentence));
-        Debug.Log(sentence);
-    }
-
-   
-
-    private IEnumerator TypeSentence (string sentence)
-    {
-        dialogueText.text = "";
+        dialogueText.text = string.Empty;
         foreach (char letter in sentence.ToCharArray())
         {
             dialogueText.text += letter;
             yield return null;
         }
     }
-
-    public void EndDialogue()
-    {
-        Debug.Log("End of conversation");
-        animator.SetBool("IsOpen", false);
-        blur.SetBool("IsHere", false);
-        isActive = false;
-        Time.timeScale = 1;
-        pausedWhileReading = false;
-    }
-
-    
-
 }

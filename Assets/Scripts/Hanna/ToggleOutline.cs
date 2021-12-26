@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+// Author: Hanna Hellberg
 using UnityEngine;
 
 public class ToggleOutline : MonoBehaviour
@@ -10,15 +9,13 @@ public class ToggleOutline : MonoBehaviour
     private bool outlineIsEnabled;
     private bool highlightIsEnabled;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        turnOffOutlines();
-        turnOffHighlights();
+        TurnOffOutlines();
+        TurnOffHighlights();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.T) && !outlineIsEnabled)
         {
@@ -26,12 +23,11 @@ public class ToggleOutline : MonoBehaviour
             foreach (GameObject outline in outlines)
             {
                 outline.SetActive(true);                
-            } 
-                       
+            }     
         }
-        else if(Input.GetKeyDown(KeyCode.T) && outlineIsEnabled)
+        else if (Input.GetKeyDown(KeyCode.T) && outlineIsEnabled)
         {            
-            turnOffOutlines();            
+            TurnOffOutlines();            
         }
 
         if (Input.GetKeyDown(KeyCode.G) && !highlightIsEnabled)
@@ -44,11 +40,11 @@ public class ToggleOutline : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.G) && highlightIsEnabled)
         {
-            turnOffHighlights();            
+            TurnOffHighlights();            
         }
     }
 
-    private void turnOffOutlines()
+    private void TurnOffOutlines()
     {
         outlineIsEnabled = false;
         foreach (GameObject outline in outlines)
@@ -56,7 +52,8 @@ public class ToggleOutline : MonoBehaviour
             outline.SetActive(false);
         }        
     }
-    private void turnOffHighlights()
+
+    private void TurnOffHighlights()
     {
         highlightIsEnabled = false;
         foreach (GameObject highlight in highlights)

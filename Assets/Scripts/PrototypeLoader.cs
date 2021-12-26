@@ -1,5 +1,6 @@
-using UnityEngine.SceneManagement;
+// Author: [full name here]
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PrototypeLoader : MonoBehaviour
 {

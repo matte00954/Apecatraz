@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
@@ -19,21 +17,9 @@ public class GameManager : MonoBehaviour
 
     public static List<GameObject> Guards { get => guards; }
     public static List<GameObject> SecurityCams { get => securityCams; }
-
-    public void SetCurrentCheckpoint(GameObject checkpoint)
-    {
-        currentCheckpoint = checkpoint;
-    }
-
-    public void RespawnAtLatestCheckpoint()
-    {
-        thirdPersonMovement.MoveTo(currentCheckpoint.transform.position);
-    }
-
-    public void RespawnAtCheckpointX(int checkpointnumber)
-    {
-        thirdPersonMovement.MoveTo(checkpoints[checkpointnumber].transform.position);
-    }
+    public void SetCurrentCheckpoint(GameObject checkpoint) => currentCheckpoint = checkpoint;
+    public void RespawnAtLatestCheckpoint() => thirdPersonMovement.MoveTo(currentCheckpoint.transform.position);
+    public void RespawnAtCheckpointX(int checkpointnumber) => thirdPersonMovement.MoveTo(checkpoints[checkpointnumber].transform.position);
 
     public void ResetAllEnemies()
     {
@@ -45,24 +31,14 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (thirdPersonMovement.GetGodMode() == true)
+        if (thirdPersonMovement.IsGodMode == true && Input.anyKeyDown)
         {
-
             if (Input.GetKeyDown("i"))
-            {
                 RespawnAtCheckpointX(1);
-            }
-
             if (Input.GetKeyDown("o"))
-            {
                 RespawnAtCheckpointX(2);
-            }
             if (Input.GetKeyDown("p"))
-            {
                 RespawnAtCheckpointX(0);
-            }
-
         }
     }
-
 }

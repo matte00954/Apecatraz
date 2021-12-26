@@ -209,7 +209,7 @@ public class TelekinesisTest : MonoBehaviour
 
     private void MoveObject()
     {
-        energy.ActivateEnergyRegen(false);
+        energy.IsRegenerating = false;
         if (Vector3.Distance(carriedObject.transform.position, cameraTelekinesisTarget.position) > 0.1f)
         {
             Vector3 moveDirection = cameraTelekinesisTarget.position - carriedObject.transform.position + (cameraTelekinesisTarget.forward * telkenesisOffset);
@@ -280,7 +280,7 @@ public class TelekinesisTest : MonoBehaviour
             //Stops vfx and objectOutline
             thinking.Stop();
             Destroy(carriedObjectOutline);
-            energy.ActivateEnergyRegen(true);
+            energy.IsRegenerating = true;
         }
         else
             Debug.LogError("carriedObject is null");

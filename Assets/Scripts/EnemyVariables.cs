@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+// Author: [full name here]
 [System.Serializable]
 public class EnemyVariables
 {

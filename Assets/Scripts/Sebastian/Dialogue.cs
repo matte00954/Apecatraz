@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+// Author: Sebastian Klötz
 using UnityEngine;
 
 [System.Serializable]

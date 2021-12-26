@@ -1,14 +1,13 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+// Author: [full name here]
 using UnityEngine;
 
 public class BasketKorg : MonoBehaviour
 {
-    [SerializeField] private AudioClip yay;
-    private bool hasScored = false;
+    [SerializeField] private AudioClip yayClip;
     [SerializeField] private GameObject bananaPrefab;
     [SerializeField] private GameObject confettiParticle;
+
+    private bool hasScored = false;
 
     private void Start()
     {
@@ -27,9 +26,9 @@ public class BasketKorg : MonoBehaviour
 
     private void SpawnBanana()
     {
-        gameObject.GetComponent<AudioSource>().PlayOneShot(yay, 1f);
+        gameObject.GetComponent<AudioSource>().PlayOneShot(yayClip, 1f);
         confettiParticle.SetActive(true);
         bananaPrefab.SetActive(true);
-        //throw new NotImplementedException();
+        ////throw new NotImplementedException();
     }
 }

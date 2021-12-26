@@ -1,7 +1,6 @@
 // Author: Mattias Larsson
-// Author: William �rnquist
+// Secondary Author: William �rnquist
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,16 +9,26 @@ using UnityEngine.Windows.Speech;
 
 public class Telekinesis : MonoBehaviour
 {
+    // Readonly fields (make serializable?)
+    private readonly float minDrag = 1f;
+    private readonly float maxDrag = 4f;
+    private readonly float moveForce = 50f;
+    private readonly float pickupRange = 8f;
+    private readonly float minRange = 1.5f;
+    private readonly float maxRange = 12f; // Needs to be higher than pickuprange
+    private readonly float telekinesisSphereRadius = 3f;
+    private readonly float pushMultiplier = 20f;
+    private readonly float maxPushTimer = 1f;
+    private readonly float telekinesisEnergyCost = 0.1f;
+
     [Header("Game Object references")]
     [SerializeField] private ThirdPersonMovement thirdPersonMovement;
     [SerializeField] private Transform cameraTelekinesisTarget;
     [SerializeField] private LayerMask canBeCarriedLayer;
     [SerializeField] private LayerMask canBePushedLayer;
 
-
     [Header("Energy")]
     [SerializeField] private Energy energy;
-    private float telekinesisEnergyCost = 0.1f;
 
     [Header("Telekinesis")]
     [SerializeField] private GameObject mainCamera;
@@ -28,32 +37,19 @@ public class Telekinesis : MonoBehaviour
 
     [SerializeField] private AudioClip telekinesisSound;
     [SerializeField] private AudioClip pushSound;
-
     [SerializeField] private AudioSource audioSource;
 
     private int telkenesisOffset = 0;
     private int maxTelekenesisOffset = 3;
     private int minTelekenesisOffset = -1;
 
-    //Emil
+    // Added by Emil
     private Material originalMat;
     [SerializeField] private Material telekinesisMat;
 
-    private float minDrag = 1f;
-    private float maxDrag = 4f;
-
     private GameObject carriedObject;
 
-    private float moveForce = 50f;
-    private float pickupRange = 8f;
-    private float minRange = 1.5f;
-    private float maxRange = 12f; // needs to be higher than pickuprange
-    private float telekinesisSphereRadius = 3f;
-
-    private float pushMultiplier = 20f;
-    private float maxPushTimer = 1f;
     private float pushTimer;
-
     private bool silenced;
 
     /// Added by Andreas 2021-11-11
@@ -84,7 +80,7 @@ public class Telekinesis : MonoBehaviour
             Debug.Log("Name: " + device);
         }*/
 
-        if(audioSource == null)
+        if (audioSource == null)
         {
             Debug.LogError("No audio source");
         }
@@ -189,52 +185,49 @@ public class Telekinesis : MonoBehaviour
 
     private void FindObject(bool voiceCommand)
     {
-
         if (carriedObject == null && !silenced && energy.CheckEnergy(telekinesisEnergyCost))
         {
-            RaycastHit hit;
-            //Multiple raycasts do not seem to work in the same if statement, therefore split up
-            if (Physics.Raycast(telekinesisOrigin.transform.position,
-                mainCamera.transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
+            // Multiple raycasts do not seem to work in the same if statement, therefore split up
+            if (Physics.Raycast(telekinesisOrigin.transform.position, mainCamera.transform.TransformDirection(Vector3.forward), out RaycastHit hit, pickupRange, canBeCarriedLayer))
             {
                 PickupObject(hit.transform.gameObject);
             }
-            else if (Physics.SphereCast(telekinesisOrigin.transform.position, telekinesisSphereRadius,
-                    mainCamera.transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
+            else if (Physics.SphereCast(telekinesisOrigin.transform.position, telekinesisSphereRadius, mainCamera.transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBeCarriedLayer))
             {
                 PickupObject(hit.transform.gameObject);
             }
-            else if (Physics.SphereCast(telekinesisOrigin.transform.position, telekinesisSphereRadius,
-                    mainCamera.transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBePushedLayer)) //Sphere moving towards camera forward
-            {
+            else if (Physics.SphereCast(telekinesisOrigin.transform.position, telekinesisSphereRadius, mainCamera.transform.TransformDirection(Vector3.forward), out hit, pickupRange, canBePushedLayer))
+            { // Sphere moving towards camera forward
                 PushObject(hit);
             }
         }
         else
         {
-            if(voiceCommand == false)
+            if (voiceCommand == false)
                 DropObject();
         }
     }
 
-    private void PushObject(RaycastHit hit) //Push instead of moving object
+    private void PushObject(RaycastHit hit) // Push instead of moving object
     {
-
         audioSource.clip = pushSound;
         audioSource.Play();
 
-
         if (pushTimer <= 0f)
         {
-            Rigidbody push = null;
-            if (hit.transform.gameObject.CompareTag("WreckingBall"))
-            {
-                push = hit.transform.gameObject.GetComponentInParent<Rigidbody>();
-            }
-            else
-            {
-                push = hit.transform.gameObject.GetComponent<Rigidbody>();
-            }
+            Rigidbody push = hit.transform.gameObject.CompareTag("WreckingBall") ?
+                hit.transform.gameObject.GetComponentInParent<Rigidbody>()
+                : hit.transform.gameObject.GetComponent<Rigidbody>();
+            
+            ////if (hit.transform.gameObject.CompareTag("WreckingBall"))
+            ////{
+            ////    push = hit.transform.gameObject.GetComponentInParent<Rigidbody>();
+            ////}
+            ////else
+            ////{
+            ////    push = hit.transform.gameObject.GetComponent<Rigidbody>();
+            ////}
+            
             if (push == null)
                 return;
 
@@ -250,7 +243,6 @@ public class Telekinesis : MonoBehaviour
         audioSource.clip = telekinesisSound;
         audioSource.Play();
 
-
         if (pickObject.GetComponent<Rigidbody>())
         {
             thirdPersonMovement.ActivateRenderer(1); //// 1 = Ability shader
@@ -262,7 +254,7 @@ public class Telekinesis : MonoBehaviour
             objectRigidbody.drag = maxDrag; // Makes object move slower when holding
             carriedObject = pickObject;
 
-            //Emil Shader
+            // Emil's Shader
             originalMat = carriedObject.GetComponent<Renderer>().material;
             telekinesisMat.SetTexture("MainTexture", originalMat.mainTexture);
             carriedObject.GetComponent<Renderer>().material = telekinesisMat;
@@ -270,22 +262,21 @@ public class Telekinesis : MonoBehaviour
             // Destroy Icon
             Destroy(carriedObjectOutline);
 
-            //activate vfx
+            // Activate vfx
             thinking.Play();
             telekinesis.enabled = true;
-
         }
     }
 
     private void MoveObject()
     {
-        energy.ActivateEnergyRegen(false);
+        energy.IsRegenerating = false;
         if (Vector3.Distance(carriedObject.transform.position, cameraTelekinesisTarget.position) > 0.1f)
         {
             Vector3 moveDirection = cameraTelekinesisTarget.position - carriedObject.transform.position + (cameraTelekinesisTarget.forward * telkenesisOffset);
             carriedObject.GetComponent<Rigidbody>().AddForce(moveDirection * moveForce);
             
-            //Set telekinesis target,
+            // Set telekinesis target
             telekinesis.SetVector3("TargetVector3", carriedObject.GetComponent<Rigidbody>().worldCenterOfMass);
 
             energy.SpendEnergy(telekinesisEnergyCost); 
@@ -331,7 +322,6 @@ public class Telekinesis : MonoBehaviour
 
     private void DropObject()
     {
-
         if (carriedObject != null)
         {
             audioSource.loop = false;
@@ -342,7 +332,8 @@ public class Telekinesis : MonoBehaviour
             carriedRigidbody.freezeRotation = false;
             carriedRigidbody.useGravity = true;
             carriedRigidbody.drag = minDrag;
-            //Emil
+
+            // Added by Emil
             carriedObject.GetComponent<Renderer>().material = originalMat;
             originalMat = null;
 
@@ -351,7 +342,7 @@ public class Telekinesis : MonoBehaviour
             thirdPersonMovement.PlayerState = ThirdPersonMovement.State.nothing;
 
             telkenesisOffset = 0;
-            energy.ActivateEnergyRegen(true);
+            energy.IsRegenerating = true;
             
             // Stops vfx and objectOutline
             thinking.Stop();

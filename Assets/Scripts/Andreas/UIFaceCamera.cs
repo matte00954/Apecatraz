@@ -1,29 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
+// Author: Andreas Scherman
 using UnityEngine;
-using UnityEngine.UI;
 
 public class UIFaceCamera : MonoBehaviour
 {
-    public GameObject camera;
-    public Canvas canvas;
+    [SerializeField] private GameObject cameraObject;
+    [SerializeField] private Canvas canvas;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        if (camera == null)
-        {
-            camera = GameObject.FindWithTag("MainCamera");
-
-        }
+        if (cameraObject == null)
+            cameraObject = GameObject.FindWithTag("MainCamera");
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (canvas.enabled)
-        {
-            canvas.transform.LookAt(camera.transform);
-        }
+            canvas.transform.LookAt(cameraObject.transform);
     }
 }

@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+// Author: [full name here]
 using UnityEngine;
 
 public class FootSteps : MonoBehaviour
@@ -19,6 +18,6 @@ public class FootSteps : MonoBehaviour
 
     private AudioClip GetRandomClip()
     {
-        return steps[UnityEngine.Random.Range(0, steps.Length)];
+        return steps[Random.Range(0, steps.Length)];
     }
 }

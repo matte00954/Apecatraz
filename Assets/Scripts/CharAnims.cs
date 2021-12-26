@@ -1,9 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
+// Author: [full name here]
 using UnityEngine;
 
 public class CharAnims : MonoBehaviour
 {
+    private const float LedgeRayDistance = 1f;
+
     [SerializeField]
     private GameObject ledgeDistanceRay;
     [SerializeField]
@@ -14,71 +15,46 @@ public class CharAnims : MonoBehaviour
     private GameObject player;
     private float saveRotation;
 
-    // Start is called before the first frame update
-    void Start()
+    public void SetTriggerFromString(string trigger) => anim.SetTrigger(trigger);
+    public void SetAnimFloat(string animName, float magnitude) => anim.SetFloat(animName, magnitude);
+    public void SetAnimBool(string animName, bool value) => anim.SetBool(animName, value);
+    public void CheckStopRunning() // Added by Joche
     {
-        player = this.gameObject;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        GetTurn();
-        if (tpm.PlayerState.Equals(ThirdPersonMovement.State.nothing))
-        {
-            RaycastHit hit;
-
-            if (Physics.Raycast(ledgeDistanceRay.transform.position, ledgeDistanceRay.transform.forward,
-                out hit, 1f)) //checks distance from object so animation starts at correct the distance
-            {
-                anim.SetFloat("ledge", Vector3.Distance(ledgeDistanceRay.transform.position, hit.point));
-
-            }
-            else
-            {
-                anim.SetFloat("ledge", 0);
-            }
-        }
-    }
-
-    public void CheckStopRunning() //Joche
-    {
-        if (tpm.GetVelocity() > 3)
+        if (tpm.Velocity > 3)
         {
             /*if (tpm.PlayerState.Equals(ThirdPersonMovement.State.climbing))
             {
                 anim.SetTrigger("Start");
             }*/
-            if (!tpm.GetIsMoving())
-            {
+            if (!tpm.IsMoving)
                 anim.SetTrigger("Start");
-            }
-            tpm.SetIsMoving(true);
+
+            tpm.IsMoving = true;
         }
-        if (tpm.GetVelocity() < 3 && tpm.GetIsMoving())
+
+        if (tpm.Velocity < 3 && tpm.IsMoving)
         {
-            tpm.SetIsMoving(false);
+            tpm.IsMoving = false;
             anim.SetTrigger("Stop");
         }
     }
 
+    private void Start() => player = this.gameObject;
 
-    public void SetTriggerFromString(string trigger)
+    private void Update()
     {
-        anim.SetTrigger(trigger);
+        GetTurn();
+        if (tpm.PlayerState.Equals(ThirdPersonMovement.State.nothing))
+        {
+            // Checks distance from object so animation starts at correct the distance
+            if (Physics.Raycast(ledgeDistanceRay.transform.position, ledgeDistanceRay.transform.forward, out RaycastHit hit, LedgeRayDistance))
+                anim.SetFloat("ledge", Vector3.Distance(ledgeDistanceRay.transform.position, hit.point));
+            else
+                anim.SetFloat("ledge", 0);
+        }
     }
 
-    public void SetAnimFloat(string animName, float magnitude)
-    {
-        anim.SetFloat(animName, magnitude);
-    }
-
-    public void SetAnimBool(string animName, bool value)
-    {
-        anim.SetBool(animName, value);
-    }
-
-    private void GetTurn() //Joche
+    private void GetTurn() // Added by Joche
     {
         anim.SetFloat("runX", (saveRotation + 1000) - (transform.eulerAngles.y + 1000));
         saveRotation = transform.eulerAngles.y;

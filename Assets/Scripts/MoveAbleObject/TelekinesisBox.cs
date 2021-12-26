@@ -1,35 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TelekinesisBox : MonoBehaviour
 {
-    public GameObject PickupMessagePanel;
+    [SerializeField] private GameObject pickupMessagePanel;
 
-    private void Start() {
-        PickupMessagePanel = GameObject.FindGameObjectWithTag("PickupMessagePanel");
-    }
-    void OnTriggerEnter(Collider other)
+    private void Start() => pickupMessagePanel = GameObject.FindGameObjectWithTag("PickupMessagePanel");
+    private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player")
-        {
-            PickupMessagePanel.SetActive(true);
-        }
+        if (other.CompareTag("Player"))
+            pickupMessagePanel.SetActive(true);
     }
 
     private void OnTriggerExit(Collider other) 
     {
-        if (other.tag == "Player")
-        {
-            PickupMessagePanel.SetActive(false);
-        }
+        if (other.CompareTag("Player"))
+            pickupMessagePanel.SetActive(false);
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (Input.GetKeyDown("f") && other.tag == "Player")
-        {
+        if (Input.GetKeyDown("f") && other.CompareTag("Player"))
             Debug.Log("Talking");
-        }
     }
 }

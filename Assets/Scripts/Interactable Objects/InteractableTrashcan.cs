@@ -1,43 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class InteractableTrashcan : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject trashCanTextUI;
-    [SerializeField]
-    private GameObject trashCanIsChasedUI;
+    private const string TrashcanTagName = "Trashcan";
 
-    [SerializeField]
-    private ThirdPersonMovement thirdPersonMovement;
+    [SerializeField] private GameObject trashCanTextUI;
+    [SerializeField] private GameObject trashCanIsChasedUI;
+    [SerializeField] private ThirdPersonMovement thirdPersonMovement;
 
     private Vector3 cachedEnteredLocation;
-
     private bool canEnter = false;
-
     private float chasedTimer = 3f;
-
     private Transform targetTransform;
 
     private void Start()
     {
-        if (trashCanTextUI.activeInHierarchy) trashCanTextUI.SetActive(false);
+        if (trashCanTextUI.activeInHierarchy)
+            trashCanTextUI.SetActive(false);
     }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-
-            if (canEnter == true && thirdPersonMovement.PlayerState.Equals(ThirdPersonMovement.State.nothing) == true && EnemyMovement.AwareEnemies.Count == 0)
-            {
+            if (canEnter && thirdPersonMovement.PlayerState.Equals(ThirdPersonMovement.State.nothing) && EnemyMovement.AwareEnemies.Count == 0)
                 EnterTrashCan();
-            }
-            else if (thirdPersonMovement.PlayerState.Equals(ThirdPersonMovement.State.hiding) == true)
-            {
+            else if (thirdPersonMovement.PlayerState.Equals(ThirdPersonMovement.State.hiding))
                 ExitTrashCan();
-            }
-            else if(canEnter == true) 
+            else if (canEnter) 
                 trashCanIsChasedUI.SetActive(true);
         }
 
@@ -45,32 +35,32 @@ public class InteractableTrashcan : MonoBehaviour
         {
             chasedTimer -= Time.deltaTime;
 
-            if(chasedTimer < 0)
+            if (chasedTimer < 0)
             {
                 trashCanIsChasedUI.SetActive(false);
                 chasedTimer = 3f;
             }
         }
     }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Trashcan"))
+        if (other.gameObject.CompareTag(TrashcanTagName))
         {
             trashCanTextUI.SetActive(true);
             canEnter = true;
 
             targetTransform = other.gameObject.GetComponent<TrashcanTransform>().GetEnterLocation();
         }
-
     }
+
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Trashcan"))
+        if (other.gameObject.CompareTag(TrashcanTagName))
         {
             trashCanTextUI.SetActive(false);
             canEnter = false;
         }
-
     }
 
     private void EnterTrashCan()
@@ -80,14 +70,15 @@ public class InteractableTrashcan : MonoBehaviour
         thirdPersonMovement.MoveTo(targetTransform.position);
         thirdPersonMovement.ToggleRigidbodyCollisions(false);
     }
+
     private void ExitTrashCan()
     {
         thirdPersonMovement.PlayerState = ThirdPersonMovement.State.nothing;
         thirdPersonMovement.MoveTo(cachedEnteredLocation);
         thirdPersonMovement.ToggleRigidbodyCollisions(true);
     }
-
 }
+
 /*[SerializeField]
 private GameObject trashCanText;
 private bool IsHiding = false;
@@ -172,4 +163,3 @@ private void CooldownTimer()
     } while (cooldown != cooldowncap);
 }
 }*/
-
