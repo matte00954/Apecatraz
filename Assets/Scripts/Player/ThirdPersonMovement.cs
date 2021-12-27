@@ -22,9 +22,6 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float GravityJumpApex = 5f;
     private const float LedgeCheckRayLengthMultiplier = 1.5f;
 
-    // ground check
-    private const float GroundCheckRadius = 0.3f; // comparing ground check game object to floor
-
     // rotation
     private const float TurnSmoothTime = 0.02f;
     private const float TurnSmoothTimeInAir = 0.25f;
@@ -36,6 +33,7 @@ public class ThirdPersonMovement : MonoBehaviour
     [Header("Controller")]
     [SerializeField] private Rigidbody playerRigidbody;
     [SerializeField] private PhysicMaterial playerPhysicMaterial;
+    [SerializeField] private Transform gfxTransformForRotation;
 
     [Header("Ground check")]
     [SerializeField] private Transform frontFeetTransform;
@@ -111,7 +109,6 @@ public class ThirdPersonMovement : MonoBehaviour
 
     // ALL CLIMBABLE OBJECTS NEEDS A TRIGGER WITH CLIMB LAYER
 
-    // Player States
     private State playerState;
     public enum State { dashing, telekinesis, disabled, nothing, climbing, hiding }
     public State PlayerState { get => playerState; set => playerState = value; }
@@ -284,7 +281,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Death()
     {
-        ////throw new NotImplementedException();
+        //// throw new NotImplementedException();
         charAnims.SetAnimBool("Deth", true);
     }
 
@@ -345,7 +342,13 @@ public class ThirdPersonMovement : MonoBehaviour
 
                     if (OnSlope())
                     {
-                        ////rb.MoveRotation(Quaternion.Euler(angle, rb.transform.rotation.y, 0f));
+                        //Method 1, does not work
+                        ////playerRigidbody.MoveRotation(Quaternion.Euler(angle, rb.transform.rotation.y, 0f));
+
+                        //Method 2, does not work
+                        ////Transform transform = OnSlopeVector(); 
+                        ////gfxTransformForRotation.rotation = Quaternion.Euler(transform.rotation.eulerAngles);
+
                         if (playerRigidbody.velocity.magnitude < MaxPlayerSpeedRun)
                             playerRigidbody.AddForce(slopeMoveDirection.normalized, ForceMode.Impulse);
                     }
@@ -425,6 +428,15 @@ public class ThirdPersonMovement : MonoBehaviour
         }
         else
             return false;
+    }
+
+    private Transform OnSlopeVector()
+    {
+        RaycastHit slopeHit;
+
+        Physics.Raycast(midRaycast.position, Vector3.down, out slopeHit, 0.5f, groundMask);
+
+        return slopeHit.transform;
     }
 
     #region Ledgeclimb
