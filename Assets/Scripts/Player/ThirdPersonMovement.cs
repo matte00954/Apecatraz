@@ -38,7 +38,6 @@ public class ThirdPersonMovement : MonoBehaviour
     [Header("Ground check")]
     [SerializeField] private Transform frontFeetTransform;
     [SerializeField] private Transform backFeetTransform;
-    [SerializeField] private Transform coyoteJumpTransform;
 
     [Header("Layer masks")]
     [SerializeField] private LayerMask playerLayer;
@@ -521,7 +520,6 @@ public class ThirdPersonMovement : MonoBehaviour
                     if (energy.IsRegenerating)
                         energy.IsRegenerating = false;
 
-                    ActivateRenderer(1);
                     Dash();
                 }
                 else
@@ -539,6 +537,8 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Dash()
     {
+        ActivateRenderer(1);
+
         energy.SpendEnergy(DashEnergyCost);
 
         if (resetVelocity)
@@ -546,6 +546,8 @@ public class ThirdPersonMovement : MonoBehaviour
             playerRigidbody.velocity = Vector3.zero;
             resetVelocity = false;
         }
+
+        dashEffectsReference.SlowDown();
 
         RaycastHit hit;
 
@@ -557,11 +559,9 @@ public class ThirdPersonMovement : MonoBehaviour
         {
             playerState = State.dashing;
             playerRigidbody.velocity = transform.forward * DashForce;
-            playerRigidbody.AddForce(0, 4f, 0);
             // Constant force results in constant accelaration, zero force results constant velocity
         }
 
-        dashEffectsReference.SlowDown();
     }
 
     private void StopDashing()
