@@ -518,15 +518,22 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 if (energy.CheckEnergy(DashEnergyCost))
                 {
+                    if (energy.IsRegenerating)
+                        energy.IsRegenerating = false;
+
                     ActivateRenderer(1);
-                    energy.IsRegenerating = false;
                     Dash();
                 }
                 else
-                    StopDashing(false);
+                {
+                    StopDashing();
+                }
             }
             else
-                StopDashing(false);
+            { 
+                if(dashTimer <= 0)
+                    StopDashing();
+            }
         }
     }
 
@@ -540,44 +547,32 @@ public class ThirdPersonMovement : MonoBehaviour
             resetVelocity = false;
         }
 
-        if (playerPhysicMaterial.dynamicFriction != 0)
-            playerPhysicMaterial.dynamicFriction = 0f;
+        RaycastHit hit;
 
-        if (playerRigidbody.useGravity)
-            playerRigidbody.useGravity = false;
-
-        if (Physics.SphereCast(headRaycastOrigin.position, 0.15f, Vector3.forward, out _, DashDistanceCheck, dashObstacles) || !energy.CheckEnergy(DashEnergyCost))
+        if (Physics.SphereCast(headRaycastOrigin.position, 0.15f, Vector3.forward, out hit, DashDistanceCheck, dashObstacles) || !energy.CheckEnergy(DashEnergyCost))
         {
-            StopDashing(true);
+            StopDashing();
         }
         else if (energy.CheckEnergy(DashEnergyCost) && !playerState.Equals(State.dashing))
         {
             playerState = State.dashing;
-            ////if (rb.velocity != transform.forward * DashForce)
             playerRigidbody.velocity = transform.forward * DashForce;
-            playerRigidbody.AddForce(0, 2.5f, 0);
-            ////rb.AddForce(transform.forward * DASH_FORCE, ForceMode.Impulse);
+            playerRigidbody.AddForce(0, 4f, 0);
             // Constant force results in constant accelaration, zero force results constant velocity
         }
 
         dashEffectsReference.SlowDown();
     }
 
-    private void StopDashing(bool forceStop)
+    private void StopDashing()
     {
-        if (dashTimer <= 0f || forceStop)
-        {
-            ActivateRenderer(0);
-            dashEffectsReference.SpeedUp();
-            playerRigidbody.useGravity = true;
-            resetVelocity = true;
-            ////pm.dynamicFriction = deafaltDynamicFriction;
-            ////rb.drag = defaultDrag;
-            playerState = State.nothing;
-            dashCooldown = 1f;
-            dashTimer = 0.2f;
-            energy.IsRegenerating = true;
-        }
+        ActivateRenderer(0); //Removes dash effect on player
+        dashEffectsReference.SpeedUp();
+        resetVelocity = true; 
+        playerState = State.nothing;
+        dashCooldown = 1f;
+        dashTimer = 0.2f;
+        energy.IsRegenerating = true;
     }
     #endregion
 
