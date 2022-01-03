@@ -1,18 +1,17 @@
 // Author: Mattias Larsson
-using System;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class ThirdPersonMovement : MonoBehaviour
 {
-    // teleport
+    // dash
     private const float DashDistanceCheck = 1f;
     private const float DashForce = 45f;
 
     // movement
-    private const float MaxPlayerSpeedRun = 8.5f; // Do not change
-    private const float MaxPlayerSpeedWalk = 3f; // Do not change
-    private const float JumpHeight = 22f; // Do not change
+    private const float MaxPlayerSpeedRun = 8.5f; 
+    private const float MaxPlayerSpeedWalk = 4f;
+    private const float JumpHeight = 22f; 
 
     // dash
     private const float DashEnergyCost = 5f;
@@ -32,8 +31,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     [Header("Controller")]
     [SerializeField] private Rigidbody playerRigidbody;
-    [SerializeField] private PhysicMaterial playerPhysicMaterial;
-    [SerializeField] private Transform gfxTransformForRotation;
+    [SerializeField] private Transform gfxTransformForRotation; //might use this to flip gfx, currently not working
 
     [Header("Ground check")]
     [SerializeField] private Transform frontFeetTransform;
@@ -76,8 +74,8 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private bool dashAllowed = true;
     [SerializeField] private bool ledgeGrabAllowed = true;
     [SerializeField] private bool telekinesAllowed = true;
-    [SerializeField] private bool godMode = false; // only effects slowmotion atm
-    [SerializeField] private bool slowmotionAllowed = false;
+    [SerializeField] private bool godMode = false; // gives player a few cheats for instance the player can teleport to checkpoints with I, O and P
+    //[SerializeField] private bool slowmotionAllowed = false;
 
     [Header("Game handler")]
     [SerializeField] private GameManager gameManager;
@@ -146,8 +144,8 @@ public class ThirdPersonMovement : MonoBehaviour
             Debug.Log("Telekinesis not allowed!");
         if (godMode)
             Debug.Log("God mode on!");
-        if (slowmotionAllowed)
-            Debug.Log("Slow motion allowed, SHOULD ONLY BE ALLOWED IN PROTOTYPE!!!");
+        /*if (slowmotionAllowed)
+            Debug.Log("Slow motion allowed, SHOULD ONLY BE ALLOWED IN PROTOTYPE!!!");*/
 
         IsTelekinesisActive = telekinesAllowed;
         playerState = State.nothing;
@@ -192,7 +190,12 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 walk = true;
             }
+            else if (walk)
+            {
+                walk = false;
+            }
 
+            /*
             // To unpause game
             if (Time.timeScale != 1 && !slowmotionAllowed)
             {
@@ -219,7 +222,8 @@ public class ThirdPersonMovement : MonoBehaviour
                 // Equivalent solution (value = condition ? true : false)
                 Time.timeScale = PlayerState.Equals(State.dashing) && Time.timeScale != 0.2f ? 0.2f 
                     : (!PlayerState.Equals(State.dashing) && Time.timeScale != 1f ? 1f : Time.timeScale);
-            }
+            }*/
+
         }
 
         if (InGameMenuManager.GameIsPaused && Cursor.lockState.Equals(CursorLockMode.Locked))
@@ -236,6 +240,12 @@ public class ThirdPersonMovement : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        charAnims.SetAnimFloat("runY", playerRigidbody.velocity.magnitude); // Added by Joche
+    }
+
+
     private void StateCheck()
     {
         switch (playerState)
@@ -247,26 +257,22 @@ public class ThirdPersonMovement : MonoBehaviour
             case State.telekinesis:
                 Movement();
                 break;
-            case State.disabled: // disabled = captured/rekt
-                // Play death anim
+            case State.disabled: // disabled = captured
                 respawnTimer -= Time.deltaTime;
                 Death();
                 RespawnPlayer();
-
-                // reset game
                 break;
             case State.climbing:
                 LedgeClimb();
                 break;
-            case State.nothing:
+            case State.nothing: // nothing = default
                 Movement();
                 LedgeCheck();
                 DashCheck();
                 break;
-            case State.hiding:
-
+            case State.hiding: // hiding in trash can
                 break;
-            default:
+            default: //this one should never happen
                 Debug.LogError("Player state is null");
                 break;
         }
@@ -350,31 +356,46 @@ public class ThirdPersonMovement : MonoBehaviour
                         //Method 2, does not work
                         ////Transform transform = OnSlopeVector(); 
                         ////gfxTransformForRotation.rotation = Quaternion.Euler(transform.rotation.eulerAngles);
-
-                        if (playerRigidbody.velocity.magnitude < MaxPlayerSpeedRun)
-                            playerRigidbody.AddForce(slopeMoveDirection.normalized, ForceMode.Impulse);
-                    }
-                    else
-                    {
-                        if (walk && playerRigidbody.velocity.magnitude < MaxPlayerSpeedWalk)
-                            playerRigidbody.AddForce(moveDirection, ForceMode.Impulse);
+                        
+                        if (walk) //walking on slopes
+                        {
+                            if (playerRigidbody.velocity.magnitude < MaxPlayerSpeedWalk)
+                                playerRigidbody.AddForce(slopeMoveDirection.normalized, ForceMode.Impulse);
+                        }
                         else if (playerRigidbody.velocity.magnitude < MaxPlayerSpeedRun)
+                        {
+                            playerRigidbody.AddForce(slopeMoveDirection.normalized, ForceMode.Impulse);
+                        }
+                    }
+                    else //Not on slope, regular flat movement
+                    {
+                        if (walk)
+                        {
+                            if (playerRigidbody.velocity.magnitude < MaxPlayerSpeedWalk)
+                            {
+                                playerRigidbody.AddForce(moveDirection, ForceMode.Impulse);
+                            }
+                        }
+                        else if (playerRigidbody.velocity.magnitude < MaxPlayerSpeedRun)
+                        {
                             playerRigidbody.AddForce(moveDirection * 1.15f, ForceMode.Impulse);
+                        }
                     }
                 }
                 else
                 {
                     Vector3 velocityWithoutY = new Vector3(playerRigidbody.velocity.x, 0f, playerRigidbody.velocity.z); // Remove Y velocity from calc
+
                     if (velocityWithoutY.magnitude < MaxPlayerSpeedRun)
+                    {
                         playerRigidbody.AddForce(moveDirection, ForceMode.Impulse); // In air
+                    }
                 }
             }
         }
 
         if (frontFeetOnGround || backFeetOnGround)
             charAnims.CheckStopRunning();
-
-        // gravity
 
         // In air
         if (!frontFeetOnGround && !backFeetOnGround)
@@ -399,19 +420,12 @@ public class ThirdPersonMovement : MonoBehaviour
 
         if (jump)
         {
-            ////rb.AddForce(new Vector3(0, JumpHeight, 0), ForceMode.Impulse);
-
             playerRigidbody.velocity = new Vector3(playerRigidbody.velocity.x, JumpHeight, playerRigidbody.velocity.z);
 
             charAnims.SetTriggerFromString("Jump");
 
             jump = false; // Jump input set in update, otherwise too delayed
         }
-    }
-
-    private void LateUpdate()
-    {
-        charAnims.SetAnimFloat("runY", playerRigidbody.velocity.magnitude); // Added by Joche
     }
 
     private bool OnSlope()
@@ -535,7 +549,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Dash()
     {
-        ActivateRenderer(1);
+        ActivateRenderer(1); // adds effect during dash
 
         energy.SpendEnergy(DashEnergyCost);
 
@@ -567,18 +581,18 @@ public class ThirdPersonMovement : MonoBehaviour
         ActivateRenderer(0); //Removes dash effect on player
         dashEffectsReference.SpeedUp();
         resetVelocity = true; 
-        playerState = State.nothing;
-        dashCooldown = 1f;
-        dashTimer = 0.2f;
+        playerState = State.nothing; 
+        dashCooldown = 1f; // cooldown to disable spamming dash
+        dashTimer = 0.2f; // timer reset
         energy.IsRegenerating = true;
     }
     #endregion
 
-    private void OnDrawGizmos()
+    /*private void OnDrawGizmos()
     {
         ////backFeetOnGround = Physics.CheckSphere(backFeetGroundCheck.position, GROUND_CHECK_RADIUS, ~playerLayer);
         ////frontFeetOnGround = Physics.CheckSphere(frontFeetGroundCheck.position, GROUND_CHECK_RADIUS, ~playerLayer);
-    }
+    }*/
 
     private void OnTriggerEnter(Collider other)
     {
