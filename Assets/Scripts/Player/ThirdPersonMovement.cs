@@ -193,8 +193,6 @@ public class ThirdPersonMovement : MonoBehaviour
                 walk = true;
             }
 
-            walk = Input.GetKey(KeyCode.LeftControl);
-
             // To unpause game
             if (Time.timeScale != 1 && !slowmotionAllowed)
             {
