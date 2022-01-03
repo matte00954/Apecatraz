@@ -189,6 +189,11 @@ public class ThirdPersonMovement : MonoBehaviour
                 }
             }
 
+            if (Input.GetKey(KeyCode.LeftControl))
+            {
+                walk = true;
+            }
+
             walk = Input.GetKey(KeyCode.LeftControl);
 
             // To unpause game
@@ -430,7 +435,7 @@ public class ThirdPersonMovement : MonoBehaviour
             return false;
     }
 
-    private Transform OnSlopeVector()
+    private Transform OnSlopeVector() // does not work as intended
     {
         RaycastHit slopeHit;
 
@@ -541,13 +546,16 @@ public class ThirdPersonMovement : MonoBehaviour
         if (playerRigidbody.useGravity)
             playerRigidbody.useGravity = false;
 
-        if (Physics.SphereCast(headRaycastOrigin.position, 0.2f, Vector3.forward, out _, DashDistanceCheck, dashObstacles) || !energy.CheckEnergy(DashEnergyCost))
+        if (Physics.SphereCast(headRaycastOrigin.position, 0.15f, Vector3.forward, out _, DashDistanceCheck, dashObstacles) || !energy.CheckEnergy(DashEnergyCost))
+        {
             StopDashing(true);
+        }
         else if (energy.CheckEnergy(DashEnergyCost) && !playerState.Equals(State.dashing))
         {
             playerState = State.dashing;
             ////if (rb.velocity != transform.forward * DashForce)
             playerRigidbody.velocity = transform.forward * DashForce;
+            playerRigidbody.AddForce(0, 2.5f, 0);
             ////rb.AddForce(transform.forward * DASH_FORCE, ForceMode.Impulse);
             // Constant force results in constant accelaration, zero force results constant velocity
         }
@@ -595,20 +603,3 @@ public class ThirdPersonMovement : MonoBehaviour
             audioSource.PlayOneShot(genericImpact);
     }
 }
-
-/*private void StopRunning() // Added by Joche
-{
-    if (controller.velocity.magnitude > 3)
-    {
-        if (!isMoving)
-        {
-            animator.SetTrigger("Start");
-        }
-        isMoving = true;
-    }
-    if (controller.velocity.magnitude < 3 && isMoving)
-    {
-        isMoving = false;
-        animator.SetTrigger("Stop");
-    }
-}*/
