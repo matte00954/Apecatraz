@@ -551,7 +551,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
         RaycastHit hit;
 
-        if (Physics.SphereCast(headRaycastOrigin.position, 0.15f, Vector3.forward, out hit, DashDistanceCheck, dashObstacles) || !energy.CheckEnergy(DashEnergyCost))
+        if (Physics.SphereCast(headRaycastOrigin.position, 0.15f, transform.forward, out hit, DashDistanceCheck, dashObstacles) || !energy.CheckEnergy(DashEnergyCost))
         {
             StopDashing();
         }
