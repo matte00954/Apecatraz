@@ -1782,11 +1782,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 0}
   dashEffectsReference: {fileID: 0}
-  rb: {fileID: 5321045694983690844}
-  pm: {fileID: 13400000, guid: bc963bcd1744f5745b0ca51f1943fc2e, type: 2}
+  playerRigidbody: {fileID: 0}
+  gfxTransformForRotation: {fileID: 0}
   frontFeetTransform: {fileID: 6496614434037952117}
   backFeetTransform: {fileID: 5321045694717437704}
-  coyoteJumpTransform: {fileID: 6520269481572528353}
   playerLayer:
     serializedVersion: 2
     m_Bits: 32934
@@ -1795,10 +1794,10 @@ MonoBehaviour:
     m_Bits: 4096
   groundMask:
     serializedVersion: 2
-    m_Bits: 6153
+    m_Bits: 268297
   dashObstacles:
     serializedVersion: 2
-    m_Bits: 6217
+    m_Bits: 6153
   charAnims: {fileID: 5321045694983690835}
   ledgeDownCheck: {fileID: 5891773173451076276}
   ledgeUpCheck: {fileID: 1987647258618843996}
@@ -1832,7 +1831,6 @@ MonoBehaviour:
   ledgeGrabAllowed: 1
   telekinesAllowed: 1
   godMode: 1
-  slowmotionAllowed: 0
   gameManager: {fileID: 0}
   audioSource: {fileID: 2406474811266336144}
   respawnTimer: 3
@@ -1849,7 +1847,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   energyMeter: {fileID: 0}
-  infiniteEnergy: 0
+  hasInfiniteEnergy: 0
 --- !u!114 &9200511712575619878
 MonoBehaviour:
   m_ObjectHideFlags: 0
