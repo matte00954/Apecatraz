@@ -32,6 +32,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 5657936029309862331}
+  agent: {fileID: 3235691328590164832}
 --- !u!1 &3235691328590164847
 GameObject:
   m_ObjectHideFlags: 0
@@ -97,7 +98,7 @@ MonoBehaviour:
   enemyVariables:
     patrolSpeed: 0
     alertSpeed: 0
-  jsonFile: {fileID: 4900000, guid: 431cafc022fea744fbb3ff02969a22a5, type: 3}
+    dumbstruckTime: 0
   agent: {fileID: 3235691328590164832}
   patrolSpeed: 3
   alertSpeed: 6
@@ -126,7 +127,6 @@ MonoBehaviour:
   isCircling: 0
   totalWaitTime: 2
   waypoints: []
-  guardNumber: 
 --- !u!114 &7785098873823440994
 MonoBehaviour:
   m_ObjectHideFlags: 0
