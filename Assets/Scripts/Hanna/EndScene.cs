@@ -13,4 +13,9 @@ public class EndScene : MonoBehaviour
     {
         Application.Quit();
     }
+
+    private void Awake() 
+    {
+        Cursor.lockState = CursorLockMode.None;
+    }
 }
