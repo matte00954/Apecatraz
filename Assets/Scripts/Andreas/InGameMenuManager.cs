@@ -13,7 +13,7 @@ public class InGameMenuManager : MonoBehaviour
     [SerializeField] private DialogueManager dialogueManager;
 
 
-    [Header("First Selected item")]
+    [Header("First Selected item")] // jacobs kod, behövs för min xbox kontroller
     [SerializeField] private GameObject inGameMenuFirstButton;
     [SerializeField] private GameObject optionsMenuFirstButton;
     [SerializeField] private GameObject gameMenuFirstButton;
@@ -56,8 +56,8 @@ public class InGameMenuManager : MonoBehaviour
         Time.timeScale = 0;
         gameIsPaused = true;
 
-        EventSystem.current.SetSelectedGameObject(null);
-        EventSystem.current.SetSelectedGameObject(inGameMenuFirstButton);
+        EventSystem.current.SetSelectedGameObject(null);// jacobs kod, behövs för min xbox kontroller
+        EventSystem.current.SetSelectedGameObject(inGameMenuFirstButton);// jacobs kod, behövs för min xbox kontroller
 
     }
 
@@ -68,7 +68,7 @@ public class InGameMenuManager : MonoBehaviour
 
         menuItems[menuNumber].SetActive(true);
 
-        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(null);// jacobs kod, behövs för min xbox kontroller
         if (menuNumber == 0) EventSystem.current.SetSelectedGameObject(inGameMenuFirstButton);
         if (menuNumber == 1) EventSystem.current.SetSelectedGameObject(optionsMenuFirstButton);
         if (menuNumber == 2) EventSystem.current.SetSelectedGameObject(gameMenuFirstButton);
@@ -77,7 +77,7 @@ public class InGameMenuManager : MonoBehaviour
         if (menuNumber == 5) EventSystem.current.SetSelectedGameObject(accessabilityMenuFirstButton);
         if (menuNumber == 6) EventSystem.current.SetSelectedGameObject(colorMenuFirstButton);
         if (menuNumber == 7) EventSystem.current.SetSelectedGameObject(fontMenuFirstButton);
-        if (menuNumber == 8) EventSystem.current.SetSelectedGameObject(areYouSureMenuFirstButton);
+        if (menuNumber == 8) EventSystem.current.SetSelectedGameObject(areYouSureMenuFirstButton);// jacobs kod, behövs för min xbox kontroller
     }
 
     ////public void OpenOptions() { }
@@ -108,10 +108,10 @@ public class InGameMenuManager : MonoBehaviour
                 ResumeGame();
         }
 
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetButtonDown("Fire4"))
             dialogueManager.DisplayNextSentence();
 
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (Input.GetButtonDown("Fire5"))
             dialogueManager.EndDialogue();
         //}
     }

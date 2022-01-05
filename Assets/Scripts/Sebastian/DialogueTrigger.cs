@@ -1,4 +1,4 @@
-// Author: Sebastian Klötz
+// Author: Sebastian Klï¿½tz
 using UnityEngine;
 
 public class DialogueTrigger : MonoBehaviour
@@ -14,7 +14,7 @@ public class DialogueTrigger : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.CompareTag(PlayerTagName) && Input.GetKeyDown(KeyCode.Q) && !DialogueManager.IsActive)
+        if (other.gameObject.CompareTag(PlayerTagName) && Input.GetButtonDown("Fire4") && !DialogueManager.IsActive)
             TriggerDialogue();
     }
 

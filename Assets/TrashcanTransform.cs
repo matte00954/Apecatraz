@@ -1,4 +1,4 @@
-// Author: [full name here]
+// Author: [Jacob Wik]
 using UnityEngine;
 
 public class TrashcanTransform : MonoBehaviour

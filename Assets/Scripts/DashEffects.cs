@@ -1,4 +1,4 @@
-// Author: [full name here]
+// Author: [Joche Cederball ]
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -115,7 +115,7 @@ public class DashEffects : MonoBehaviour
         if (changeTimer > 0)
         {
             effectWeight += (targetWeight - effectWeight) * Time.deltaTime * fadeSpeed;
-            volume.GetComponent<Volume>().weight = effectWeight / 100;  
+            volume.GetComponent<Volume>().weight = effectWeight / 100;
             changeTimer -= Time.deltaTime;
 
             if (changeTimer < 0)

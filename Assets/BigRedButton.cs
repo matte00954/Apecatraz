@@ -1,4 +1,4 @@
-// Author: [full name here]
+// Author: [Jacob Wik]
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -22,7 +22,7 @@ public class BigRedButton : MonoBehaviour
 
     private void Update()
     {
-        if ((Input.GetKeyDown(KeyCode.Q) && canPress == true && preparedToExplode == false) || (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.Alpha0)))
+        if ((Input.GetButtonDown("Fire4") && canPress == true && preparedToExplode == false) || (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.Alpha0)))
         {
             cutsceneCamera.SetActive(true);
             playerCamera.SetActive(false);
