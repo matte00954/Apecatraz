@@ -138,8 +138,8 @@ public class EnemyMovement : MonoBehaviour
     /// </summary>
     public void StartWaiting()
     {
-        if (currentState.Equals(GuardState.chasing))
-            enemyAnim.StopAiming();
+        //if (currentState.Equals(GuardState.chasing))
+            //enemyAnim.StopAiming();
 
         currentState = GuardState.waiting;
         agent.SetDestination(transform.position);
@@ -339,10 +339,18 @@ public class EnemyMovement : MonoBehaviour
                 Debug.LogError("currentState is NULL!");
                 break;
         }
-
+        if (enemyAnim.Accelerating())
+        {
+            Debug.Log("LAAAWL");
+            enemyAnim.StopAiming();
+        }
         if (agent.velocity.magnitude >= 1f)
         {
             enemyAnim.SetMove(1);
+            if (enemyAnim.Accelerating())
+            {
+                //enemyAnim.StopAiming();
+            }
         }
         else
             enemyAnim.SetMove(0);
@@ -376,7 +384,7 @@ public class EnemyMovement : MonoBehaviour
         searchTimer = TimerResetValue;
         currentState = GuardState.searching;
         agent.speed = agentSpeed;
-        enemyAnim.TriggerFromString("StopAiming");
+        //enemyAnim.TriggerFromString("StopAiming");
         //// Enemy lost player sound
     }
 
@@ -403,7 +411,7 @@ public class EnemyMovement : MonoBehaviour
         }
         else if (currentState != GuardState.dumbstruck && currentState != GuardState.shooting)
         {
-            enemyAnim.TriggerFromString("StopAiming");
+            //enemyAnim.TriggerFromString("StopAiming");
             currentState = GuardState.chasing;
             detectionTimer = TimerResetValue;
         }
@@ -450,7 +458,7 @@ public class EnemyMovement : MonoBehaviour
 
     private void ResumePatrol()
     {
-        enemyAnim.TriggerFromString("StopAiming");
+        //enemyAnim.TriggerFromString("StopAiming");
         audioSource.Play();
         agent.SetDestination(waypoints[currentWaypointIndex].transform.position);
     }
@@ -481,4 +489,5 @@ public class EnemyMovement : MonoBehaviour
             Gizmos.DrawRay(headTransform.position, (playerDetectionPoint.transform.position - headTransform.position).normalized * detectionRange);
         }
     }
+
 }

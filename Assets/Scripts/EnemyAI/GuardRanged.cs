@@ -29,7 +29,7 @@ public class GuardRanged : MonoBehaviour
     {
         isCharging = false;
         chargeTimer = attackChargeTime;
-        enemyAnims.StopAiming();
+        //enemyAnims.StopAiming();
         enemyAnims.BoolFromString("WeaponDrawn", false);
         enemyMovement.ResetTransform();
         enemyMovement.StartWaiting();
@@ -84,7 +84,7 @@ public class GuardRanged : MonoBehaviour
             {
                 enemyMovement.Agent.SetDestination(enemyMovement.PlayerDetectionPosition);
                 enemyMovement.CurrentState = EnemyMovement.GuardState.chasing;
-                enemyAnims.StopAiming();
+                //enemyAnims.StopAiming();
             }
         }
     }
