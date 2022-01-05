@@ -14,6 +14,7 @@ public class DialogueManager : MonoBehaviour
 
     [SerializeField] private Animator animator;
     [SerializeField] private Animator blur;
+    [SerializeField] private Animator light;
 
     private Queue<string> sentences;
 
@@ -26,6 +27,7 @@ public class DialogueManager : MonoBehaviour
 
         animator.SetBool("IsOpen", true);
         blur.SetBool("IsHere", true);
+        light.SetBool("Reading", true);
 
         isActive = true;
         Time.timeScale = 0;
@@ -59,6 +61,7 @@ public class DialogueManager : MonoBehaviour
         Debug.Log("End of conversation");
         animator.SetBool("IsOpen", false);
         blur.SetBool("IsHere", false);
+        light.SetBool("Reading", false);
         isActive = false;
         Time.timeScale = 1;
         isPausedWhileReading = false;
