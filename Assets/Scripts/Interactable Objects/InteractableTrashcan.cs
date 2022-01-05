@@ -49,6 +49,7 @@ public class InteractableTrashcan : MonoBehaviour
         if (other.gameObject.CompareTag(TrashcanTagName))
         {
             trashCanTextUI.SetActive(true);
+            trashCanTextUI.transform.position = other.transform.position + new Vector3(0,3,0);
             canEnter = true;
 
             targetTransform = other.gameObject.GetComponent<TrashcanTransform>().GetEnterLocation();

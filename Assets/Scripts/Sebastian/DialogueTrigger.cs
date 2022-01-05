@@ -21,7 +21,8 @@ public class DialogueTrigger : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag(PlayerTagName))
-            canReadUI.SetActive(true);
+            canReadUI.SetActive(true); 
+            canReadUI.transform.position = this.transform.position + Vector3.up;
     }
 
     private void OnTriggerExit(Collider other)
