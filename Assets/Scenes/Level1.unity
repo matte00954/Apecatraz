@@ -607,13 +607,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 11991457}
-  m_LocalRotation: {x: -0, y: 0.23132718, z: -0, w: 0.9728761}
-  m_LocalPosition: {x: -5.68, y: -0.31999993, z: -13.71}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -23.34, y: -1.35, z: 41.94}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1871517662}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 26.75, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &11991459
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -626,7 +626,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9655b57295b57f645baf15d66e02031b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  str: climb larger objects by jumping close to them
+  str: climb on edges by jumping close to them
   textMeshPro: {fileID: 1998611434}
 --- !u!65 &11991460
 BoxCollider:
@@ -639,7 +639,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 8, y: 10, z: 4.13}
+  m_Size: {x: 15, y: 5, z: 15}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &16117568 stripped
 Transform:
@@ -7763,7 +7763,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9655b57295b57f645baf15d66e02031b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  str: pick up objects with telekinesis with "E"
+  str: you can pick up and move objects with telekinesis
   textMeshPro: {fileID: 1998611434}
 --- !u!65 &253168780
 BoxCollider:
@@ -27091,7 +27091,7 @@ GameObject:
   - component: {fileID: 833661533}
   - component: {fileID: 833661534}
   m_Layer: 0
-  m_Name: Movement
+  m_Name: Vent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27104,13 +27104,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 833661531}
-  m_LocalRotation: {x: 0, y: 0.13156433, z: 0, w: 0.9913076}
-  m_LocalPosition: {x: -0.47, y: 0, z: -0.44}
+  m_LocalRotation: {x: -0, y: -0.08530146, z: -0, w: 0.99635524}
+  m_LocalPosition: {x: 3.82, y: 0, z: 17.46}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1871517662}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 15.12, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -9.787, z: 0}
 --- !u!65 &833661533
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -27122,8 +27122,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 8, y: 10, z: 10}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 28.321732, y: 15, z: 10.670462}
+  m_Center: {x: 0.35754204, y: 0, z: 4.117422}
 --- !u!114 &833661534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27136,7 +27136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9655b57295b57f645baf15d66e02031b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  str: use wasd, to move and spacebar to jump
+  str: go through ventilation shafts by walking in to the grille
   textMeshPro: {fileID: 1998611434}
 --- !u!1001 &836218521
 PrefabInstance:
@@ -29370,7 +29370,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9655b57295b57f645baf15d66e02031b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  str: dash with left shift
+  str: dash to reach areas far away
   textMeshPro: {fileID: 1998611434}
 --- !u!65 &918013669
 BoxCollider:
@@ -35555,11 +35555,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8116902948021883489, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.2746814
+      value: 0.27468142
       objectReference: {fileID: 0}
     - target: {fileID: 8116902948021883489, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.042335592
+      value: -0.04233559
       objectReference: {fileID: 0}
     - target: {fileID: 8116902948021883489, guid: 398ad44d613f1ed47af6320de5904ae0, type: 3}
       propertyPath: m_LocalRotation.y
@@ -38235,7 +38235,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6527811205388735536, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.034757324
+      value: -0.034757312
       objectReference: {fileID: 0}
     - target: {fileID: 6527811205388735536, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalRotation.y
@@ -38243,7 +38243,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6527811205388735536, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.024711657
+      value: 0.024711646
       objectReference: {fileID: 0}
     - target: {fileID: 8531149618726968613, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_Lens.m_SensorSize.x
@@ -42110,7 +42110,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6527811205388735536, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.5530728
+      value: 0.55307275
       objectReference: {fileID: 0}
     - target: {fileID: 6527811205388735536, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalRotation.x
@@ -42118,11 +42118,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6527811205388735536, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.73322505
+      value: 0.7332251
       objectReference: {fileID: 0}
     - target: {fileID: 6527811205388735536, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.31581885
+      value: -0.3158189
       objectReference: {fileID: 0}
     - target: {fileID: 8531149618726968613, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_Lens.m_SensorSize.x
@@ -48449,7 +48449,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1411945735}
-  m_LocalRotation: {x: 0.035834726, y: 0.8073982, z: 0.19869408, w: -0.5543867}
+  m_LocalRotation: {x: 0.03583473, y: 0.8073982, z: 0.19869407, w: -0.5543867}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -50120,11 +50120,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6527811205388735536, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.73322505
+      value: -0.7332251
       objectReference: {fileID: 0}
     - target: {fileID: 6527811205388735536, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.31581885
+      value: 0.31581888
       objectReference: {fileID: 0}
     - target: {fileID: 8531149618726968613, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_Lens.m_SensorSize.x
@@ -51930,7 +51930,7 @@ GameObject:
   - component: {fileID: 1506834543}
   - component: {fileID: 1506834542}
   m_Layer: 0
-  m_Name: Movement (1)
+  m_Name: Walk
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -51962,7 +51962,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9655b57295b57f645baf15d66e02031b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  str: press left control to move slower
+  str: hold left control to move slower
   textMeshPro: {fileID: 1998611434}
 --- !u!65 &1506834543
 BoxCollider:
@@ -58063,11 +58063,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6527811205388735536, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.02983649
+      value: 0.029836442
       objectReference: {fileID: 0}
     - target: {fileID: 6527811205388735536, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.011289263
+      value: -0.0112892445
       objectReference: {fileID: 0}
     - target: {fileID: 8531149618726968613, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_Lens.m_SensorSize.x
@@ -76924,11 +76924,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6527811205388735536, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.0790328
+      value: -0.07903275
       objectReference: {fileID: 0}
     - target: {fileID: 6527811205388735536, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.013292415
+      value: -0.013292387
       objectReference: {fileID: 0}
     - target: {fileID: 6527811205388735536, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalRotation.y
@@ -76936,7 +76936,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6527811205388735536, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.16532572
+      value: 0.16532573
       objectReference: {fileID: 0}
     - target: {fileID: 8531149618726968613, guid: df8a6a115ed15c84dbdba95f780840ad, type: 3}
       propertyPath: m_Lens.m_SensorSize.x
@@ -77998,7 +77998,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2095386748}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -41.6, y: -4.37, z: 18.38}
+  m_LocalPosition: {x: -36.09, y: 1.69, z: 24.76}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1871517662}
@@ -78016,7 +78016,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9655b57295b57f645baf15d66e02031b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  str: enter trashcans to hide from enemies with q
+  str: enter trashcans to hide from enemies
   textMeshPro: {fileID: 1998611434}
 --- !u!65 &2095386751
 BoxCollider:
