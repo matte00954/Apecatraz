@@ -681,7 +681,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
         foreach (ContactPoint cp in allContactPoints)
         {
-            if (cp.normal.y > 0.0001f && (found == false || cp.normal.y > groundContactPoint.normal.y)) //removed a zero from cp.normal.y
+            if (cp.normal.y > 0.0001f && (found == false || cp.normal.y > groundContactPoint.normal.y))
             {
                 groundContactPoint = cp;
                 found = true;
@@ -731,7 +731,7 @@ public class ThirdPersonMovement : MonoBehaviour
         //( 3 ) Check to see if there's actually a place to step in front of us
         //Fires one Raycast
         RaycastHit hitInfo;
-        float stepHeight = groundContactPoint.point.y + maxStepHeight + 0.0001f; //Removed a zero
+        float stepHeight = groundContactPoint.point.y + maxStepHeight + 0.0001f; 
         Vector3 stepTestInverseDirection = new Vector3(-stepTestContactPoint.normal.x, 0, -stepTestContactPoint.normal.z).normalized;
         Vector3 origin = new Vector3(stepTestContactPoint.point.x, stepHeight, stepTestContactPoint.point.z) + (stepTestInverseDirection * stepSearchOvershoot);
         Vector3 direction = Vector3.down;
