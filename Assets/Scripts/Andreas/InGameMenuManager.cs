@@ -102,17 +102,28 @@ public class InGameMenuManager : MonoBehaviour
         //{
         if (Input.GetButtonDown("escape"))
         {
-            if (!gameIsPaused)
+            if (DialogueManager.IsPausedWhileReading = true)
+            {
+                dialogueManager.EndDialogue();
+            }
+                
+            else if (!gameIsPaused)
+            {
                 PauseGame();
+            }
+                
             else
+            {
                 ResumeGame();
+            }
+                
         }
 
         if (Input.GetButtonDown("Fire4"))
             dialogueManager.DisplayNextSentence();
 
-        if (Input.GetButtonDown("Fire5"))
-            dialogueManager.EndDialogue();
+        //if (Input.GetButtonDown("Fire5"))
+          //  dialogueManager.EndDialogue();
         //}
     }
 }
