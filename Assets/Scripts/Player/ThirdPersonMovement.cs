@@ -1,17 +1,18 @@
 // Author: Mattias Larsson
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class ThirdPersonMovement : MonoBehaviour
 {
     // dash
-    private const float DashDistanceCheck = 1f;
+    private const float DashDistanceCheck = 0.25f;
     private const float DashForce = 45f;
 
     // movement
-    private const float MaxPlayerSpeedRun = 8.5f; 
+    private const float MaxPlayerSpeedRun = 8.5f;
     private const float MaxPlayerSpeedWalk = 4f;
-    private const float JumpHeight = 22f; 
+    private const float JumpHeight = 22f;
 
     // dash
     private const float DashEnergyCost = 5f;
@@ -25,37 +26,61 @@ public class ThirdPersonMovement : MonoBehaviour
     private const float TurnSmoothTime = 0.02f;
     private const float TurnSmoothTimeInAir = 0.25f;
 
+    //Constants to make sure you get an error in code if you try to change these values
+
     [Header("Main camera")]
     [SerializeField] private Camera mainCamera;
+    [Tooltip("This one is on the camera")]
     [SerializeField] private DashEffects dashEffectsReference;
 
     [Header("Controller")]
     [SerializeField] private Rigidbody playerRigidbody;
-    [SerializeField] private Transform gfxTransformForRotation; //might use this to flip gfx, currently not working
+    [Tooltip("WIP, does not work")]
+    [SerializeField] private Transform gfxTransformForRotation; //might use this to flip gfx for slopes, currently not working 2022-01-06
 
     [Header("Ground check")]
+    [Tooltip("Transform close to front feet in player prefab")]
     [SerializeField] private Transform frontFeetTransform;
+    [Tooltip("Transform close to back feet in player prefab")]
     [SerializeField] private Transform backFeetTransform;
 
     [Header("Layer masks")]
     [SerializeField] private LayerMask playerLayer;
+    [Tooltip("Climbable layer masks")]
     [SerializeField] private LayerMask ledgeMask;
     [SerializeField] private LayerMask groundMask;
+    [Tooltip("Layers that stop dash")]
     [SerializeField] private LayerMask dashObstacles;
 
     [Header("Ledge")]
     [SerializeField] private CharAnims charAnims;
+    [Tooltip("Just to get the transform")]
     [SerializeField] private GameObject ledgeDownCheck;
+    [Tooltip("Just to get the transform")]
     [SerializeField] private GameObject ledgeUpCheck;
     [SerializeField] private AnimationClip climbAnimation;
+    [Tooltip("In GFX inside player prefab")]
     [SerializeField] private SkinnedMeshRenderer skinnedMeshRenderer;
-    ////[SerializeField] private Collider playerCollider;
+
+    // ALL CLIMBABLE OBJECTS NEEDS A TRIGGER WITH CLIMB LAYER
+
+    [Header("Steps")]
+    [Tooltip("The maximum a player can set upwards in units when they hit a wall that's potentially a step")]
+    [SerializeField] private float maxStepHeight = 0.1f;
+
+    [Tooltip("How much to overshoot into the direction a potential step in units when testing. High values prevent player from walking up small steps but may cause problems")]
+    [SerializeField] private float stepSearchOvershoot = 0.01f; 
+
+    private List<ContactPoint> contactPoints = new List<ContactPoint>(); //Contact points are generated in OnCollision Methods and then cleared in fixedupdate
+    private Vector3 lastVelocity;
 
     [Header("Energy")]
     [SerializeField] private Energy energy;
 
     [Header("Raycast transforms")]
+    [Tooltip("A transform near head for raycasts")]
     [SerializeField] private Transform headRaycastOrigin;
+    [Tooltip("A transform middle of body for raycasts")]
     [SerializeField] private Transform midRaycast;
 
     [Header("Ability Shaders")]
@@ -70,12 +95,17 @@ public class ThirdPersonMovement : MonoBehaviour
     [SerializeField] private AudioClip glassImpact;
     [SerializeField] private AudioClip genericImpact;
 
-    [Header("ONLY FOR PROTOTYPES")]
+    [Header("Mechanics/cheats allowed in scene")]
+    [Tooltip("Should be true unless in a testing scene")]
     [SerializeField] private bool dashAllowed = true;
+    [Tooltip("Should be true unless in a testing scene")]
     [SerializeField] private bool ledgeGrabAllowed = true;
+    [Tooltip("Should be true unless in a testing scene")]
     [SerializeField] private bool telekinesAllowed = true;
+    [Tooltip("For going up smaller surfaces, can be CPU intensive")]
+    [SerializeField] private bool stepUpAllowed = true; //Going up small surfaces
+    [Tooltip("Allows teleporting between checkpoints for testing/debugging, with I, O and P keys")]
     [SerializeField] private bool godMode = false; // gives player a few cheats for instance the player can teleport to checkpoints with I, O and P
-    //[SerializeField] private bool slowmotionAllowed = false;
 
     [Header("Game handler")]
     [SerializeField] private GameManager gameManager;
@@ -103,8 +133,6 @@ public class ThirdPersonMovement : MonoBehaviour
     private float dashCooldown;
     private float dashTimer;
     private float timeRemainingOnAnimation;
-
-    // ALL CLIMBABLE OBJECTS NEEDS A TRIGGER WITH CLIMB LAYER
 
     private State playerState;
     public enum State { dashing, telekinesis, disabled, nothing, climbing, hiding }
@@ -144,8 +172,6 @@ public class ThirdPersonMovement : MonoBehaviour
             Debug.Log("Telekinesis not allowed!");
         if (godMode)
             Debug.Log("God mode on!");
-        /*if (slowmotionAllowed)
-            Debug.Log("Slow motion allowed, SHOULD ONLY BE ALLOWED IN PROTOTYPE!!!");*/
 
         IsTelekinesisActive = telekinesAllowed;
         playerState = State.nothing;
@@ -306,18 +332,9 @@ public class ThirdPersonMovement : MonoBehaviour
         }
     }
 
-    private void Movement()
+    private void Movement() //FixedUpdate
     {
         Vector3 direction = new Vector3(horizontal, 0f, vertical);
-
-        /*if (rb.drag != defaultDrag && frontFeetOnGround && backFeetOnGround)
-        {
-            rb.drag = defaultDrag;
-        }*/
-
-        if (horizontal == 0 && vertical == 0)
-        {
-        }
 
         if (direction.magnitude >= 0.01f)
         {
@@ -332,8 +349,9 @@ public class ThirdPersonMovement : MonoBehaviour
             ////{
             ////    angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TurnSmoothTime); // Adjust angle for smoothing on ground
             ////}
-            
+
             // Equivalent solution (variable = condition ? true : false)
+
             angle = !backFeetOnGround && !frontFeetOnGround ?
                 Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TurnSmoothTimeInAir) // Adjust angle for smoothing in air
                 : Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, TurnSmoothTime); // Adjust angle for smoothing on ground
@@ -346,17 +364,18 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 if (backFeetOnGround || frontFeetOnGround)
                 {
-                    ////float difference = Mathf.Abs(rb.velocity.magnitude - MaxPlayerSpeedRun);
 
                     if (OnSlope())
                     {
+                        //Attempts at rotating mesh on slopes
                         //Method 1, does not work
                         ////playerRigidbody.MoveRotation(Quaternion.Euler(angle, rb.transform.rotation.y, 0f));
 
                         //Method 2, does not work
                         ////Transform transform = OnSlopeVector(); 
                         ////gfxTransformForRotation.rotation = Quaternion.Euler(transform.rotation.eulerAngles);
-                        
+                        ///
+
                         if (walk) //walking on slopes
                         {
                             if (playerRigidbody.velocity.magnitude < MaxPlayerSpeedWalk)
@@ -369,6 +388,9 @@ public class ThirdPersonMovement : MonoBehaviour
                     }
                     else //Not on slope, regular flat movement
                     {
+                        if(stepUpAllowed)
+                            StepUp();
+
                         if (walk)
                         {
                             if (playerRigidbody.velocity.magnitude < MaxPlayerSpeedWalk)
@@ -394,6 +416,8 @@ public class ThirdPersonMovement : MonoBehaviour
             }
         }
 
+        contactPoints.Clear(); //Only need the latest ones, this is for small steps
+
         if (frontFeetOnGround || backFeetOnGround)
             charAnims.CheckStopRunning();
 
@@ -418,13 +442,14 @@ public class ThirdPersonMovement : MonoBehaviour
             landAnimationReady = false;
         }
 
+        // Jump input in update, otherwise it feels delayed
         if (jump)
         {
             playerRigidbody.velocity = new Vector3(playerRigidbody.velocity.x, JumpHeight, playerRigidbody.velocity.z);
 
             charAnims.SetTriggerFromString("Jump");
 
-            jump = false; // Jump input set in update, otherwise too delayed
+            jump = false;
         }
     }
 
@@ -477,7 +502,7 @@ public class ThirdPersonMovement : MonoBehaviour
                     RaycastHit forwardHit;
 
                     // Checks distance from object so animation starts at correct the distance
-                    if (Physics.Raycast(frontFeetTransform.transform.position, transform.forward * LedgeCheckRayLengthMultiplier, out forwardHit, LedgeCheckRayLengthMultiplier)) 
+                    if (Physics.Raycast(frontFeetTransform.transform.position, transform.forward * LedgeCheckRayLengthMultiplier, out forwardHit, LedgeCheckRayLengthMultiplier))
                     {
                         playerRigidbody.useGravity = false; // Otherwise player might float under object
 
@@ -493,10 +518,34 @@ public class ThirdPersonMovement : MonoBehaviour
                         timeRemainingOnAnimation = climbAnimation.length;
 
                         // Method LedgeClimb() starts in update if playerstate is climbing
+                        // If climbing looks weird in game, move the climb triggers in the scene to a better position
                     }
                 }
             }
         }
+    }
+
+    private void StepUp()
+    {
+
+        Vector3 velocity = playerRigidbody.velocity;
+
+        //Filter through the ContactPoints to see if we're grounded and to see if we can step up
+        ContactPoint groundContactPoint = default(ContactPoint);
+        bool grounded = FindGround(out groundContactPoint, contactPoints);
+
+        Vector3 stepUpOffset = default(Vector3);
+        bool stepUp = false;
+
+        if (grounded)
+            stepUp = FindStep(out stepUpOffset, contactPoints, groundContactPoint, velocity);
+
+        if (stepUp)
+        {
+            playerRigidbody.position += stepUpOffset;
+            playerRigidbody.velocity = lastVelocity;
+        }
+
     }
 
     private void LedgeClimb()
@@ -510,7 +559,7 @@ public class ThirdPersonMovement : MonoBehaviour
             {
                 charAnims.SetTriggerFromString("StopClimb");
 
-                MoveTo(ledgeHit.point + new Vector3(0, 0.4f, 0)); // Adds marigin to make sure to not climb inside object instead of on top
+                MoveTo(ledgeHit.point + new Vector3(0, 0.4f, 0)); // Adds marigin to make sure player gets on top of object, without this you might get stuck
 
                 playerState = State.nothing;
 
@@ -540,8 +589,8 @@ public class ThirdPersonMovement : MonoBehaviour
                 }
             }
             else
-            { 
-                if(dashTimer <= 0)
+            {
+                if (dashTimer <= 0)
                     StopDashing();
             }
         }
@@ -561,9 +610,12 @@ public class ThirdPersonMovement : MonoBehaviour
 
         dashEffectsReference.SlowDown();
 
-        RaycastHit hit;
+        if(stepUpAllowed)
+            StepUp();
 
-        if (Physics.SphereCast(headRaycastOrigin.position, 0.15f, transform.forward, out hit, DashDistanceCheck, dashObstacles) || !energy.CheckEnergy(DashEnergyCost))
+        RaycastHit hit; //Not really needed
+
+        if (Physics.SphereCast(headRaycastOrigin.position, 0.1f, transform.forward, out hit, DashDistanceCheck, dashObstacles) || !energy.CheckEnergy(DashEnergyCost))
         {
             StopDashing();
         }
@@ -573,15 +625,14 @@ public class ThirdPersonMovement : MonoBehaviour
             playerRigidbody.velocity = transform.forward * DashForce;
             // Constant force results in constant accelaration, zero force results constant velocity
         }
-
     }
 
     private void StopDashing()
     {
         ActivateRenderer(0); //Removes dash effect on player
-        dashEffectsReference.SpeedUp();
-        resetVelocity = true; 
-        playerState = State.nothing; 
+        dashEffectsReference.SpeedUp(); //This is on the camera (not sure why)
+        resetVelocity = true;
+        playerState = State.nothing;
         dashCooldown = 1f; // cooldown to disable spamming dash
         dashTimer = 0.2f; // timer reset
         energy.IsRegenerating = true;
@@ -608,5 +659,94 @@ public class ThirdPersonMovement : MonoBehaviour
 
         if (collision.gameObject.CompareTag("GenericImpact"))
             audioSource.PlayOneShot(genericImpact);
+
+        //if (horizontal != 0 || vertical != 0) //only collects data if any movement input is detected
+
+        contactPoints.AddRange(collision.contacts);
     }
+    private void OnCollisionStay(Collision collision)
+    {
+        contactPoints.AddRange(collision.contacts);
+    }
+
+    #region HandlingSteps
+
+    // I followed this tutorial, this article was exactly what i wanted and needed so it is almost exactly the same
+    //https://cobertos.com/blog/post/how-to-climb-stairs-unity3d/
+
+    private bool FindGround(out ContactPoint groundContactPoint, List<ContactPoint> allContactPoints)
+    {
+        groundContactPoint = default(ContactPoint);
+        bool found = false;
+
+        foreach (ContactPoint cp in allContactPoints)
+        {
+            if (cp.normal.y > 0.0001f && (found == false || cp.normal.y > groundContactPoint.normal.y)) //removed a zero from cp.normal.y
+            {
+                groundContactPoint = cp;
+                found = true;
+            }
+        }
+        return found;
+    }
+
+    private bool FindStep(out Vector3 stepUpOffset, List<ContactPoint> allContactPoints, ContactPoint groundContactPoint, Vector3 currentVelocity)
+    {
+        stepUpOffset = default(Vector3);
+
+        Vector2 velocityXZ = new Vector2(currentVelocity.x, currentVelocity.y);
+
+        if(velocityXZ.sqrMagnitude < 0.0001f)
+        {
+            return false;
+        }
+
+        foreach (ContactPoint cp in allContactPoints)
+        {
+            bool test = ResolveStepUp(out stepUpOffset, cp, groundContactPoint);
+
+            if (test)
+                return test;
+        }
+        return false;
+    }
+
+    private bool ResolveStepUp(out Vector3 stepUpOffset, ContactPoint stepTestContactPoint, ContactPoint groundContactPoint)
+    {
+        stepUpOffset = default(Vector3);
+        Collider stepCollider = stepTestContactPoint.otherCollider;
+
+        //( 1 ) Check if the contact point normal matches that of a step (y close to 0)
+        if (Mathf.Abs(stepTestContactPoint.normal.y) >= 0.01f)
+        {
+            return false;
+        }
+
+        //( 2 ) Make sure the contact point is low enough to be a step
+        if (!(stepTestContactPoint.point.y - groundContactPoint.point.y < maxStepHeight))
+        {
+            return false;
+        }
+
+        //( 3 ) Check to see if there's actually a place to step in front of us
+        //Fires one Raycast
+        RaycastHit hitInfo;
+        float stepHeight = groundContactPoint.point.y + maxStepHeight + 0.0001f; //Removed a zero
+        Vector3 stepTestInverseDirection = new Vector3(-stepTestContactPoint.normal.x, 0, -stepTestContactPoint.normal.z).normalized;
+        Vector3 origin = new Vector3(stepTestContactPoint.point.x, stepHeight, stepTestContactPoint.point.z) + (stepTestInverseDirection * stepSearchOvershoot);
+        Vector3 direction = Vector3.down;
+        if (!stepCollider.Raycast(new Ray(origin, direction), out hitInfo, maxStepHeight))
+        {
+            return false;
+        }
+
+        //We have enough info to calculate the points
+        Vector3 stepUpPoint = new Vector3(stepTestContactPoint.point.x, hitInfo.point.y + 0.0001f, stepTestContactPoint.point.z) + (stepTestInverseDirection * stepSearchOvershoot);
+        Vector3 stepUpPointOffset = stepUpPoint - new Vector3(stepTestContactPoint.point.x, groundContactPoint.point.y, stepTestContactPoint.point.z);
+
+        //We passed all the checks! Calculate and return the point!
+        stepUpOffset = stepUpPointOffset;
+        return true;
+    }
+    #endregion
 }

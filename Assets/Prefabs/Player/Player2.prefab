@@ -1803,6 +1803,8 @@ MonoBehaviour:
   ledgeUpCheck: {fileID: 1987647258618843996}
   climbAnimation: {fileID: -8211997847921910680, guid: 1b2d75bd5e7877241bd9de762d21df29, type: 3}
   skinnedMeshRenderer: {fileID: 5198675823660943991}
+  maxStepHeight: 0.6
+  stepSearchOvershoot: 0.02
   energy: {fileID: 2638028919231352875}
   headRaycastOrigin: {fileID: 8260587807197697428}
   midRaycast: {fileID: 7497682809609583251}
@@ -1830,6 +1832,7 @@ MonoBehaviour:
   dashAllowed: 1
   ledgeGrabAllowed: 1
   telekinesAllowed: 1
+  stepUpAllowed: 1
   godMode: 1
   gameManager: {fileID: 0}
   audioSource: {fileID: 2406474811266336144}
