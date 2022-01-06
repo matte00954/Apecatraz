@@ -360,58 +360,54 @@ public class ThirdPersonMovement : MonoBehaviour
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward; // Adjust direction to camera rotation/direction
             slopeMoveDirection = Vector3.ProjectOnPlane(moveDirection, slopeHitNormal);
 
-            if (horizontal != 0 || vertical != 0)
+            if (backFeetOnGround || frontFeetOnGround)
             {
-                if (backFeetOnGround || frontFeetOnGround)
+                if (stepUpAllowed)
+                    StepUp();
+
+                if (OnSlope())
                 {
+                    //Attempts at rotating mesh on slopes
+                    //Method 1, does not work
+                    ////playerRigidbody.MoveRotation(Quaternion.Euler(angle, rb.transform.rotation.y, 0f));
 
-                    if (OnSlope())
+                    //Method 2, does not work
+                    ////Transform transform = OnSlopeVector(); 
+                    ////gfxTransformForRotation.rotation = Quaternion.Euler(transform.rotation.eulerAngles);
+                    ///
+
+                    if (walk) //walking on slopes
                     {
-                        //Attempts at rotating mesh on slopes
-                        //Method 1, does not work
-                        ////playerRigidbody.MoveRotation(Quaternion.Euler(angle, rb.transform.rotation.y, 0f));
-
-                        //Method 2, does not work
-                        ////Transform transform = OnSlopeVector(); 
-                        ////gfxTransformForRotation.rotation = Quaternion.Euler(transform.rotation.eulerAngles);
-                        ///
-
-                        if (walk) //walking on slopes
-                        {
-                            if (playerRigidbody.velocity.magnitude < MaxPlayerSpeedWalk)
-                                playerRigidbody.AddForce(slopeMoveDirection.normalized, ForceMode.Impulse);
-                        }
-                        else if (playerRigidbody.velocity.magnitude < MaxPlayerSpeedRun)
-                        {
+                        if (playerRigidbody.velocity.magnitude < MaxPlayerSpeedWalk)
                             playerRigidbody.AddForce(slopeMoveDirection.normalized, ForceMode.Impulse);
-                        }
                     }
-                    else //Not on slope, regular flat movement
+                    else if (playerRigidbody.velocity.magnitude < MaxPlayerSpeedRun)
                     {
-                        if(stepUpAllowed)
-                            StepUp();
-
-                        if (walk)
-                        {
-                            if (playerRigidbody.velocity.magnitude < MaxPlayerSpeedWalk)
-                            {
-                                playerRigidbody.AddForce(moveDirection, ForceMode.Impulse);
-                            }
-                        }
-                        else if (playerRigidbody.velocity.magnitude < MaxPlayerSpeedRun)
-                        {
-                            playerRigidbody.AddForce(moveDirection * 1.15f, ForceMode.Impulse);
-                        }
+                        playerRigidbody.AddForce(slopeMoveDirection.normalized, ForceMode.Impulse);
                     }
                 }
-                else
+                else //Not on slope, regular flat movement
                 {
-                    Vector3 velocityWithoutY = new Vector3(playerRigidbody.velocity.x, 0f, playerRigidbody.velocity.z); // Remove Y velocity from calc
-
-                    if (velocityWithoutY.magnitude < MaxPlayerSpeedRun)
+                    if (walk)
                     {
-                        playerRigidbody.AddForce(moveDirection, ForceMode.Impulse); // In air
+                        if (playerRigidbody.velocity.magnitude < MaxPlayerSpeedWalk)
+                        {
+                            playerRigidbody.AddForce(moveDirection, ForceMode.Impulse);
+                        }
                     }
+                    else if (playerRigidbody.velocity.magnitude < MaxPlayerSpeedRun)
+                    {
+                        playerRigidbody.AddForce(moveDirection * 1.15f, ForceMode.Impulse);
+                    }
+                }
+            }
+            else
+            {
+                Vector3 velocityWithoutY = new Vector3(playerRigidbody.velocity.x, 0f, playerRigidbody.velocity.z); // Remove Y velocity from calc
+
+                if (velocityWithoutY.magnitude < MaxPlayerSpeedRun)
+                {
+                    playerRigidbody.AddForce(moveDirection, ForceMode.Impulse); // In air
                 }
             }
         }
