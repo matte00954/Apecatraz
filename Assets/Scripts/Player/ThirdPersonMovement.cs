@@ -334,6 +334,9 @@ public class ThirdPersonMovement : MonoBehaviour
 
     private void Movement() //FixedUpdate
     {
+        if (stepUpAllowed)
+            StepUp();
+
         Vector3 direction = new Vector3(horizontal, 0f, vertical);
 
         if (direction.magnitude >= 0.0001f)
@@ -362,8 +365,6 @@ public class ThirdPersonMovement : MonoBehaviour
 
             if (backFeetOnGround || frontFeetOnGround)
             {
-                if (stepUpAllowed)
-                    StepUp();
 
                 if (OnSlope())
                 {
@@ -713,7 +714,7 @@ public class ThirdPersonMovement : MonoBehaviour
         Collider stepCollider = stepTestContactPoint.otherCollider;
 
         //( 1 ) Check if the contact point normal matches that of a step (y close to 0)
-        if (Mathf.Abs(stepTestContactPoint.normal.y) >= 0.01f)
+        if (Mathf.Abs(stepTestContactPoint.normal.y) >= 0.0001f)
         {
             return false;
         }
