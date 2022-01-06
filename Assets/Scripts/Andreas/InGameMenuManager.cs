@@ -102,21 +102,19 @@ public class InGameMenuManager : MonoBehaviour
         //{
         if (Input.GetButtonDown("escape"))
         {
-            if (DialogueManager.IsPausedWhileReading = true)
+            if (DialogueManager.IsPausedWhileReading)
             {
                 dialogueManager.EndDialogue();
-            }
-                
+            }       
             else if (!gameIsPaused)
             {
                 PauseGame();
-            }
-                
+            }   
             else
             {
                 ResumeGame();
             }
-                
+            
         }
 
         if (Input.GetButtonDown("Fire4"))
