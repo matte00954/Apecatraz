@@ -336,7 +336,7 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         Vector3 direction = new Vector3(horizontal, 0f, vertical);
 
-        if (direction.magnitude >= 0.01f)
+        if (direction.magnitude >= 0.0001f)
         {
             float targetAngle = (Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg) + mainCamera.transform.eulerAngles.y; // First find target angle
             float angle;
