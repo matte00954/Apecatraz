@@ -605,14 +605,19 @@ public class ThirdPersonMovement : MonoBehaviour
             resetVelocity = false;
         }
 
+        
         dashEffectsReference.SlowDown();
 
-        if(stepUpAllowed)
-            StepUp();
+        RaycastHit hitOne; //Not really needed
 
-        RaycastHit hit; //Not really needed
+        if (Physics.Raycast(transform.position, Vector3.down, out hitOne, 0.7f, groundMask))
+        {
+            playerRigidbody.AddForce(Vector3.up * 4f, ForceMode.Impulse);
+        }
 
-        if (Physics.SphereCast(headRaycastOrigin.position, 0.1f, transform.forward, out hit, DashDistanceCheck, dashObstacles) || !energy.CheckEnergy(DashEnergyCost))
+        RaycastHit hitTwo; //Not really needed
+
+        if (Physics.SphereCast(headRaycastOrigin.position, 0.1f, transform.forward, out hitTwo, DashDistanceCheck, dashObstacles) || !energy.CheckEnergy(DashEnergyCost))
         {
             StopDashing();
         }
