@@ -13,7 +13,7 @@ public class MainMenuManager : MonoBehaviour
 
     public void LoadPrototype(string sceneName) => SceneManager.LoadScene(sceneName);
 
-    public void ActivateImage(GameObject image)
+    public void ActivateImage(GameObject image) //Author: Hannas Hellberg
     {
         mainPanel.SetActive(false);
         image.SetActive(true);
@@ -22,7 +22,7 @@ public class MainMenuManager : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(image.transform.GetChild(0).gameObject);// jacobs kod, behövs för min xbox kontroller
     }
 
-    public void DisableImage(GameObject image)
+    public void DisableImage(GameObject image) //Author: Hanna Hellberg
     {
         image.SetActive(false);
         mainPanel.SetActive(true);
