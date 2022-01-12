@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.VFX;
 using UnityEngine.Windows.Speech;
+using Cinemachine;
 
 public class Telekinesis : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class Telekinesis : MonoBehaviour
     [Header("Game Object references")]
     [SerializeField] private ThirdPersonMovement thirdPersonMovement;
     [SerializeField] private Transform cameraTelekinesisTarget;
+    [SerializeField] private CinemachineFreeLook cinemachine;
     [SerializeField] private LayerMask canBeCarriedLayer;
     [SerializeField] private LayerMask canBePushedLayer;
 
@@ -89,15 +91,56 @@ public class Telekinesis : MonoBehaviour
         {
             /// Voice commands
             keywordActions.Add("Forward", VoiceForwardOne);
+            keywordActions.Add("Go", VoiceForwardOne);
+
             keywordActions.Add("Back", VoiceBackOne);
+            keywordActions.Add("Come", VoiceBackOne);
 
             keywordActions.Add("Full forward", VoiceFullForward);
+            keywordActions.Add("Forward max", VoiceFullForward);
+            keywordActions.Add("All forward", VoiceFullForward);
+            keywordActions.Add("Full go", VoiceFullForward);
+
             keywordActions.Add("Full back", VoiceFullBack);
+            keywordActions.Add("All back", VoiceFullBack);
+            keywordActions.Add("Come back", VoiceFullBack);
+            keywordActions.Add("Get back", VoiceFullBack);
+
 
             keywordActions.Add("Pick", VoicePickUp);
             keywordActions.Add("Pick up", VoicePickUp);
 
             keywordActions.Add("Drop", VoiceDrop);
+
+            keywordActions.Add("Fly", VoiceUp);
+
+            keywordActions.Add("Up", VoiceUp);
+
+            keywordActions.Add("Upp", VoiceUp);
+
+            keywordActions.Add("Op", VoiceUp);
+
+            keywordActions.Add("Opp", VoiceUp);
+
+            keywordActions.Add("Down", VoiceDown);
+
+            keywordActions.Add("Do", VoiceDown);
+
+            keywordActions.Add("Dow", VoiceDown);
+
+            keywordActions.Add("Le", VoiceLeft);
+
+            keywordActions.Add("Lef", VoiceLeft);
+
+            keywordActions.Add("Left", VoiceLeft);
+
+            keywordActions.Add("Ri", VoiceRight);
+
+            keywordActions.Add("Rig", VoiceRight);
+
+            keywordActions.Add("Righ", VoiceRight);
+
+            keywordActions.Add("Right", VoiceRight);
 
             keywordRecognizer = new KeywordRecognizer(keywordActions.Keys.ToArray());
             keywordRecognizer.OnPhraseRecognized += OnKeyWordsRecognized;
@@ -152,6 +195,26 @@ public class Telekinesis : MonoBehaviour
     {
         DropObject();
     }
+    private void VoiceLeft()
+    {
+        VoiceMoveXValue(-5);
+    }
+
+    private void VoiceRight()
+    {
+        VoiceMoveXValue(5);
+    }
+
+    private void VoiceUp()
+    {
+        VoiceMoveYValue(-0.1f);
+    }
+
+    private void VoiceDown()
+    {
+        VoiceMoveYValue(0.1f);
+    }
+
 
     // TODO
     // Audio feedback everything voice command related
@@ -181,6 +244,16 @@ public class Telekinesis : MonoBehaviour
                 MoveObject();
             }
         }
+    }
+
+    private void VoiceMoveXValue(int i)
+    {
+        cinemachine.m_XAxis.Value = i;
+    }
+
+    private void VoiceMoveYValue(float f)
+    {
+        cinemachine.m_YAxis.Value = f;
     }
 
     private void FindObject(bool voiceCommand)

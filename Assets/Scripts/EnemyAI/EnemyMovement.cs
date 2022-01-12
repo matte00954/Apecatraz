@@ -341,7 +341,7 @@ public class EnemyMovement : MonoBehaviour
         }
         if (enemyAnim.Accelerating())
         {
-            Debug.Log("LAAAWL");
+            //Debug.Log("LAAAWL");
             enemyAnim.StopAiming();
         }
         if (agent.velocity.magnitude >= 1f)
