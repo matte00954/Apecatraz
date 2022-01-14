@@ -47,8 +47,7 @@ Embedding an animated gif in your README quickly demonstrates what your project 
 ## How to play
 
 - Download and install
-- link to the built game
-- [terminalizer](https://github.com/faressoft/terminalizer)
+- [link to the built game](https://github.com/faressoft/terminalizer)
 
 ## Contribute
 
